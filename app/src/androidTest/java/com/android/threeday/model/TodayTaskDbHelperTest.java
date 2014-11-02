@@ -3,14 +3,15 @@ package com.android.threeday.model;
 import android.test.ActivityInstrumentationTestCase2;
 
 import com.android.threeday.activity.MainActivity;
+import com.android.threeday.model.testInterface.TaskDbInterface;
 
 /**
  * Created by user on 2014/11/1.
  */
-public class TodayTaskDbHelperTest extends ActivityInstrumentationTestCase2<MainActivity> implements TaskDbInterfaceTest {
-    private TaskDbHelperTest mTaskDbHelperTest;
+public class TodayTaskDbHelperTest extends ActivityInstrumentationTestCase2<MainActivity> implements TaskDbInterface {
+    private TaskDbInterface mTaskDbHelperTest;
 
-    public TodayTaskDbHelperTest( ){
+    public TodayTaskDbHelperTest(){
         super(MainActivity.class);
     }
 

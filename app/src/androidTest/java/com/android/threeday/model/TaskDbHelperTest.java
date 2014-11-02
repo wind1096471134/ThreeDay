@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import android.text.format.Time;
 
+import com.android.threeday.model.testInterface.TaskDbInterface;
 import com.android.threeday.util.Util;
 
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ import static junit.framework.Assert.*;
 /**
  * Created by user on 2014/10/31.
  */
-public class TaskDbHelperTest implements TaskDbInterfaceTest{
+public class TaskDbHelperTest implements TaskDbInterface {
     private TaskDbHelper mTaskDbHelper;
     private Context mContext;
 

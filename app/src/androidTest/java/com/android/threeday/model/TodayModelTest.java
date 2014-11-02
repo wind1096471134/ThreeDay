@@ -3,22 +3,22 @@ package com.android.threeday.model;
 import android.test.ActivityInstrumentationTestCase2;
 
 import com.android.threeday.activity.MainActivity;
-import com.android.threeday.model.testInterface.TaskDbInterface;
+import com.android.threeday.model.testInterface.DayModelInterface;
 
 /**
- * Created by user on 2014/11/1.
+ * Created by user on 2014/11/2.
  */
-public class YesterdayTaskDbHelperTest extends ActivityInstrumentationTestCase2<MainActivity> implements TaskDbInterface {
-    private TaskDbInterface mTaskDbHelperTest;
-    
-    public YesterdayTaskDbHelperTest(){
+public class TodayModelTest extends ActivityInstrumentationTestCase2<MainActivity> implements DayModelInterface {
+    private DayModelTest mDayModelTest;
+
+    public TodayModelTest( ){
         super(MainActivity.class);
     }
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        this.mTaskDbHelperTest = new TaskDbHelperTest(getActivity(), new YesterdayTaskDbHelper(getActivity()));
+        mDayModelTest = new DayModelTest(getActivity(), new TodayModel(getActivity()));
     }
 
     @Override
@@ -27,47 +27,57 @@ public class YesterdayTaskDbHelperTest extends ActivityInstrumentationTestCase2<
     }
 
     @Override
-    public void testFillTasks() throws Exception {
-        mTaskDbHelperTest.testFillTasks();
+    public void testMemberNull() throws Exception {
+        mDayModelTest.testMemberNull();
+    }
+
+    @Override
+    public void testGetDayEvaluation() throws Exception {
+
+    }
+
+    @Override
+    public void testSetDayEvaluation() throws Exception {
+
     }
 
     @Override
     public void testGetTask() throws Exception {
-        mTaskDbHelperTest.testGetTask();
+        mDayModelTest.testGetTask();
     }
 
     @Override
     public void testAddTask() throws Exception {
-        mTaskDbHelperTest.testAddTask();
+        mDayModelTest.testGetTask();
     }
 
     @Override
     public void testDeleteTask() throws Exception {
-        mTaskDbHelperTest.testDeleteTask();
+        mDayModelTest.testDeleteTask();
     }
 
     @Override
     public void testSetRemain() throws Exception {
-        mTaskDbHelperTest.testSetRemain();
+        mDayModelTest.testSetRemain();
     }
 
     @Override
     public void testSetRemainTime() throws Exception {
-        mTaskDbHelperTest.testSetRemainTime();
+        mDayModelTest.testSetRemainTime();
     }
 
     @Override
     public void testSetDone() throws Exception {
-        mTaskDbHelperTest.testSetDone();
+        mDayModelTest.testSetDone();
     }
 
     @Override
     public void testSetDoneTime() throws Exception {
-        mTaskDbHelperTest.testSetDoneTime();
+        mDayModelTest.testSetDoneTime();
     }
 
     @Override
     public void testSetEvaluation() throws Exception {
-        mTaskDbHelperTest.testSetEvaluation();
+        mDayModelTest.testSetEvaluation();
     }
 }

@@ -1,10 +1,9 @@
-package com.android.threeday.model;
+package com.android.threeday.model.testInterface;
 
 /**
- * Created by user on 2014/11/1.
+ * Created by user on 2014/11/2.
  */
-public interface TaskDbInterfaceTest {
-    public void testFillTasks( ) throws Exception;
+public interface BaseInterface {
     public void testGetTask( ) throws Exception;
     public void testAddTask( ) throws Exception;
     public void testDeleteTask( ) throws Exception;

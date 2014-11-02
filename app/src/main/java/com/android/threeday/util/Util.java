@@ -18,4 +18,7 @@ public class Util {
 
     public static final int REMAIN = 1;
     public static final int UN_REMAIN = 0;
+
+    public static final String PREFERENCE_NAME = "ThreeDay";
+    public static final String PREFERENCE_KEY_DAY_EVALUATION = "DayEvaluation";
 }

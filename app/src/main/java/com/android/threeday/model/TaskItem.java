@@ -6,7 +6,7 @@ import com.android.threeday.util.Util;
  * Created by user on 2014/10/29.
  */
 public class TaskItem {
-    private int mId;
+    private long mId;
     private int mEvaluation;
     private int mDayType;
     private String mInformation;
@@ -22,8 +22,12 @@ public class TaskItem {
         this.mDayType = dayType;
     }
 
-    public int getId( ){
+    public long getId( ){
         return this.mId;
+    }
+
+    public void setId(long id){
+        this.mId = id;
     }
 
     public String getTime( ){
