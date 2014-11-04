@@ -2,7 +2,6 @@ package com.android.threeday.model;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import com.android.threeday.util.Util;
 
