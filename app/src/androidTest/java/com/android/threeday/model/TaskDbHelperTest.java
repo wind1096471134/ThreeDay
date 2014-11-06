@@ -151,6 +151,36 @@ public class TaskDbHelperTest implements TaskDbInterface {
     }
 
     @Override
+    public void testUpdateTask() throws Exception {
+        deleteTestData();
+        TaskItem taskItem = new TaskItem(0, mTaskDbHelper.getDayType(), null);
+        taskItem.setRemain(true);
+        taskItem.setRemainTime("1");
+        taskItem.setDone(false);
+        taskItem.setInformation("a");
+        long id = mTaskDbHelper.addTask(taskItem);
+        taskItem.setId(id);
+        taskItem.setRemain(false);
+        taskItem.setDone(true);
+        taskItem.setDoneTime("2014");
+        taskItem.setInformation("b");
+        taskItem.setEvaluation(Util.EVALUATION_GOOD);
+        int rows = mTaskDbHelper.updateTask(taskItem);
+        assertEquals(1, rows);
+
+        TaskSQLiteOpenHelper taskSQLiteOpenHelper = TaskSQLiteOpenHelper.getInstance(mContext);
+        Cursor cursor = taskSQLiteOpenHelper.getReadableDatabase().rawQuery("select * from " + TaskSQLiteOpenHelper.TABLE_TASK
+                + " where " + TaskSQLiteOpenHelper.COLUMN_DAY_TYPE + "=" + mTaskDbHelper.getDayType() + " and "
+                + TaskSQLiteOpenHelper.COLUMN_ID + "=" + id, null);
+        cursor.moveToFirst();
+        assertTrue(cursor.getInt(cursor.getColumnIndex(TaskSQLiteOpenHelper.COLUMN_DONE)) == Util.DONE);
+        assertEquals(taskItem.getDoneTime(), cursor.getString(cursor.getColumnIndex(TaskSQLiteOpenHelper.COLUMN_DONE_TIME)));
+        assertTrue(cursor.getInt(cursor.getColumnIndex(TaskSQLiteOpenHelper.COLUMN_TASK_TO_REMAIN)) == Util.UN_REMAIN);
+        assertEquals(taskItem.getInformation(), cursor.getString(cursor.getColumnIndex(TaskSQLiteOpenHelper.COLUMN_TASK_INFORMATION)));
+        assertTrue(cursor.getInt(cursor.getColumnIndex(TaskSQLiteOpenHelper.COLUMN_TASK_EVALUATION)) == Util.EVALUATION_GOOD);
+    }
+
+    @Override
     public void testSetDone( ) throws Exception{
         deleteTestData();
         TaskItem taskItem = new TaskItem(0, mTaskDbHelper.getDayType(), null);

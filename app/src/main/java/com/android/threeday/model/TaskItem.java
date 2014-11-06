@@ -5,7 +5,7 @@ import com.android.threeday.util.Util;
 /**
  * Created by user on 2014/10/29.
  */
-public class TaskItem {
+public class TaskItem implements Cloneable{
     private long mId;
     private int mEvaluation;
     private int mDayType;
@@ -94,5 +94,10 @@ public class TaskItem {
 
     public int getEvaluation( ){
         return this.mEvaluation;
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

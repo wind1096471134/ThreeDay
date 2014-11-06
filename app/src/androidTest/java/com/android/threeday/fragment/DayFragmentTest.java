@@ -2,6 +2,8 @@ package com.android.threeday.fragment;
 
 import android.content.Context;
 
+import com.android.threeday.view.RotePageLayout;
+
 import static junit.framework.Assert.*;
 
 /**
@@ -16,8 +18,13 @@ public class DayFragmentTest implements FragmentInterface{
         this.mBaseDayFragment = baseDayFragment;
     }
 
+    public BaseDayFragment getBaseDayFragment( ){
+        return this.mBaseDayFragment;
+    }
+
     @Override
     public void testMember() throws Exception {
         assertNotNull(this.mBaseDayFragment.mModel);
+        assertNotNull(this.mBaseDayFragment.mMainLayout);
     }
 }

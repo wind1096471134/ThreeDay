@@ -13,7 +13,8 @@ import java.util.ArrayList;
 public abstract class BaseDayModel implements BaseModel{
     protected Context mContext;
     protected TaskDbHelper mTaskDbHelper;
-    protected ArrayList<TaskItem> mTaskItems;
+    protected ArrayList<TaskItem> mDoneTaskItems;
+    protected ArrayList<TaskItem> mUndoneTaskItems;
     protected int dayType;
     protected int dayEvaluation;
 
@@ -30,39 +31,67 @@ public abstract class BaseDayModel implements BaseModel{
     private void initData( ){
         this.mTaskDbHelper = getDbHelper();
         this.dayType = getDayType();
-        this.mTaskItems = this.mTaskDbHelper.getTasks();
+        ArrayList<TaskItem> arrayList = this.mTaskDbHelper.getTasks();
+        this.mDoneTaskItems = new ArrayList<TaskItem>();
+        this.mUndoneTaskItems = new ArrayList<TaskItem>();
+        for(TaskItem taskItem : arrayList){
+            if(taskItem.getDone()){
+                this.mDoneTaskItems.add(taskItem);
+            }else{
+                this.mUndoneTaskItems.add(taskItem);
+            }
+        }
         SharedPreferences sharedPreferences = this.mContext.getSharedPreferences(Util.PREFERENCE_NAME, Context.MODE_PRIVATE);
         this.dayEvaluation = sharedPreferences.getInt(Util.PREFERENCE_KEY_DAY_EVALUATION, Util.EVALUATION_DEFAULT);
     }
 
-    public ArrayList<TaskItem> getTasks( ){
-        return this.mTaskItems;
+    public ArrayList<TaskItem> getDoneTasks( ){
+        return this.mDoneTaskItems;
+    }
+
+    public ArrayList<TaskItem> getUndoneTasks( ){
+        return this.mUndoneTaskItems;
     }
 
     public boolean addTask(TaskItem taskItem){
         long id = this.mTaskDbHelper.addTask(taskItem);
         if(id != -1){
             taskItem.setId(id);
-            this.mTaskItems.add(taskItem);
+            if(taskItem.getDone()){
+                this.mDoneTaskItems.add(0, taskItem);
+            }else{
+                this.mUndoneTaskItems.add(0, taskItem);
+            }
             return true;
         }
         return false;
     }
 
-    public boolean deleteTask(int position){
-        if(position < this.mTaskItems.size()){
-            long id = this.mTaskItems.get(position).getId();
+    public boolean deleteUndoneTask(int position){
+        if(position < this.mUndoneTaskItems.size()){
+            long id = this.mUndoneTaskItems.get(position).getId();
             if(this.mTaskDbHelper.deleteTask(id) != 0){
-                this.mTaskItems.remove(position);
+                this.mUndoneTaskItems.remove(position);
                 return true;
             }
         }
         return false;
     }
 
-    public boolean setTaskRemain(int position, boolean remain){
-        if(position < this.mTaskItems.size()){
-            TaskItem taskItem = this.mTaskItems.get(position);
+    public boolean deleteDoneTask(int position){
+        if(position < this.mDoneTaskItems.size()){
+            long id = this.mDoneTaskItems.get(position).getId();
+            if(this.mTaskDbHelper.deleteTask(id) != 0){
+                this.mDoneTaskItems.remove(position);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean setUndoneTaskRemain(int position, boolean remain){
+        if(position < this.mUndoneTaskItems.size()){
+            TaskItem taskItem = this.mUndoneTaskItems.get(position);
             long id = taskItem.getId();
             if(this.mTaskDbHelper.setTaskRemain(id, remain) == 1){
                 taskItem.setRemain(remain);
@@ -72,9 +101,9 @@ public abstract class BaseDayModel implements BaseModel{
         return false;
     }
 
-    public boolean setTaskRemainTime(int position, String time){
-        if(position < this.mTaskItems.size()){
-            TaskItem taskItem = this.mTaskItems.get(position);
+    public boolean setUndoneTaskRemainTime(int position, String time){
+        if(position < this.mUndoneTaskItems.size()){
+            TaskItem taskItem = this.mUndoneTaskItems.get(position);
             long id = taskItem.getId();
             if(this.mTaskDbHelper.setTaskRemainTime(id, time) == 1){
                 taskItem.setRemainTime(time);
@@ -84,37 +113,19 @@ public abstract class BaseDayModel implements BaseModel{
         return false;
     }
 
-    public boolean setTaskDone(int position, boolean done){
-        if(position < this.mTaskItems.size()){
-            TaskItem taskItem = this.mTaskItems.get(position);
-            long id = taskItem.getId();
-            if(this.mTaskDbHelper.setTaskDone(id, done) == 1){
-                taskItem.setDone(done);
+    public boolean doneTask(int position, String doneTime, int evaluation){
+        if(position < this.mUndoneTaskItems.size()){
+            TaskItem taskItem = this.mUndoneTaskItems.get(position);
+            taskItem.setDone(true);
+            taskItem.setDoneTime(doneTime);
+            taskItem.setEvaluation(evaluation);
+            if(this.mTaskDbHelper.updateTask(taskItem) == 1){
+                this.mUndoneTaskItems.remove(position);
+                this.mDoneTaskItems.add(0, taskItem);
                 return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean setTaskDoneTime(int position, String time){
-        if(position < this.mTaskItems.size()){
-            TaskItem taskItem = this.mTaskItems.get(position);
-            long id = taskItem.getId();
-            if(this.mTaskDbHelper.setTaskDoneTime(id, time) == 1){
-                taskItem.setDoneTime(time);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean setTaskEvaluation(int position, int evaluation){
-        if(position < this.mTaskItems.size()){
-            TaskItem taskItem = this.mTaskItems.get(position);
-            long id = taskItem.getId();
-            if(this.mTaskDbHelper.setTaskEvaluation(id, evaluation) == 1){
-                taskItem.setEvaluation(evaluation);
-                return true;
+            }else{
+                taskItem.setDone(false);
+                taskItem.setEvaluation(Util.EVALUATION_DEFAULT);
             }
         }
         return false;

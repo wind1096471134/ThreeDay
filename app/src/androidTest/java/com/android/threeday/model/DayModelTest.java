@@ -10,9 +10,7 @@ import static junit.framework.Assert.*;
 
 import java.util.ArrayList;
 
-/**
- * Created by user on 2014/11/2.
- */
+
 public class DayModelTest implements DayModelInterface {
     private BaseDayModel mModel;
     private Context mContext;
@@ -26,16 +24,15 @@ public class DayModelTest implements DayModelInterface {
     public void testMemberNull() throws Exception {
         assertNotNull(this.mModel.mContext);
         assertNotNull(this.mModel.mTaskDbHelper);
-        assertNotNull(this.mModel.mTaskItems);
+        assertNotNull(this.mModel.mDoneTaskItems);
+        assertNotNull(this.mModel.mUndoneTaskItems);
     }
 
     @Override
     public void testGetDayEvaluation() throws Exception {
         SharedPreferences sharedPreferences = this.mContext.getSharedPreferences(Util.PREFERENCE_NAME, Context.MODE_PRIVATE);
-        boolean result = sharedPreferences.edit().putInt(Util.PREFERENCE_KEY_DAY_EVALUATION, Util.EVALUATION_BAD).commit();
-        assertTrue(result);
-        int evaluation = this.mModel.getDayEvaluation();
-        assertEquals(Util.EVALUATION_BAD, evaluation);
+        int evaluation = sharedPreferences.getInt(Util.PREFERENCE_KEY_DAY_EVALUATION, Util.EVALUATION_DEFAULT);
+        assertEquals(evaluation, this.mModel.getDayEvaluation());
     }
 
     @Override
@@ -49,92 +46,76 @@ public class DayModelTest implements DayModelInterface {
     }
 
     @Override
+    public void testDoneTask() throws Exception {
+        addOneTaskForTest(false);
+        TaskItem taskItem = this.mModel.getUndoneTasks().get(0);
+        boolean result = this.mModel.doneTask(0, "00", Util.EVALUATION_GOOD);
+        assertTrue(result);
+        assertTrue(this.mModel.getDoneTasks().contains(taskItem));
+        assertTrue(!this.mModel.getUndoneTasks().contains(taskItem));
+        assertTrue(taskItem.getDone());
+        assertEquals("00", taskItem.getDoneTime());
+        assertEquals(Util.EVALUATION_GOOD, taskItem.getEvaluation());
+    }
+
+    @Override
     public void testGetTask() throws Exception {
-        ArrayList<TaskItem> arrayList = this.mModel.getTasks();
+        ArrayList<TaskItem> arrayList = this.mModel.getDoneTasks();
+        assertNotNull(arrayList);
+
+        arrayList = this.mModel.getUndoneTasks();
         assertNotNull(arrayList);
     }
 
     @Override
     public void testAddTask() throws Exception {
-        TaskItem taskItem = addOneTaskForTest();
-        assertTrue(this.mModel.getTasks().contains(taskItem));
+        TaskItem taskItem = addOneTaskForTest(false);
+        assertTrue(this.mModel.getUndoneTasks().contains(taskItem));
+
+        taskItem = addOneTaskForTest(true);
+        assertTrue(this.mModel.getDoneTasks().contains(taskItem));
     }
 
     @Override
     public void testDeleteTask() throws Exception {
-        addOneTaskForTest();
-        ArrayList<TaskItem> arrayList = this.mModel.getTasks();
+        addOneTaskForTest(true);
+        ArrayList<TaskItem> arrayList = this.mModel.getDoneTasks();
         TaskItem taskItem = arrayList.get(0);
-        boolean result = this.mModel.deleteTask(0);
+        boolean result = this.mModel.deleteDoneTask(0);
+        assertTrue(result);
+        assertTrue(arrayList.isEmpty() || arrayList.get(0) != taskItem);
+
+        addOneTaskForTest(false);
+        arrayList = this.mModel.getUndoneTasks();
+        taskItem = arrayList.get(0);
+        result = this.mModel.deleteUndoneTask(0);
         assertTrue(result);
         assertTrue(arrayList.isEmpty() || arrayList.get(0) != taskItem);
     }
 
     @Override
     public void testSetRemain() throws Exception {
-        addOneTaskForTest();
-        TaskItem taskItem = this.mModel.getTasks().get(0);
+        addOneTaskForTest(false);
+        TaskItem taskItem = this.mModel.getUndoneTasks().get(0);
         boolean remain = !taskItem.getRemain();
-        boolean result = this.mModel.setTaskRemain(0, remain);
+        boolean result = this.mModel.setUndoneTaskRemain(0, remain);
         assertTrue(result);
         assertTrue(taskItem.getRemain() == remain);
     }
 
     @Override
     public void testSetRemainTime() throws Exception {
-        addOneTaskForTest();
-        TaskItem taskItem = this.mModel.getTasks().get(0);
+        addOneTaskForTest(false);
+        TaskItem taskItem = this.mModel.getUndoneTasks().get(0);
         String time = taskItem.getRemainTime() + "00";
-        boolean result = this.mModel.setTaskRemainTime(0, time);
+        boolean result = this.mModel.setUndoneTaskRemainTime(0, time);
         assertTrue(result);
         assertEquals(time, taskItem.getRemainTime());
     }
 
-    @Override
-    public void testSetDone() throws Exception {
-        addOneTaskForTest();
-        TaskItem taskItem = this.mModel.getTasks().get(0);
-        boolean done = !taskItem.getDone();
-        boolean result = this.mModel.setTaskDone(0, done);
-        assertTrue(result);
-        assertTrue(taskItem.getDone() == done);
-    }
-
-    @Override
-    public void testSetDoneTime() throws Exception {
-        addOneTaskForTest();
-        TaskItem taskItem = this.mModel.getTasks().get(0);
-        String time = taskItem.getDoneTime() + "00";
-        boolean result = this.mModel.setTaskDoneTime(0, time);
-        assertTrue(result);
-        assertEquals(time, taskItem.getDoneTime());
-    }
-
-    @Override
-    public void testSetEvaluation() throws Exception {
-        addOneTaskForTest();
-        TaskItem taskItem = this.mModel.getTasks().get(0);
-        int evaluation = taskItem.getEvaluation();
-        switch (evaluation){
-            case Util.EVALUATION_BAD:
-                evaluation = Util.EVALUATION_GOOD;
-                break;
-            case Util.EVALUATION_GOOD:
-                evaluation = Util.EVALUATION_BAD;
-                break;
-            case Util.EVALUATION_MID:
-                evaluation = Util.EVALUATION_BAD;
-                break;
-            case Util.EVALUATION_DEFAULT:
-                evaluation = Util.EVALUATION_BAD;
-        }
-        boolean result = this.mModel.setTaskEvaluation(0, evaluation);
-        assertTrue(result);
-        assertEquals(evaluation, taskItem.getEvaluation());
-    }
-
-    private TaskItem addOneTaskForTest( ) throws Exception{
+    private TaskItem addOneTaskForTest(boolean done) throws Exception{
         TaskItem taskItem = new TaskItem(0, this.mModel.getDayType(), "");
+        taskItem.setDone(done);
         boolean result = this.mModel.addTask(taskItem);
         assertTrue(result);
         return taskItem;

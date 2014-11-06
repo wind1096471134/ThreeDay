@@ -5,9 +5,6 @@ import android.test.ActivityInstrumentationTestCase2;
 import com.android.threeday.activity.MainActivity;
 import com.android.threeday.model.testInterface.DayModelInterface;
 
-/**
- * Created by user on 2014/11/2.
- */
 public class TomorrowModelTest extends ActivityInstrumentationTestCase2<MainActivity> implements DayModelInterface {
     private DayModelTest mDayModelTest;
 
@@ -33,12 +30,17 @@ public class TomorrowModelTest extends ActivityInstrumentationTestCase2<MainActi
 
     @Override
     public void testGetDayEvaluation() throws Exception {
-
+        //no need in tomorrow
     }
 
     @Override
     public void testSetDayEvaluation() throws Exception {
+        //no need in tomorrow
+    }
 
+    @Override
+    public void testDoneTask() throws Exception {
+        mDayModelTest.testDoneTask();
     }
 
     @Override
@@ -66,18 +68,4 @@ public class TomorrowModelTest extends ActivityInstrumentationTestCase2<MainActi
         mDayModelTest.testSetRemainTime();
     }
 
-    @Override
-    public void testSetDone() throws Exception {
-        mDayModelTest.testSetDone();
-    }
-
-    @Override
-    public void testSetDoneTime() throws Exception {
-        mDayModelTest.testSetDoneTime();
-    }
-
-    @Override
-    public void testSetEvaluation() throws Exception {
-        mDayModelTest.testSetEvaluation();
-    }
 }

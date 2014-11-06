@@ -1,5 +1,7 @@
 package com.android.threeday.fragment;
 
+import android.content.Context;
+
 import com.android.threeday.model.BaseDayModel;
 import com.android.threeday.model.TodayModel;
 
@@ -13,8 +15,18 @@ public class TodayFragment extends BaseDayFragment {
     }
 
     @Override
-    protected BaseDayModel getModel() {
-        return new TodayModel(getActivity());
+    protected void initView(Context context) {
+
+    }
+
+    @Override
+    protected void setAdapter() {
+
+    }
+
+    @Override
+    protected BaseDayModel getModel(Context context) {
+        return new TodayModel(context);
     }
 
 }

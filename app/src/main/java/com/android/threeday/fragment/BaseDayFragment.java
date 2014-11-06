@@ -1,6 +1,7 @@
 package com.android.threeday.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,20 +16,26 @@ import com.android.threeday.model.BaseDayModel;
  */
 public abstract class BaseDayFragment extends Fragment {
     protected BaseDayModel mModel;
+    protected View mMainLayout;
 
-    public BaseDayFragment( ){
+    protected BaseDayFragment( ){
         super();
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        initData( );
+        initData(activity);
+        initView(activity);
+        setAdapter();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
+        if(this.mMainLayout == null){
+            initView(getActivity());
+        }
+        return this.mMainLayout;
     }
 
     @Override
@@ -46,9 +53,13 @@ public abstract class BaseDayFragment extends Fragment {
         super.onDestroy();
     }
 
-    private void initData( ){
-        this.mModel = getModel();
+    private void initData(Context context){
+        this.mModel = getModel(context);
     }
 
-    protected abstract BaseDayModel getModel( );
+    protected abstract void initView(Context context);
+
+    protected abstract void setAdapter( );
+
+    protected abstract BaseDayModel getModel(Context context);
 }
