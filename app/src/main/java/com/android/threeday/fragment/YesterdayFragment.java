@@ -1,11 +1,12 @@
 package com.android.threeday.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 
+import com.android.threeday.R;
 import com.android.threeday.model.BaseDayModel;
 import com.android.threeday.model.YesterdayModel;
 import com.android.threeday.view.RotePageLayout;
@@ -15,50 +16,11 @@ import com.android.threeday.view.RotePageLayout;
  */
 public class YesterdayFragment extends BaseDayFragment {
     private RotePageLayout mRotePageLayout;
-    private GridView mFrontView;
-    private GridView mBackView;
-    private BaseAdapter mFrontGridAdapter = new BaseAdapter() {
-        @Override
-        public int getCount() {
-            return 0;
-        }
+    private GridView mFrontGridView;
+    private GridView mBackGridView;
 
-        @Override
-        public Object getItem(int position) {
-            return null;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return 0;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            return null;
-        }
-    };
-    private BaseAdapter mBackGridAdapter = new BaseAdapter() {
-        @Override
-        public int getCount() {
-            return 0;
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return null;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return 0;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            return null;
-        }
-    };
+    private BaseAdapter mFrontGridAdapter;
+    private BaseAdapter mBackGridAdapter;
 
     public YesterdayFragment( ){
         super();
@@ -68,14 +30,24 @@ public class YesterdayFragment extends BaseDayFragment {
     protected void initView(Context context) {
         this.mMainLayout = new RotePageLayout(context);
         this.mRotePageLayout = (RotePageLayout) this.mMainLayout;
-        this.mFrontView = new GridView(context);
-        this.mBackView = new GridView(context);
-        this.mRotePageLayout.setPageView(this.mFrontView, this.mBackView);
+        View frontView = ((Activity) context).getLayoutInflater().inflate(R.layout.page_main, null);
+        this.mFrontGridView = (GridView) frontView.findViewById(R.id.gridView);
+        View backView = ((Activity) context).getLayoutInflater().inflate(R.layout.page_main, null);
+        this.mBackGridView = (GridView) backView.findViewById(R.id.gridView);
+        this.mRotePageLayout.setPageView(frontView, backView);
     }
 
     @Override
     protected void setAdapter() {
+        this.mFrontGridAdapter = new TaskGridAdapter(getActivity(), this.mModel.getDoneTasks());
+        this.mBackGridAdapter = new TaskGridAdapter(getActivity(), this.mModel.getUndoneTasks());
 
+        if(this.mFrontGridView != null){
+            this.mFrontGridView.setAdapter(this.mFrontGridAdapter);
+        }
+        if(this.mBackGridView != null){
+            this.mBackGridView.setAdapter(this.mBackGridAdapter);
+        }      
     }
 
     @Override

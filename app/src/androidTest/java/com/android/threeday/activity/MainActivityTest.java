@@ -10,7 +10,6 @@ import com.android.threeday.activity.MainActivity;
  * Created by user on 2014/10/28.
  */
 public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActivity>{
-    private TextView textView;
 
     public MainActivityTest() {
         super(MainActivity.class);
@@ -19,12 +18,6 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        textView = (TextView) getActivity().findViewById(R.id.textView);
-    }
-
-    public void testText( ) throws Exception{
-        String text = getActivity().getString(R.string.hello_world);
-        assertEquals(textView.getText(), text);
     }
 
     @Override

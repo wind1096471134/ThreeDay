@@ -4,6 +4,7 @@ package com.android.threeday.util;
  * Created by user on 2014/10/31.
  */
 public class Util {
+    public static final int DAY_NUM = 3;
     public static final int TYPE_YESTERDAY = 0;
     public static final int TYPE_TODAY = 1;
     public static final int TYPE_TOMORROW = 2;

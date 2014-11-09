@@ -27,4 +27,9 @@ public class DayFragmentTest implements FragmentInterface{
         assertNotNull(this.mBaseDayFragment.mModel);
         assertNotNull(this.mBaseDayFragment.mMainLayout);
     }
+
+    @Override
+    public void testMainLayoutFetchFragment() throws Exception {
+        //assertEquals(this.mBaseDayFragment.mMainLayout, this.mBaseDayFragment.getView());
+    }
 }

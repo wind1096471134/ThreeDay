@@ -5,4 +5,5 @@ package com.android.threeday.fragment;
  */
 public interface FragmentInterface {
     public void testMember( ) throws Exception;
+    public void testMainLayoutFetchFragment( ) throws Exception;
 }

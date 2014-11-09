@@ -5,10 +5,12 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.threeday.activity.FragmentTaskLongClickListener;
 import com.android.threeday.model.BaseDayModel;
 
 /**
@@ -17,6 +19,7 @@ import com.android.threeday.model.BaseDayModel;
 public abstract class BaseDayFragment extends Fragment {
     protected BaseDayModel mModel;
     protected View mMainLayout;
+    protected FragmentTaskLongClickListener mFragmentTaskLongClickListener;
 
     protected BaseDayFragment( ){
         super();
@@ -28,12 +31,16 @@ public abstract class BaseDayFragment extends Fragment {
         initData(activity);
         initView(activity);
         setAdapter();
+        this.mFragmentTaskLongClickListener = (FragmentTaskLongClickListener) activity;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if(this.mMainLayout == null){
             initView(getActivity());
+        }
+        if(this.mMainLayout.getParent() != null){
+            ((ViewGroup)this.mMainLayout.getParent()).removeView(this.mMainLayout);
         }
         return this.mMainLayout;
     }

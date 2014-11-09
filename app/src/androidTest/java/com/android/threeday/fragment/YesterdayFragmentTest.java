@@ -24,13 +24,9 @@ public class YesterdayFragmentTest extends ActivityInstrumentationTestCase2<Main
         super.setUp();
         this.mYesterdayFragment = new YesterdayFragment();
         this.mDayFragmentTest = new DayFragmentTest(getActivity(), this.mYesterdayFragment);
-        Class cl = Class.forName("com.android.threeday.fragment.BaseDayFragment");
-        Method method = cl.getDeclaredMethod("initData", Context.class);
-        method.setAccessible(true);
-        method.invoke(this.mDayFragmentTest.getBaseDayFragment(), getActivity());
-        method = cl.getDeclaredMethod("initView", Context.class);
-        method.setAccessible(true);
-        method.invoke(this.mDayFragmentTest.getBaseDayFragment(), getActivity());
+        this.mYesterdayFragment.onAttach(getActivity());
+        this.mYesterdayFragment.onCreate(null);
+        this.mYesterdayFragment.onCreateView(getActivity().getLayoutInflater(), null, null);
     }
 
     @Override
@@ -42,4 +38,10 @@ public class YesterdayFragmentTest extends ActivityInstrumentationTestCase2<Main
     public void testMember() throws Exception {
         this.mDayFragmentTest.testMember();
     }
+
+    @Override
+    public void testMainLayoutFetchFragment() throws Exception {
+        this.mDayFragmentTest.testMainLayoutFetchFragment();
+    }
+
 }
