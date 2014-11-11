@@ -3,4 +3,8 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="page_side_padding">20dp</dimen>
+    <dimen name="long_click_menu_width">250dp</dimen>
+    <dimen name="long_click_menu_padding">5dp</dimen>
+    <dimen name="long_click_menu_font_size">25sp</dimen>
+    <dimen name="page_add_button_container">60dp</dimen>
 </resources>

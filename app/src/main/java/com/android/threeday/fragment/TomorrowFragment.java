@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.widget.GridView;
+import android.widget.TextView;
 
 import com.android.threeday.R;
 import com.android.threeday.model.BaseDayModel;
@@ -15,25 +16,34 @@ import com.android.threeday.view.RotePageLayout;
  */
 public class TomorrowFragment extends BaseDayFragment {
     private RotePageLayout mRotePageLayout;
-    private GridView mFontGridView;
+    private GridView mFontTaskUndoneGridView;
 
-    private TaskGridAdapter mFontGridAdapter;
+    private View.OnClickListener mAddUndoneTaskClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+        }
+    };
 
     @Override
     protected void initView(Context context) {
         this.mMainLayout = new RotePageLayout(context);
         this.mRotePageLayout = (RotePageLayout) this.mMainLayout;
+
         View frontPageView = ((Activity) context).getLayoutInflater().inflate(R.layout.page_main, null);
-        this.mFontGridView = (GridView) frontPageView.findViewById(R.id.gridView);
+        this.mFontTaskUndoneGridView = (GridView) frontPageView.findViewById(R.id.gridView);
+        frontPageView.findViewById(R.id.addButton).setOnClickListener(this.mAddUndoneTaskClickListener);
+        ((TextView)frontPageView.findViewById(R.id.taskStateTextView)).setText(R.string.task_state_undone);
+
         View backPageView = new View(context);
         this.mRotePageLayout.setPageView(frontPageView, backPageView);
     }
 
     @Override
     protected void setAdapter() {
-        this.mFontGridAdapter = new TaskGridAdapter(getActivity(), this.mModel.getUndoneTasks());
-        if(this.mFontGridView != null){
-            this.mFontGridView.setAdapter(this.mFontGridAdapter);
+        this.mTaskUndoneGridAdapter = new TaskGridAdapter(getActivity(), this.mModel.getUndoneTasks());
+        if(this.mFontTaskUndoneGridView != null){
+            this.mFontTaskUndoneGridView.setAdapter(this.mTaskUndoneGridAdapter);
         }
     }
 

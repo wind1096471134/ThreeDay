@@ -9,15 +9,16 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/page_add_button_container"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="10dp">
+        android:layout_marginBottom="10dp"
+        android:gravity="center">
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="New Text"
-            android:id="@+id/informationTextView"
+            android:id="@+id/taskStateTextView"
             android:layout_weight="1" />
 
         <Button

@@ -4,8 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.GridView;
+import android.widget.TextView;
 
 import com.android.threeday.R;
 import com.android.threeday.model.BaseDayModel;
@@ -17,26 +17,41 @@ import com.android.threeday.view.RotePageLayout;
  */
 public class TodayFragment extends BaseDayFragment {
     private RotePageLayout mRotePageLayout;
-    private GridView mFrontGridView;
-    private GridView mBackGridView;
+    private GridView mFrontTaskUndoneGridView;
+    private GridView mBackTaskDoneGridView;
 
-    private BaseAdapter mFrontGridAdapter;
-    private BaseAdapter mBackGridAdapter;
-
-    private AdapterView.OnItemLongClickListener mFontGridViewLongClickListener = new AdapterView.OnItemLongClickListener() {
+    private AdapterView.OnItemLongClickListener mFontTaskUndoneGridViewLongClickListener = new AdapterView.OnItemLongClickListener() {
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
             if(mFragmentTaskLongClickListener != null){
-                mFragmentTaskLongClickListener.onTaskUndoneLongClick();
+                mTaskLongClickPosition = position;
+                boolean toRemain = mModel.getUndoneTasks().get(position).getRemain();
+                mFragmentTaskLongClickListener.onTaskUndoneLongClick(TodayFragment.this, toRemain);
                 return true;
             }
             return false;
         }
     };
-    private AdapterView.OnItemLongClickListener mBackGridViewLongClickListener = new AdapterView.OnItemLongClickListener() {
+    private AdapterView.OnItemLongClickListener mBackTaskDoneGridViewLongClickListener = new AdapterView.OnItemLongClickListener() {
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            if(mFragmentTaskLongClickListener != null){
+                mTaskLongClickPosition = position;
+                mFragmentTaskLongClickListener.onTaskDoneLongClick(TodayFragment.this);
+            }
             return false;
+        }
+    };
+    private View.OnClickListener mAddUndoneTaskClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+        }
+    };
+    private View.OnClickListener mAddDoneTaskClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
         }
     };
 
@@ -48,26 +63,33 @@ public class TodayFragment extends BaseDayFragment {
     protected void initView(Context context) {
         this.mMainLayout = new RotePageLayout(context);
         this.mRotePageLayout = (RotePageLayout) this.mMainLayout;
+
         View frontPageView = ((Activity) context).getLayoutInflater().inflate(R.layout.page_main, null);
-        this.mFrontGridView = (GridView) frontPageView.findViewById(R.id.gridView);
+        this.mFrontTaskUndoneGridView = (GridView) frontPageView.findViewById(R.id.gridView);
+        frontPageView.findViewById(R.id.addButton).setOnClickListener(this.mAddUndoneTaskClickListener);
+        ((TextView)frontPageView.findViewById(R.id.taskStateTextView)).setText(R.string.task_state_undone);
+
         View backPageView = ((Activity) context).getLayoutInflater().inflate(R.layout.page_main, null);
-        this.mBackGridView = (GridView) backPageView.findViewById(R.id.gridView);
+        this.mBackTaskDoneGridView = (GridView) backPageView.findViewById(R.id.gridView);
+        backPageView.findViewById(R.id.addButton).setOnClickListener(this.mAddDoneTaskClickListener);
+        ((TextView)backPageView.findViewById(R.id.taskStateTextView)).setText(R.string.task_state_done);
+
         this.mRotePageLayout.setPageView(frontPageView, backPageView);
 
-        this.mFrontGridView.setOnItemLongClickListener(this.mFontGridViewLongClickListener);
-        this.mBackGridView.setOnItemLongClickListener(this.mBackGridViewLongClickListener);
+        this.mFrontTaskUndoneGridView.setOnItemLongClickListener(this.mFontTaskUndoneGridViewLongClickListener);
+        this.mBackTaskDoneGridView.setOnItemLongClickListener(this.mBackTaskDoneGridViewLongClickListener);
     }
 
     @Override
     protected void setAdapter() {
-        this.mFrontGridAdapter = new TaskGridAdapter(getActivity(), this.mModel.getDoneTasks());
-        this.mBackGridAdapter = new TaskGridAdapter(getActivity(), this.mModel.getUndoneTasks());
+        this.mTaskDoneGridAdapter = new TaskGridAdapter(getActivity(), this.mModel.getDoneTasks());
+        this.mTaskUndoneGridAdapter = new TaskGridAdapter(getActivity(), this.mModel.getUndoneTasks());
 
-        if(this.mFrontGridView != null){
-            this.mFrontGridView.setAdapter(this.mFrontGridAdapter);
+        if(this.mFrontTaskUndoneGridView != null){
+            this.mFrontTaskUndoneGridView.setAdapter(this.mTaskUndoneGridAdapter);
         }
-        if(this.mBackGridView != null){
-            this.mBackGridView.setAdapter(this.mBackGridAdapter);
+        if(this.mBackTaskDoneGridView != null){
+            this.mBackTaskDoneGridView.setAdapter(this.mTaskDoneGridAdapter);
         }
     }
 

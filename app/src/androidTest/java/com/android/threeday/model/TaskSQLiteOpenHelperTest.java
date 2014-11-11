@@ -3,7 +3,7 @@ package com.android.threeday.model;
 import android.content.ContentValues;
 import android.test.ActivityInstrumentationTestCase2;
 
-import com.android.threeday.activity.MainActivity;
+import com.android.threeday.activity.mainActivity.MainActivity;
 
 
 /**

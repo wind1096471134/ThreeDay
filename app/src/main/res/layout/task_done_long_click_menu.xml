@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/long_click_menu_background"
+    android:visibility="gone">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="@dimen/long_click_menu_width"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="@dimen/long_click_menu_padding"
+        android:background="@color/long_click_menu_foreground"
+        android:id="@+id/menuContainer">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Menu"
+            android:id="@+id/textView"
+            android:textSize="@dimen/long_click_menu_font_size" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="delete"
+            android:id="@+id/deleteButton"
+            android:layout_gravity="center_horizontal"
+            android:textSize="@dimen/long_click_menu_font_size"
+            android:gravity="left"
+            android:onClick="deleteDoneTask" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="unDone"
+            android:id="@+id/unDoneButton"
+            android:layout_gravity="center_horizontal"
+            android:gravity="left"
+            android:textSize="@dimen/long_click_menu_font_size"
+            android:onClick="unDoneTask" />
+    </LinearLayout>
+</FrameLayout>

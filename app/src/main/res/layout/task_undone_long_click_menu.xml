@@ -2,52 +2,69 @@
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
-    android:background="#9000"
+    android:background="@color/long_click_menu_background"
     android:visibility="gone">
 
     <LinearLayout
         android:orientation="vertical"
-        android:layout_width="250dp"
+        android:layout_width="@dimen/long_click_menu_width"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="#FFF"
-        android:padding="5dp">
+        android:background="@color/long_click_menu_foreground"
+        android:padding="@dimen/long_click_menu_padding"
+        android:id="@+id/menuContainer">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="menu"
             android:id="@+id/textView"
-            android:textSize="25sp" />
+            android:textSize="@dimen/long_click_menu_font_size"
+            android:gravity="left" />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="delete"
-            android:id="@+id/deleteButton" />
+            android:id="@+id/deleteButton"
+            android:onClick="deleteUndoneTask"
+            android:textSize="@dimen/long_click_menu_font_size"
+            android:gravity="left" />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="done"
-            android:id="@+id/doneButton" />
+            android:id="@+id/doneButton"
+            android:onClick="doneTask"
+            android:textSize="@dimen/long_click_menu_font_size"
+            android:gravity="left" />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="set remain"
-            android:id="@+id/setRemianButton" />
+            android:id="@+id/setRemianButton"
+            android:onClick="setUndoneTaskRemain"
+            android:textSize="@dimen/long_click_menu_font_size"
+            android:gravity="left" />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="not remain"
-            android:id="@+id/cancelRemainButton" />
+            android:id="@+id/cancelRemainButton"
+            android:onClick="cancelUndoneTaskRemain"
+            android:textSize="@dimen/long_click_menu_font_size"
+            android:gravity="left" />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="change RemainTime"
-            android:id="@+id/changeRemainTimeButton" />
+            android:id="@+id/changeRemainTimeButton"
+            android:onClick="changeUndoneTaskRemainTime"
+            android:textSize="@dimen/long_click_menu_font_size"
+            android:gravity="left" />
     </LinearLayout>
 </FrameLayout>

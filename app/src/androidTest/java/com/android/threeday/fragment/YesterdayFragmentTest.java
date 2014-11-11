@@ -1,12 +1,8 @@
 package com.android.threeday.fragment;
 
-import android.content.Context;
 import android.test.ActivityInstrumentationTestCase2;
 
-import com.android.threeday.activity.MainActivity;
-
-import java.lang.reflect.Method;
-import java.util.Objects;
+import com.android.threeday.activity.mainActivity.MainActivity;
 
 /**
  * Created by user on 2014/11/3.

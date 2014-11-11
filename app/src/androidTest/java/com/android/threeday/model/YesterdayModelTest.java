@@ -2,7 +2,7 @@ package com.android.threeday.model;
 
 import android.test.ActivityInstrumentationTestCase2;
 
-import com.android.threeday.activity.MainActivity;
+import com.android.threeday.activity.mainActivity.MainActivity;
 import com.android.threeday.model.testInterface.DayModelInterface;
 
 

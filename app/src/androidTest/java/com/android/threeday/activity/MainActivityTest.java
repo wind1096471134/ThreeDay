@@ -1,10 +1,8 @@
 package com.android.threeday.activity;
 
 import android.test.ActivityInstrumentationTestCase2;
-import android.widget.TextView;
 
-import com.android.threeday.R;
-import com.android.threeday.activity.MainActivity;
+import com.android.threeday.activity.mainActivity.MainActivity;
 
 /**
  * Created by user on 2014/10/28.

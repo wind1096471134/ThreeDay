@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context=".com.android.threeday.activity.MainActivity">
+        tools:context=".com.android.threeday.activity.mainActivity.MainActivity">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -76,5 +76,12 @@
         layout="@layout/task_undone_long_click_menu"
         android:layout_gravity="center_horizontal"
         android:id="@+id/taskUndoneLongClickMenu" />
+
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        layout="@layout/task_done_long_click_menu"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/taskDoneLongClickMenu" />
 
 </FrameLayout>

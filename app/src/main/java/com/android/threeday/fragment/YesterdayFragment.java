@@ -5,6 +5,7 @@ import android.content.Context;
 import android.view.View;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
+import android.widget.TextView;
 
 import com.android.threeday.R;
 import com.android.threeday.model.BaseDayModel;
@@ -16,11 +17,8 @@ import com.android.threeday.view.RotePageLayout;
  */
 public class YesterdayFragment extends BaseDayFragment {
     private RotePageLayout mRotePageLayout;
-    private GridView mFrontGridView;
-    private GridView mBackGridView;
-
-    private BaseAdapter mFrontGridAdapter;
-    private BaseAdapter mBackGridAdapter;
+    private GridView mFrontTaskDoneGridView;
+    private GridView mBackTaskUndoneGridView;
 
     public YesterdayFragment( ){
         super();
@@ -30,23 +28,31 @@ public class YesterdayFragment extends BaseDayFragment {
     protected void initView(Context context) {
         this.mMainLayout = new RotePageLayout(context);
         this.mRotePageLayout = (RotePageLayout) this.mMainLayout;
+
         View frontView = ((Activity) context).getLayoutInflater().inflate(R.layout.page_main, null);
-        this.mFrontGridView = (GridView) frontView.findViewById(R.id.gridView);
+        this.mFrontTaskDoneGridView = (GridView) frontView.findViewById(R.id.gridView);
+        frontView.findViewById(R.id.addButton).setVisibility(View.GONE);
+        ((TextView)frontView.findViewById(R.id.taskStateTextView)).setText(R.string.task_state_done);
+
         View backView = ((Activity) context).getLayoutInflater().inflate(R.layout.page_main, null);
-        this.mBackGridView = (GridView) backView.findViewById(R.id.gridView);
+        this.mBackTaskUndoneGridView = (GridView) backView.findViewById(R.id.gridView);
+        this.mBackTaskUndoneGridView.setClickable(false);
+        backView.findViewById(R.id.addButton).setVisibility(View.GONE);
+        ((TextView)backView.findViewById(R.id.taskStateTextView)).setText(R.string.task_state_undone);
+
         this.mRotePageLayout.setPageView(frontView, backView);
     }
 
     @Override
     protected void setAdapter() {
-        this.mFrontGridAdapter = new TaskGridAdapter(getActivity(), this.mModel.getDoneTasks());
-        this.mBackGridAdapter = new TaskGridAdapter(getActivity(), this.mModel.getUndoneTasks());
+        this.mTaskDoneGridAdapter = new TaskGridAdapter(getActivity(), this.mModel.getDoneTasks());
+        this.mTaskUndoneGridAdapter = new TaskGridAdapter(getActivity(), this.mModel.getUndoneTasks());
 
-        if(this.mFrontGridView != null){
-            this.mFrontGridView.setAdapter(this.mFrontGridAdapter);
+        if(this.mFrontTaskDoneGridView != null){
+            this.mFrontTaskDoneGridView.setAdapter(this.mTaskDoneGridAdapter);
         }
-        if(this.mBackGridView != null){
-            this.mBackGridView.setAdapter(this.mBackGridAdapter);
+        if(this.mBackTaskUndoneGridView != null){
+            this.mBackTaskUndoneGridView.setAdapter(this.mTaskUndoneGridAdapter);
         }      
     }
 

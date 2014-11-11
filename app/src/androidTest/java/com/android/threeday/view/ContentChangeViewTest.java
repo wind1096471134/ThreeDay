@@ -3,7 +3,7 @@ package com.android.threeday.view;
 import android.test.ActivityInstrumentationTestCase2;
 import android.view.View;
 
-import com.android.threeday.activity.MainActivity;
+import com.android.threeday.activity.mainActivity.MainActivity;
 
 /**
  * Created by user on 2014/11/3.
