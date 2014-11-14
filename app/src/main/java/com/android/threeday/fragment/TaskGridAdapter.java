@@ -2,6 +2,7 @@ package com.android.threeday.fragment;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -17,12 +18,17 @@ import java.util.ArrayList;
  * Created by user on 2014/11/9.
  */
 class TaskGridAdapter extends BaseAdapter {
+    private int mItemPressBackgroundResId = -1;
     private Context mContext;
     private ArrayList<TaskItem> mTaskItems;
 
     TaskGridAdapter(Context context, ArrayList<TaskItem> taskItems){
         this.mContext = context;
         this.mTaskItems = taskItems;
+    }
+
+    public void setItemPressBackgroundResource(int resId){
+        this.mItemPressBackgroundResId = resId;
     }
 
     @Override
@@ -49,17 +55,16 @@ class TaskGridAdapter extends BaseAdapter {
         TextView informationTextView = null;
         TextView evaluationTextView = null;
         if(convertView == null){
-            FrameLayout frameLayout = new FrameLayout(mContext);
-            frameLayout.setBackgroundColor(Color.BLUE);
             ContentChangeView contentChangeView = new ContentChangeView(mContext);
             informationTextView = new TextView(mContext);
             evaluationTextView = new TextView(mContext);
             contentChangeView.setContentView(informationTextView, 1000, evaluationTextView, 500);
-            frameLayout.addView(contentChangeView);
-            convertView = frameLayout;
-            convertView.setTag(contentChangeView);
+            if(this.mItemPressBackgroundResId != -1){
+                contentChangeView.setBackgroundResource(this.mItemPressBackgroundResId);
+            }
+            convertView = contentChangeView;
         }else{
-            ContentChangeView contentChangeView = (ContentChangeView) convertView.getTag();
+            ContentChangeView contentChangeView = (ContentChangeView) convertView;
             informationTextView = (TextView) contentChangeView.getFirstContentView();
             evaluationTextView = (TextView) contentChangeView.getSecondContentView();
         }

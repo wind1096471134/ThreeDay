@@ -71,15 +71,23 @@ public abstract class TaskDbHelper implements DbHelper {
         return updateDatabase(taskItem.getId(), contentValues);
     }
 
-    public int setTaskRemain(long id, boolean toRemain){
-        ContentValues contentValues = new ContentValues(1);
-        contentValues.put(TaskSQLiteOpenHelper.COLUMN_TASK_TO_REMAIN, toRemain);
+    public int setTaskRemain(long id, String remainTime){
+        ContentValues contentValues = new ContentValues(2);
+        contentValues.put(TaskSQLiteOpenHelper.COLUMN_TASK_TO_REMAIN, true);
+        contentValues.put(TaskSQLiteOpenHelper.COLUMN_TASK_REMAIN_TIME, remainTime);
         return updateDatabase(id, contentValues);
     }
 
-    public int setTaskRemainTime(long id, String time){
+    public int cancelTaskRemain(long id){
+        ContentValues contentValues = new ContentValues(2);
+        contentValues.put(TaskSQLiteOpenHelper.COLUMN_TASK_TO_REMAIN, false);
+        contentValues.putNull(TaskSQLiteOpenHelper.COLUMN_TASK_REMAIN_TIME);
+        return updateDatabase(id, contentValues);
+    }
+
+    public int changeTaskRemainTime(long id, String remainTime){
         ContentValues contentValues = new ContentValues(1);
-        contentValues.put(TaskSQLiteOpenHelper.COLUMN_TASK_REMAIN_TIME, time);
+        contentValues.put(TaskSQLiteOpenHelper.COLUMN_TASK_REMAIN_TIME, remainTime);
         return updateDatabase(id, contentValues);
     }
 

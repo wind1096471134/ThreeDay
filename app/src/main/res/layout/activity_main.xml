@@ -14,8 +14,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:paddingBottom="10dp"
-            android:paddingLeft="@dimen/page_side_padding"
-            android:paddingRight="@dimen/page_side_padding"
+            android:paddingLeft="@dimen/page_outside_padding"
+            android:paddingRight="@dimen/page_outside_padding"
             android:paddingTop="20dp">
 
             <TextView
@@ -23,8 +23,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Title"
-                android:textSize="35sp" />
+                android:textSize="@dimen/title_font_size" />
 
             <ImageView
                 android:id="@+id/dayEvaluationImageView"
@@ -40,8 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_gravity="center"
-            android:layout_weight="1"
-            android:background="#ae0" />
+            android:layout_weight="1" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -49,8 +47,8 @@
             android:layout_gravity="center"
             android:orientation="horizontal"
             android:paddingBottom="10dp"
-            android:paddingLeft="@dimen/page_side_padding"
-            android:paddingRight="@dimen/page_side_padding"
+            android:paddingLeft="@dimen/page_outside_padding"
+            android:paddingRight="@dimen/page_outside_padding"
             android:paddingTop="10dp">
 
             <Button
@@ -59,29 +57,21 @@
                 android:layout_height="wrap_content"
                 android:text="setting" />
 
-            <TextView
+            <com.android.threeday.view.RunningTextView
                 android:id="@+id/wordsTextView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="New Text"
-                android:textSize="20sp" />
+                android:textSize="@dimen/words_font_size"
+                android:singleLine="true"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:scrollHorizontally="true"
+                android:scrollbars="none" />
         </LinearLayout>
 
     </LinearLayout>
-
-    <include
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        layout="@layout/task_undone_long_click_menu"
-        android:layout_gravity="center_horizontal"
-        android:id="@+id/taskUndoneLongClickMenu" />
-
-    <include
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        layout="@layout/task_done_long_click_menu"
-        android:layout_gravity="center_horizontal"
-        android:id="@+id/taskDoneLongClickMenu" />
 
 </FrameLayout>

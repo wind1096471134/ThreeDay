@@ -20,6 +20,16 @@ public class Util {
     public static final int REMAIN = 1;
     public static final int UN_REMAIN = 0;
 
+    public static final int REQUEST_ADD_TASK = 0;
+
+    public static final String TASK_INFORMATION = "0";
+    public static final String TASK_REMAIN = "1";
+    public static final String TASK_REMAIN_TIME = "2";
+    public static final String TASK_DONE = "3";
+    public static final String TASK_DONE_TIME = "4";
+    public static final String TASK_EVALUATION = "5";
+    public static final String TASK_DAY_TYPE = "6";
+
     public static final String PREFERENCE_NAME = "ThreeDay";
     public static final String PREFERENCE_KEY_DAY_EVALUATION = "DayEvaluation";
 }

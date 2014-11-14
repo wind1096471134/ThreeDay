@@ -7,5 +7,9 @@
     <string name="title_tomorrow">明天</string>
     <string name="task_state_done">已完成</string>
     <string name="task_state_undone">未完成</string>
+    <string name="words_yesterday">昨天已经过去，今天才是最重要！</string>
+    <string name="words_today">如果今天是你生命中最后一天，你会做什么？</string>
+    <string name="words_tomorrow">明天是多么美好！</string>
+    <string name="task_evaluation_dialog_title">评价一下你自己吧</string>
 
 </resources>

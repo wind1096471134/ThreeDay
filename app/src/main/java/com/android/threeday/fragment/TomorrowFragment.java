@@ -3,12 +3,14 @@ package com.android.threeday.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
 
 import com.android.threeday.R;
 import com.android.threeday.model.BaseDayModel;
 import com.android.threeday.model.TomorrowModel;
+import com.android.threeday.util.Util;
 import com.android.threeday.view.RotePageLayout;
 
 /**
@@ -21,7 +23,19 @@ public class TomorrowFragment extends BaseDayFragment {
     private View.OnClickListener mAddUndoneTaskClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-
+            startAddTaskActivity(getDayType(), false);
+        }
+    };
+    private AdapterView.OnItemLongClickListener mFontTaskUndoneGridViewLongClickListener = new AdapterView.OnItemLongClickListener() {
+        @Override
+        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            if(mFragmentTaskLongClickListener != null){
+                mTaskLongClickPosition = position;
+                boolean toRemain = mModel.getUndoneTasks().get(position).getRemain();
+                mFragmentTaskLongClickListener.onTaskUndoneLongClick(TomorrowFragment.this, toRemain, false);
+                return true;
+            }
+            return false;
         }
     };
 
@@ -32,6 +46,8 @@ public class TomorrowFragment extends BaseDayFragment {
 
         View frontPageView = ((Activity) context).getLayoutInflater().inflate(R.layout.page_main, null);
         this.mFontTaskUndoneGridView = (GridView) frontPageView.findViewById(R.id.gridView);
+        this.mFontTaskUndoneGridView.setOnItemLongClickListener(this.mFontTaskUndoneGridViewLongClickListener);
+
         frontPageView.findViewById(R.id.addButton).setOnClickListener(this.mAddUndoneTaskClickListener);
         ((TextView)frontPageView.findViewById(R.id.taskStateTextView)).setText(R.string.task_state_undone);
 
@@ -42,6 +58,7 @@ public class TomorrowFragment extends BaseDayFragment {
     @Override
     protected void setAdapter() {
         this.mTaskUndoneGridAdapter = new TaskGridAdapter(getActivity(), this.mModel.getUndoneTasks());
+        ((TaskGridAdapter) this.mTaskUndoneGridAdapter).setItemPressBackgroundResource(R.drawable.content_change_view_press);
         if(this.mFontTaskUndoneGridView != null){
             this.mFontTaskUndoneGridView.setAdapter(this.mTaskUndoneGridAdapter);
         }
@@ -51,4 +68,10 @@ public class TomorrowFragment extends BaseDayFragment {
     protected BaseDayModel getModel(Context context) {
         return new TomorrowModel(context);
     }
+
+    @Override
+    protected int getDayType() {
+        return Util.TYPE_TOMORROW;
+    }
+
 }

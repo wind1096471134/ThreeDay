@@ -8,7 +8,8 @@ public interface TaskDbInterface{
     public void testAddTask( ) throws Exception;
     public void testDeleteTask( ) throws Exception;
     public void testSetRemain( ) throws Exception;
-    public void testSetRemainTime( ) throws Exception;
+    public void testChangeRemainTime( ) throws Exception;
+    public void testCancelRemain( ) throws Exception;
     public void testFillTasks( ) throws Exception;
     public void testSetDone( ) throws Exception;
     public void testSetDoneTime( ) throws Exception;

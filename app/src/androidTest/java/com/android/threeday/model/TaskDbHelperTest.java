@@ -121,25 +121,45 @@ public class TaskDbHelperTest implements TaskDbInterface {
         TaskItem taskItem = new TaskItem(0, mTaskDbHelper.getDayType(), null);
         taskItem.setRemain(false);
         long id = mTaskDbHelper.addTask(taskItem);
-        int rows = mTaskDbHelper.setTaskRemain(id, true);
+        int rows = mTaskDbHelper.setTaskRemain(id, "00");
         assertEquals(1, rows);
 
         SQLiteDatabase sqLiteDatabase = TaskSQLiteOpenHelper.getInstance(mContext).getWritableDatabase();
         Cursor cursor = sqLiteDatabase.rawQuery("select " + TaskSQLiteOpenHelper.COLUMN_TASK_TO_REMAIN  +
-                " from " + TaskSQLiteOpenHelper.TABLE_TASK  + " where " + TaskSQLiteOpenHelper.COLUMN_ID
+                "," + TaskSQLiteOpenHelper.COLUMN_TASK_REMAIN_TIME + " from " + TaskSQLiteOpenHelper.TABLE_TASK  + " where " + TaskSQLiteOpenHelper.COLUMN_ID
                 + "=" + id, null);
         cursor.moveToFirst();
         assertTrue(cursor.getInt(0) == Util.REMAIN);
+        assertEquals("00", cursor.getString(1));
     }
 
     @Override
-    public void testSetRemainTime( ) throws Exception{
+    public void testCancelRemain( ) throws Exception{
+        deleteTestData();
+        TaskItem taskItem = new TaskItem(0, mTaskDbHelper.getDayType(), null);
+        taskItem.setRemain(true);
+        taskItem.setRemainTime("00");
+        long id = mTaskDbHelper.addTask(taskItem);
+        int rows = mTaskDbHelper.cancelTaskRemain(id);
+        assertEquals(1, rows);
+
+        SQLiteDatabase sqLiteDatabase = TaskSQLiteOpenHelper.getInstance(mContext).getWritableDatabase();
+        Cursor cursor = sqLiteDatabase.rawQuery("select " + TaskSQLiteOpenHelper.COLUMN_TASK_TO_REMAIN  +
+                "," + TaskSQLiteOpenHelper.COLUMN_TASK_REMAIN_TIME + " from " + TaskSQLiteOpenHelper.TABLE_TASK  + " where " + TaskSQLiteOpenHelper.COLUMN_ID
+                + "=" + id, null);
+        cursor.moveToFirst();
+        assertTrue(cursor.getInt(0) == Util.UN_REMAIN);
+        assertEquals(null, cursor.getString(1));
+    }
+
+    @Override
+    public void testChangeRemainTime( ) throws Exception{
         deleteTestData();
         TaskItem taskItem = new TaskItem(0, mTaskDbHelper.getDayType(), null);
         taskItem.setRemain(true);
         taskItem.setRemainTime("1");
         long id = mTaskDbHelper.addTask(taskItem);
-        int rows = mTaskDbHelper.setTaskRemainTime(id, "2");
+        int rows = mTaskDbHelper.changeTaskRemainTime(id, "2");
         assertEquals(1, rows);
 
         SQLiteDatabase sqLiteDatabase = TaskSQLiteOpenHelper.getInstance(mContext).getWritableDatabase();

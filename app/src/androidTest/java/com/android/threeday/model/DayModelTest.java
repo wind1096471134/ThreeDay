@@ -49,13 +49,27 @@ public class DayModelTest implements DayModelInterface {
     public void testDoneTask() throws Exception {
         addOneTaskForTest(false);
         TaskItem taskItem = this.mModel.getUndoneTasks().get(0);
+        int doneTaskNum = this.mModel.getDoneTasks().size();
         boolean result = this.mModel.doneTask(0, "00", Util.EVALUATION_GOOD);
         assertTrue(result);
-        assertTrue(this.mModel.getDoneTasks().contains(taskItem));
-        assertTrue(!this.mModel.getUndoneTasks().contains(taskItem));
+        assertFalse(this.mModel.getUndoneTasks().contains(taskItem));
+
+        assertEquals(doneTaskNum + 1, this.mModel.getDoneTasks().size());
+        taskItem = this.mModel.getDoneTasks().get(0);
         assertTrue(taskItem.getDone());
         assertEquals("00", taskItem.getDoneTime());
         assertEquals(Util.EVALUATION_GOOD, taskItem.getEvaluation());
+    }
+
+    @Override
+    public void testUndoneTask() throws Exception {
+        addOneTaskForTest(true);
+        TaskItem taskItem = this.mModel.getDoneTasks().get(0);
+        int undoneTaskNum = this.mModel.getUndoneTasks().size();
+        boolean result = this.mModel.undoneTask(0);
+        assertTrue(result);
+        assertFalse(this.mModel.getDoneTasks().contains(taskItem));
+        assertEquals(undoneTaskNum + 1, this.mModel.getUndoneTasks().size());
     }
 
     @Override
@@ -97,18 +111,28 @@ public class DayModelTest implements DayModelInterface {
     public void testSetRemain() throws Exception {
         addOneTaskForTest(false);
         TaskItem taskItem = this.mModel.getUndoneTasks().get(0);
-        boolean remain = !taskItem.getRemain();
-        boolean result = this.mModel.setUndoneTaskRemain(0, remain);
+        boolean result = this.mModel.setUndoneTaskRemain(0, "00");
         assertTrue(result);
-        assertTrue(taskItem.getRemain() == remain);
+        assertTrue(taskItem.getRemain());
+        assertEquals("00", taskItem.getRemainTime());
     }
 
     @Override
-    public void testSetRemainTime() throws Exception {
+    public void testCancelRemain() throws Exception {
+        addOneTaskForTest(false);
+        TaskItem taskItem = this.mModel.getUndoneTasks().get(0);
+        boolean result = this.mModel.cancelUndoneTaskRemain(0);
+        assertTrue(result);
+        assertFalse(taskItem.getRemain());
+        assertEquals(null, taskItem.getRemainTime());
+    }
+
+    @Override
+    public void testChangeRemainTime() throws Exception {
         addOneTaskForTest(false);
         TaskItem taskItem = this.mModel.getUndoneTasks().get(0);
         String time = taskItem.getRemainTime() + "00";
-        boolean result = this.mModel.setUndoneTaskRemainTime(0, time);
+        boolean result = this.mModel.changeUndoneTaskRemainTime(0, time);
         assertTrue(result);
         assertEquals(time, taskItem.getRemainTime());
     }

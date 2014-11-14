@@ -34,6 +34,11 @@ public class TodayModelTest extends ActivityInstrumentationTestCase2<MainActivit
     }
 
     @Override
+    public void testUndoneTask() throws Exception {
+        this.mDayModelTest.testUndoneTask();
+    }
+
+    @Override
     public void testGetDayEvaluation() throws Exception {
         mDayModelTest.testGetDayEvaluation();
     }
@@ -64,8 +69,13 @@ public class TodayModelTest extends ActivityInstrumentationTestCase2<MainActivit
     }
 
     @Override
-    public void testSetRemainTime() throws Exception {
-        mDayModelTest.testSetRemainTime();
+    public void testCancelRemain() throws Exception {
+        this.mDayModelTest.testCancelRemain();
+    }
+
+    @Override
+    public void testChangeRemainTime() throws Exception {
+        this.mDayModelTest.testChangeRemainTime();
     }
 
 }

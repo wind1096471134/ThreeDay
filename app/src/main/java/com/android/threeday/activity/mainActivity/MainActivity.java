@@ -1,10 +1,12 @@
 package com.android.threeday.activity.mainActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 
 import com.android.threeday.R;
@@ -17,7 +19,9 @@ import com.android.threeday.util.Util;
 /**
  * Created by user on 2014/10/29.
  */
-public class MainActivity extends FragmentActivity implements FragmentTaskLongClickListener, TaskOperateListener {
+public class MainActivity extends FragmentActivity implements FragmentTaskLongClickListener, TaskOperateListener
+    , FragmentAttachListener{
+    private boolean mFirstCreate;
     private YesterdayFragment mYesterdayFragment;
     private TodayFragment mTodayFragment;
     private TomorrowFragment mTomorrowFragment;
@@ -58,6 +62,7 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
         @Override
         public void onPageSelected(int position) {
             mMainActivityManager.onPageSelected(position);
+            mMainActivityManager.setDayEvaluation(getCurrentPageDayEvaluation(position));
         }
 
         @Override
@@ -70,10 +75,16 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mMainActivityManager = new MainActivityManager(this);
-        initFragment( );
-        setViewPagerAdapter( );
+        this.mFirstCreate = true;
+        this.mMainActivityManager = new MainActivityManager(this);
+        initFragment();
+        setViewPagerAdapter();
         setViewPagerListener( );
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     private void initFragment( ){
@@ -90,10 +101,32 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
         this.mMainActivityManager.getViewPager().setOnPageChangeListener(this.mOnPageChangeListener);
     }
 
+    private int getCurrentPageDayEvaluation(int position){
+        int evaluation = Util.EVALUATION_DEFAULT;
+        switch (position){
+            case MainActivityManager.YESTERDAY_INDEX:
+                if(this.mYesterdayFragment.isAttach()){
+                    evaluation = this.mYesterdayFragment.getDayEvaluation();
+                }
+                break;
+            case MainActivityManager.TODAY_INDEX:
+                if(this.mTodayFragment.isAttach()){
+                    evaluation = this.mTodayFragment.getDayEvaluation();
+                }
+                break;
+            case MainActivityManager.TOMORROW_INDEX:
+                if(this.mTomorrowFragment.isAttach()){
+                    evaluation = this.mTomorrowFragment.getDayEvaluation();
+                }
+                break;
+        }
+        return evaluation;
+    }
+
     @Override
-    public void onTaskUndoneLongClick(BaseDayFragment baseDayFragment, boolean taskShouldRemain) {
+    public void onTaskUndoneLongClick(BaseDayFragment baseDayFragment, boolean taskShouldRemain, boolean taskCanDone) {
         this.mTaskLongClickFragment = baseDayFragment;
-        this.mMainActivityManager.showUndoneTaskMenu(taskShouldRemain);
+        this.mMainActivityManager.showUndoneTaskMenu(taskShouldRemain, taskCanDone);
     }
 
     @Override
@@ -106,6 +139,7 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
     public void deleteUndoneTask(View view) {
         if(this.mTaskLongClickFragment != null){
             this.mTaskLongClickFragment.deleteUndoneTask(view);
+            this.mMainActivityManager.hideUndoneTaskMenu();
         }
     }
 
@@ -113,7 +147,7 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
     public void doneTask(View view) {
         if(this.mTaskLongClickFragment != null){
             this.mTaskLongClickFragment.doneTask(view);
-            this.mMainActivityManager.hideDoneTaskMenu();
+            this.mMainActivityManager.hideUndoneTaskMenu();
         }
     }
 
@@ -153,7 +187,7 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
     public void undoneTask(View view) {
         if(this.mTaskLongClickFragment != null){
             this.mTaskLongClickFragment.undoneTask(view);
-            this.mMainActivityManager.hideUndoneTaskMenu();
+            this.mMainActivityManager.hideDoneTaskMenu();
         }
     }
 
@@ -163,6 +197,16 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
             this.mMainActivityManager.hideMenu();
         }else{
             super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void onFragmentAttach(Fragment fragment) {
+        if(fragment instanceof TodayFragment){
+            if(this.mFirstCreate){
+                this.mMainActivityManager.getViewPager().setCurrentItem(MainActivityManager.TODAY_INDEX, false);
+                this.mFirstCreate = false;
+            }
         }
     }
 }

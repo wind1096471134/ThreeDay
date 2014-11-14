@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.android.threeday.R;
 import com.android.threeday.model.BaseDayModel;
 import com.android.threeday.model.YesterdayModel;
+import com.android.threeday.util.Util;
 import com.android.threeday.view.RotePageLayout;
 
 /**
@@ -59,6 +60,11 @@ public class YesterdayFragment extends BaseDayFragment {
     @Override
     protected BaseDayModel getModel(Context context) {
         return new YesterdayModel(context);
+    }
+
+    @Override
+    protected int getDayType() {
+        return Util.TYPE_YESTERDAY;
     }
 
 }

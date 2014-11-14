@@ -5,6 +5,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 /**
  * Created by user on 2014/10/30.
@@ -44,6 +45,7 @@ public class ContentChangeView extends FrameLayout{
         this.mSecondContentDuration = secondContentDuration;
         super.addView(this.mFirstContentView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         super.addView(this.mSecondContentView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        this.mSecondContentView.setVisibility(INVISIBLE);
     }
 
     public View getFirstContentView( ){

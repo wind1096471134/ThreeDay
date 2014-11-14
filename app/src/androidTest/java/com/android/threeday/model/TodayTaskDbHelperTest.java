@@ -47,8 +47,13 @@ public class TodayTaskDbHelperTest extends ActivityInstrumentationTestCase2<Main
     }
 
     @Override
-    public void testSetRemainTime() throws Exception {
-        mTaskDbHelperTest.testSetRemainTime();
+    public void testChangeRemainTime() throws Exception {
+        this.mTaskDbHelperTest.testChangeRemainTime();
+    }
+
+    @Override
+    public void testCancelRemain() throws Exception {
+        this.mTaskDbHelperTest.testCancelRemain();
     }
 
     @Override

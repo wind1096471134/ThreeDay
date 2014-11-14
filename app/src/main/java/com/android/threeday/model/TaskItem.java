@@ -1,7 +1,5 @@
 package com.android.threeday.model;
 
-import com.android.threeday.util.Util;
-
 /**
  * Created by user on 2014/10/29.
  */
@@ -32,6 +30,10 @@ public class TaskItem implements Cloneable{
 
     public String getTime( ){
         return this.mTime;
+    }
+
+    public void setTime(String time){
+        this.mTime = time;
     }
 
     public int getDayType( ){

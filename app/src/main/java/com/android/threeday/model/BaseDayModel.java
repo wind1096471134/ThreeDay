@@ -2,10 +2,13 @@ package com.android.threeday.model;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.text.format.Time;
 
 import com.android.threeday.util.Util;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * Created by user on 2014/11/2.
@@ -15,6 +18,19 @@ public abstract class BaseDayModel implements BaseModel{
     protected TaskDbHelper mTaskDbHelper;
     protected ArrayList<TaskItem> mDoneTaskItems;
     protected ArrayList<TaskItem> mUndoneTaskItems;
+    private Comparator<TaskItem> mDoneTasksComparator = new Comparator<TaskItem>() {
+        @Override
+        public int compare(TaskItem lhs, TaskItem rhs) {
+            return -lhs.getDoneTime().compareTo(rhs.getDoneTime());
+        }
+    };
+    private Comparator<TaskItem> mUndoneTasksComparator = new Comparator<TaskItem>() {
+        @Override
+        public int compare(TaskItem lhs, TaskItem rhs) {
+            return -lhs.getTime().compareTo(rhs.getTime());
+        }
+    };
+
     protected int dayType;
     protected int dayEvaluation;
 
@@ -41,6 +57,9 @@ public abstract class BaseDayModel implements BaseModel{
                 this.mUndoneTaskItems.add(taskItem);
             }
         }
+        sortDoneTasks();
+        sortUndoneTask();
+
         SharedPreferences sharedPreferences = this.mContext.getSharedPreferences(Util.PREFERENCE_NAME, Context.MODE_PRIVATE);
         this.dayEvaluation = sharedPreferences.getInt(Util.PREFERENCE_KEY_DAY_EVALUATION, Util.EVALUATION_DEFAULT);
     }
@@ -53,7 +72,7 @@ public abstract class BaseDayModel implements BaseModel{
         return this.mUndoneTaskItems;
     }
 
-    public boolean addTask(TaskItem taskItem){
+    public boolean addTask(TaskItem taskItem) {
         long id = this.mTaskDbHelper.addTask(taskItem);
         if(id != -1){
             taskItem.setId(id);
@@ -89,43 +108,71 @@ public abstract class BaseDayModel implements BaseModel{
         return false;
     }
 
-    public boolean setUndoneTaskRemain(int position, boolean remain){
+    public boolean setUndoneTaskRemain(int position, String remainTime){
         if(position < this.mUndoneTaskItems.size()){
             TaskItem taskItem = this.mUndoneTaskItems.get(position);
             long id = taskItem.getId();
-            if(this.mTaskDbHelper.setTaskRemain(id, remain) == 1){
-                taskItem.setRemain(remain);
+            if(this.mTaskDbHelper.setTaskRemain(id, remainTime) == 1){
+                taskItem.setRemain(true);
+                taskItem.setRemainTime(remainTime);
                 return true;
             }
         }
         return false;
     }
 
-    public boolean setUndoneTaskRemainTime(int position, String time){
+    public boolean cancelUndoneTaskRemain(int position){
         if(position < this.mUndoneTaskItems.size()){
             TaskItem taskItem = this.mUndoneTaskItems.get(position);
             long id = taskItem.getId();
-            if(this.mTaskDbHelper.setTaskRemainTime(id, time) == 1){
-                taskItem.setRemainTime(time);
+            if(this.mTaskDbHelper.cancelTaskRemain(id) == 1){
+                taskItem.setRemain(false);
                 return true;
             }
         }
         return false;
     }
 
-    public boolean doneTask(int position, String doneTime, int evaluation){
+    public boolean changeUndoneTaskRemainTime(int position, String remainTime){
         if(position < this.mUndoneTaskItems.size()){
             TaskItem taskItem = this.mUndoneTaskItems.get(position);
-            taskItem.setDone(true);
-            taskItem.setDoneTime(doneTime);
-            taskItem.setEvaluation(evaluation);
-            if(this.mTaskDbHelper.updateTask(taskItem) == 1){
+            long id = taskItem.getId();
+            if(this.mTaskDbHelper.changeTaskRemainTime(id, remainTime) == 1){
+                taskItem.setRemainTime(remainTime);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean doneTask(int position, String doneTime, int evaluation) throws CloneNotSupportedException {
+        if(position < this.mUndoneTaskItems.size()){
+            TaskItem taskItem = this.mUndoneTaskItems.get(position);
+            TaskItem tempTaskItem = (TaskItem) taskItem.clone();
+            tempTaskItem.setDone(true);
+            tempTaskItem.setDoneTime(doneTime);
+            tempTaskItem.setEvaluation(evaluation);
+            if(this.mTaskDbHelper.updateTask(tempTaskItem) == 1){
                 this.mUndoneTaskItems.remove(position);
-                this.mDoneTaskItems.add(0, taskItem);
+                this.mDoneTaskItems.add(0, tempTaskItem);
                 return true;
-            }else{
-                taskItem.setDone(false);
-                taskItem.setEvaluation(Util.EVALUATION_DEFAULT);
+            }
+        }
+        return false;
+    }
+
+    public boolean undoneTask(int position) throws CloneNotSupportedException {
+        if(position < this.mDoneTaskItems.size()){
+            TaskItem taskItem = this.mDoneTaskItems.get(position);
+            TaskItem tempTaskItem = (TaskItem) taskItem.clone();
+            tempTaskItem.setDone(false);
+            Time time = new Time();
+            time.setToNow();
+            tempTaskItem.setTime(time.format2445());
+            if(this.mTaskDbHelper.updateTask(tempTaskItem) == 1){
+                this.mDoneTaskItems.remove(position);
+                this.mUndoneTaskItems.add(0, tempTaskItem);
+                return true;
             }
         }
         return false;
@@ -137,5 +184,13 @@ public abstract class BaseDayModel implements BaseModel{
 
     public int getDayEvaluation( ){
         return this.dayEvaluation;
+    }
+
+    public void sortDoneTasks( ){
+        Collections.sort(this.mDoneTaskItems, this.mDoneTasksComparator);
+    }
+
+    public void sortUndoneTask( ){
+        Collections.sort(this.mUndoneTaskItems, this.mUndoneTasksComparator);
     }
 }
