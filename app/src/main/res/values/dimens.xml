@@ -12,7 +12,10 @@
     <dimen name="task_state_font_size">25sp</dimen>
     <dimen name="page_inside_padding">10dp</dimen>
     <dimen name="grid_item_space">10dp</dimen>
+    <dimen name="grid_item_width">120dp</dimen>
+    <dimen name="grid_item_height">120dp</dimen>
+    <dimen name="content_change_view_font_size">25sp</dimen>
     <dimen name="task_evaluation_dialog_title_size">30sp</dimen>
     <dimen name="task_evaluation_dialog_font_size">25sp</dimen>
-     <dimen name="task_evaluation_dialog_item_padding">10dp</dimen>
+    <dimen name="task_evaluation_dialog_item_padding">10dp</dimen>
 </resources>

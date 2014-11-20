@@ -1,5 +1,6 @@
 package com.android.threeday.activity.mainActivity;
 
+import android.os.HandlerThread;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.widget.ImageView;
@@ -13,7 +14,8 @@ import com.android.threeday.util.Util;
 /**
  * Created by user on 2014/11/11.
  */
-class MainActivityManager {
+public class MainActivityManager {
+    static final int DAY_NUM = 3;
     static final int YESTERDAY_INDEX = 0;
     static final int TODAY_INDEX = 1;
     static final int TOMORROW_INDEX = 2;
@@ -25,10 +27,12 @@ class MainActivityManager {
     private TextView mTitleTextView;
     private TextView mWordsTextView;
     private ImageView mDayEvaluationImageView;
+    private static final HandlerThread mHandlerThread = new HandlerThread("HandlerThread");
 
     MainActivityManager(FragmentActivity activity){
         this.mActivity = activity;
         initView( );
+        mHandlerThread.start();
     }
 
     private void initView( ){
@@ -40,6 +44,10 @@ class MainActivityManager {
         this.mTitleTextView = (TextView) mActivity.findViewById(R.id.titleTextView);
         this.mWordsTextView = (TextView) mActivity.findViewById(R.id.wordsTextView);
         this.mDayEvaluationImageView = (ImageView) mActivity.findViewById(R.id.dayEvaluationImageView);
+    }
+
+    public static HandlerThread getHandlerThread( ){
+        return mHandlerThread;
     }
 
     ViewPager getViewPager( ){
@@ -114,5 +122,9 @@ class MainActivityManager {
                 //TODO
                 break;
         }
+    }
+
+    void onDestroy( ){
+        this.mHandlerThread.quit();
     }
 }

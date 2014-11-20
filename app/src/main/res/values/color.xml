@@ -4,5 +4,6 @@
     <color name="long_click_menu_background">#9000</color>
     <color name="long_click_menu_foreground">#FFF</color>
     <color name="content_change_view_press_color">#4eee</color>
+    <color name="grid_item_font_color">#FFF</color>
 
 </resources>

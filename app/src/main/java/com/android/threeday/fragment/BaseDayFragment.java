@@ -8,11 +8,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.format.Time;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -20,6 +18,7 @@ import com.android.threeday.activity.AddTaskActivity;
 import com.android.threeday.activity.mainActivity.FragmentAttachListener;
 import com.android.threeday.activity.mainActivity.FragmentTaskLongClickListener;
 import com.android.threeday.activity.mainActivity.TaskOperateListener;
+import com.android.threeday.fragment.GridAdapter.BaseTaskGridAdapter;
 import com.android.threeday.fragment.dialogFragment.TaskEvaluationFragment;
 import com.android.threeday.fragment.dialogFragment.TimePickerFragment;
 import com.android.threeday.model.BaseDayModel;
@@ -35,8 +34,8 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
     protected FragmentTaskLongClickListener mFragmentTaskLongClickListener;
     protected FragmentAttachListener mFragmentAttachListener;
 
-    protected BaseAdapter mTaskDoneGridAdapter;
-    protected BaseAdapter mTaskUndoneGridAdapter;
+    protected BaseTaskGridAdapter mTaskDoneGridAdapter;
+    protected BaseTaskGridAdapter mTaskUndoneGridAdapter;
 
     protected int mTaskLongClickPosition;
     protected boolean mAttach;
@@ -64,6 +63,11 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
     }
 
     @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if(this.mMainLayout == null){
             initView(getActivity());
@@ -84,11 +88,6 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
         super.onPause();
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
     private void initData(Context context){
         this.mModel = getModel(context);
     }
@@ -101,11 +100,15 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
 
     protected abstract int getDayType( );
 
+    protected abstract boolean isCurrentDonePage( );
+
+    protected abstract boolean isCurrentUndonePage( );
+
     @Override
     public void deleteUndoneTask(View view) {
         if(this.mModel.deleteUndoneTask(this.mTaskLongClickPosition)){
             if(this.mTaskUndoneGridAdapter != null){
-                this.mTaskUndoneGridAdapter.notifyDataSetChanged();
+                this.mTaskUndoneGridAdapter.notifyDataSetChanged(true);
                 Toast.makeText(getActivity(),"success", Toast.LENGTH_SHORT).show();
             }
         }
@@ -130,10 +133,10 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
         try {
             if(this.mModel.doneTask(this.mTaskLongClickPosition, time.format2445(), evaluation)){
                 if(this.mTaskDoneGridAdapter != null){
-                    this.mTaskDoneGridAdapter.notifyDataSetChanged();
+                    this.mTaskDoneGridAdapter.notifyDataSetChanged(false);
                 }
                 if(this.mTaskUndoneGridAdapter != null){
-                    this.mTaskUndoneGridAdapter.notifyDataSetChanged();
+                    this.mTaskUndoneGridAdapter.notifyDataSetChanged(true);
                 }
                 Toast.makeText(getActivity(),"success " + time.format2445(), Toast.LENGTH_SHORT).show();
             }
@@ -162,7 +165,7 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
         time.hour = hour;
         time.minute = minute;
         if(this.mModel.setUndoneTaskRemain(this.mTaskLongClickPosition, time.format2445())){
-            this.mTaskUndoneGridAdapter.notifyDataSetChanged();
+            this.mTaskUndoneGridAdapter.notifyDataSetChanged(true);
             Toast.makeText(getActivity(),"success " + time.format("YYYYMMDD HHMMSS"), Toast.LENGTH_SHORT).show();
         }
     }
@@ -171,7 +174,7 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
     public void cancelUndoneTaskRemain(View view) {
         if(this.mModel.cancelUndoneTaskRemain(this.mTaskLongClickPosition)){
             if(this.mTaskUndoneGridAdapter != null){
-                this.mTaskUndoneGridAdapter.notifyDataSetChanged();
+                this.mTaskUndoneGridAdapter.notifyDataSetChanged(true);
                 Toast.makeText(getActivity(),"success", Toast.LENGTH_SHORT).show();
             }
         }
@@ -196,7 +199,7 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
         time.hour = hour;
         time.minute = minute;
         if(this.mModel.changeUndoneTaskRemainTime(this.mTaskLongClickPosition, time.format2445())){
-            this.mTaskUndoneGridAdapter.notifyDataSetChanged();
+            this.mTaskUndoneGridAdapter.notifyDataSetChanged(true);
             Toast.makeText(getActivity(),"success " + time.format("YYYYMMDD HHMMSS"), Toast.LENGTH_SHORT).show();
         }
     }
@@ -205,7 +208,7 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
     public void deleteDoneTask(View view) {
         if(this.mModel.deleteDoneTask(this.mTaskLongClickPosition)){
             if(this.mTaskDoneGridAdapter != null){
-                this.mTaskDoneGridAdapter.notifyDataSetChanged();
+                this.mTaskDoneGridAdapter.notifyDataSetChanged(true);
                 Toast.makeText(getActivity(),"success", Toast.LENGTH_SHORT).show();
             }
         }
@@ -216,10 +219,10 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
         try {
             if(this.mModel.undoneTask(this.mTaskLongClickPosition)){
                 if(this.mTaskDoneGridAdapter != null){
-                    this.mTaskDoneGridAdapter.notifyDataSetChanged();
+                    this.mTaskDoneGridAdapter.notifyDataSetChanged(true);
                 }
                 if(this.mTaskUndoneGridAdapter != null){
-                    this.mTaskUndoneGridAdapter.notifyDataSetChanged();
+                    this.mTaskUndoneGridAdapter.notifyDataSetChanged(false);
                 }
                 Toast.makeText(getActivity(),"success", Toast.LENGTH_SHORT).show();
             }
@@ -243,11 +246,11 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
         if(result){
             if(taskItem.getDone()){
                 if(this.mTaskDoneGridAdapter != null){
-                    this.mTaskDoneGridAdapter.notifyDataSetChanged();
+                    this.mTaskDoneGridAdapter.notifyDataSetChanged(true);
                 }
             }else{
                 if(this.mTaskUndoneGridAdapter != null) {
-                    this.mTaskUndoneGridAdapter.notifyDataSetChanged();
+                    this.mTaskUndoneGridAdapter.notifyDataSetChanged(true);
                 }
             }
         }
@@ -278,4 +281,35 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
         startActivityForResult(intent, Util.REQUEST_ADD_TASK);
     }
 
+    public void onPageSelected( ){
+        resume();
+    }
+
+    public void onPagePass( ){
+        pause();
+    }
+
+    public void pause( ){
+        if(isCurrentDonePage()){
+            if(this.mTaskDoneGridAdapter != null){
+                this.mTaskDoneGridAdapter.onPause();
+            }
+        }else if(isCurrentUndonePage()){
+            if(this.mTaskUndoneGridAdapter != null){
+                this.mTaskUndoneGridAdapter.onPause();
+            }
+        }
+    }
+
+    public void resume( ){
+        if(isCurrentDonePage()){
+            if(this.mTaskDoneGridAdapter != null){
+                this.mTaskDoneGridAdapter.onResume();
+            }
+        }else if(isCurrentUndonePage()){
+            if(this.mTaskUndoneGridAdapter != null){
+                this.mTaskUndoneGridAdapter.onResume();
+            }
+        }
+    }
 }

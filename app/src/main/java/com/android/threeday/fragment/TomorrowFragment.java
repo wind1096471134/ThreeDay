@@ -8,6 +8,8 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 import com.android.threeday.R;
+import com.android.threeday.activity.mainActivity.MainActivityManager;
+import com.android.threeday.fragment.GridAdapter.TaskUnFinishGridAdapter;
 import com.android.threeday.model.BaseDayModel;
 import com.android.threeday.model.TomorrowModel;
 import com.android.threeday.util.Util;
@@ -57,8 +59,12 @@ public class TomorrowFragment extends BaseDayFragment {
 
     @Override
     protected void setAdapter() {
-        this.mTaskUndoneGridAdapter = new TaskGridAdapter(getActivity(), this.mModel.getUndoneTasks());
-        ((TaskGridAdapter) this.mTaskUndoneGridAdapter).setItemPressBackgroundResource(R.drawable.content_change_view_press);
+        int itemHeight = getActivity().getResources().getDimensionPixelSize(R.dimen.grid_item_height);
+
+        this.mTaskUndoneGridAdapter = new TaskUnFinishGridAdapter(getActivity(), this.mModel.getUndoneTasks());
+        this.mTaskUndoneGridAdapter.setItemPressBackgroundResource(R.drawable.content_change_view_press);
+        this.mTaskUndoneGridAdapter.setGridItemHeight(itemHeight);
+        this.mTaskUndoneGridAdapter.setLooper(MainActivityManager.getHandlerThread().getLooper());
         if(this.mFontTaskUndoneGridView != null){
             this.mFontTaskUndoneGridView.setAdapter(this.mTaskUndoneGridAdapter);
         }
@@ -72,6 +78,16 @@ public class TomorrowFragment extends BaseDayFragment {
     @Override
     protected int getDayType() {
         return Util.TYPE_TOMORROW;
+    }
+
+    @Override
+    protected boolean isCurrentDonePage() {
+        return false;
+    }
+
+    @Override
+    protected boolean isCurrentUndonePage() {
+        return this.mRotePageLayout.getPageState() == RotePageLayout.PAGE_STATE_FRONT;
     }
 
 }

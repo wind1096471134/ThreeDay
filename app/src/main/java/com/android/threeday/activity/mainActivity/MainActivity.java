@@ -1,12 +1,10 @@
 package com.android.threeday.activity.mainActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.View;
 
 import com.android.threeday.R;
@@ -22,35 +20,22 @@ import com.android.threeday.util.Util;
 public class MainActivity extends FragmentActivity implements FragmentTaskLongClickListener, TaskOperateListener
     , FragmentAttachListener{
     private boolean mFirstCreate;
-    private YesterdayFragment mYesterdayFragment;
-    private TodayFragment mTodayFragment;
-    private TomorrowFragment mTomorrowFragment;
-    private BaseDayFragment mTaskLongClickFragment;
+    private int mCurrentPageIndex = -1;
 
+    private BaseDayFragment mTaskLongClickFragment;
+    private BaseDayFragment[] mFragments;
     private MainActivityManager mMainActivityManager;
 
     private FragmentPagerAdapter mFragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
 
         @Override
         public Fragment getItem(int position) {
-            Fragment fragment = null;
-            switch (position){
-                case MainActivityManager.YESTERDAY_INDEX:
-                    fragment = mYesterdayFragment;
-                    break;
-                case MainActivityManager.TODAY_INDEX:
-                    fragment = mTodayFragment;
-                    break;
-                case MainActivityManager.TOMORROW_INDEX:
-                    fragment = mTomorrowFragment;
-                    break;
-            }
-            return fragment;
+            return mFragments[position];
         }
 
         @Override
         public int getCount() {
-            return Util.DAY_NUM;
+            return MainActivityManager.DAY_NUM;
         }
     };
     private ViewPager.OnPageChangeListener mOnPageChangeListener = new ViewPager.OnPageChangeListener() {
@@ -61,8 +46,12 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
 
         @Override
         public void onPageSelected(int position) {
-            mMainActivityManager.onPageSelected(position);
-            mMainActivityManager.setDayEvaluation(getCurrentPageDayEvaluation(position));
+            if(mCurrentPageIndex != position){
+                mMainActivityManager.onPageSelected(position);
+                mMainActivityManager.setDayEvaluation(getCurrentPageDayEvaluation(position));
+                onFragmentSelected(position);
+                mCurrentPageIndex = position;
+            }
         }
 
         @Override
@@ -85,12 +74,29 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
     @Override
     protected void onResume() {
         super.onResume();
+        if(this.mCurrentPageIndex != -1){
+            this.mFragments[this.mCurrentPageIndex].resume();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        this.mFragments[this.mMainActivityManager.getViewPager().getCurrentItem()].pause();
     }
 
     private void initFragment( ){
-        this.mYesterdayFragment = new YesterdayFragment();
-        this.mTodayFragment = new TodayFragment();
-        this.mTomorrowFragment = new TomorrowFragment();
+        this.mFragments = new BaseDayFragment[MainActivityManager.DAY_NUM];
+        this.mFragments[MainActivityManager.YESTERDAY_INDEX] = new YesterdayFragment();
+        this.mFragments[MainActivityManager.TODAY_INDEX] = new TodayFragment();
+        this.mFragments[MainActivityManager.TOMORROW_INDEX] = new TomorrowFragment();
+    }
+
+    private void onFragmentSelected(int position){
+        this.mFragments[position].onPageSelected();
+        if(this.mCurrentPageIndex != -1){
+            this.mFragments[this.mCurrentPageIndex].onPagePass();
+        }
     }
 
     private void setViewPagerAdapter( ){
@@ -103,22 +109,8 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
 
     private int getCurrentPageDayEvaluation(int position){
         int evaluation = Util.EVALUATION_DEFAULT;
-        switch (position){
-            case MainActivityManager.YESTERDAY_INDEX:
-                if(this.mYesterdayFragment.isAttach()){
-                    evaluation = this.mYesterdayFragment.getDayEvaluation();
-                }
-                break;
-            case MainActivityManager.TODAY_INDEX:
-                if(this.mTodayFragment.isAttach()){
-                    evaluation = this.mTodayFragment.getDayEvaluation();
-                }
-                break;
-            case MainActivityManager.TOMORROW_INDEX:
-                if(this.mTomorrowFragment.isAttach()){
-                    evaluation = this.mTomorrowFragment.getDayEvaluation();
-                }
-                break;
+        if(this.mFragments[position].isAttach()){
+            evaluation = this.mFragments[position].getDayEvaluation();
         }
         return evaluation;
     }
@@ -208,5 +200,12 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
                 this.mFirstCreate = false;
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        this.mMainActivityManager.onDestroy();
+        System.exit(0);
     }
 }

@@ -11,5 +11,12 @@
     <string name="words_today">如果今天是你生命中最后一天，你会做什么？</string>
     <string name="words_tomorrow">明天是多么美好！</string>
     <string name="task_evaluation_dialog_title">评价一下你自己吧</string>
+    <string name="remain_to_do">记得完成哦</string>
+    <string name="about">约</string>
+    <string name="hour">小时</string>
+    <string name="minute">分钟</string>
+    <string name="second">秒</string>
+    <string name="after">后哦</string>
+    <string name="now_to_do">现在就要完成哦</string>
 
 </resources>
