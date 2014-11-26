@@ -2,11 +2,13 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="page_outside_padding">20dp</dimen>
+    <dimen name="page_outside_padding">10dp</dimen>
     <dimen name="long_click_menu_width">250dp</dimen>
     <dimen name="long_click_menu_padding">5dp</dimen>
     <dimen name="long_click_menu_font_size">25sp</dimen>
-    <dimen name="page_add_button_container">60dp</dimen>
+    <dimen name="page_add_button_container_height">60dp</dimen>
+    <dimen name="page_bottom_space_height">30dp</dimen>
+    <dimen name="page_corner">10dp</dimen>
     <dimen name="title_font_size">35sp</dimen>
     <dimen name="words_font_size">20sp</dimen>
     <dimen name="task_state_font_size">25sp</dimen>

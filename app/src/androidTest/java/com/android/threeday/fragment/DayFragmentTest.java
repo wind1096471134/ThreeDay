@@ -2,8 +2,6 @@ package com.android.threeday.fragment;
 
 import android.content.Context;
 
-import com.android.threeday.view.RotePageLayout;
-
 import static junit.framework.Assert.*;
 
 /**

@@ -9,8 +9,8 @@
         android:layout_height="match_parent"
         android:id="@+id/informationTextView"
         android:layout_gravity="center"
-        android:gravity="center"
         android:textSize="@dimen/content_change_view_font_size"
         android:textColor="@color/grid_item_font_color"
-        android:ellipsize="end" />
+        android:ellipsize="end"
+        android:gravity="center" />
 </FrameLayout>

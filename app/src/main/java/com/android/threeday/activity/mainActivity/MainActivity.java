@@ -18,9 +18,11 @@ import com.android.threeday.util.Util;
  * Created by user on 2014/10/29.
  */
 public class MainActivity extends FragmentActivity implements FragmentTaskLongClickListener, TaskOperateListener
-    , FragmentAttachListener{
+    , FragmentStateListener {
     private boolean mFirstCreate;
     private int mCurrentPageIndex = -1;
+    private int mFragmentMainViewWidth;
+    private int mFragmentMainViewHeight;
 
     private BaseDayFragment mTaskLongClickFragment;
     private BaseDayFragment[] mFragments;
@@ -203,9 +205,30 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
     }
 
     @Override
+    public void onFragmentViewCreate(Fragment fragment) {
+        if(this.mFragmentMainViewWidth != 0 && this.mFragmentMainViewHeight != 0){
+            ((BaseDayFragment) fragment).initMainViewHeightIfNeeded(this.mFragmentMainViewWidth, this.mFragmentMainViewHeight);
+        }
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         this.mMainActivityManager.onDestroy();
         System.exit(0);
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        for(BaseDayFragment baseDayFragment : this.mFragments){
+            if(baseDayFragment.isAttach()){
+                if(baseDayFragment.getMainViewWidth() != 0 && baseDayFragment.getMainViewHeight() != 0){
+                    this.mFragmentMainViewWidth = baseDayFragment.getMainViewWidth();
+                    this.mFragmentMainViewHeight = baseDayFragment.getMainViewHeight();
+                    baseDayFragment.initMainViewHeightIfNeeded(this.mFragmentMainViewWidth, this.mFragmentMainViewHeight);
+                }
+            }
+        }
     }
 }

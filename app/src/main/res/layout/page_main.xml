@@ -8,18 +8,20 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#ada"
+        android:background="@drawable/page_background_gray"
         android:orientation="vertical"
-        android:padding="@dimen/page_inside_padding">
+        android:paddingLeft="@dimen/page_inside_padding"
+        android:paddingRight="@dimen/page_inside_padding"
+        android:id="@+id/pageContainer">
 
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/page_add_button_container"
+            android:layout_height="@dimen/page_add_button_container_height"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="10dp"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="5dp">
 
             <TextView
                 android:id="@+id/taskStateTextView"
@@ -38,7 +40,7 @@
         <GridView
             android:id="@+id/gridView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             android:layout_gravity="center_horizontal"
             android:clickable="false"
             android:columnWidth="@dimen/grid_item_width"
@@ -52,6 +54,12 @@
             android:requiresFadingEdge="none"
             android:scrollbarAlwaysDrawHorizontalTrack="false"
             android:scrollbars="none"
-            android:overScrollMode="never" />
+            android:overScrollMode="never"
+            android:layout_weight="1" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/page_bottom_space_height"
+            android:layout_gravity="center_horizontal"></FrameLayout>
     </LinearLayout>
 </FrameLayout>

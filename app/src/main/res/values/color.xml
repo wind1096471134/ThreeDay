@@ -5,5 +5,7 @@
     <color name="long_click_menu_foreground">#FFF</color>
     <color name="content_change_view_press_color">#4eee</color>
     <color name="grid_item_font_color">#FFF</color>
+    <color name="page_background_green">#cdc</color>
+    <color name="back_background_blue">#aaf</color>
 
 </resources>

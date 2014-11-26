@@ -2,6 +2,7 @@ package com.android.threeday.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.TextView;
@@ -12,15 +13,34 @@ import com.android.threeday.fragment.GridAdapter.TaskFinishGridAdapter;
 import com.android.threeday.model.BaseDayModel;
 import com.android.threeday.model.YesterdayModel;
 import com.android.threeday.util.Util;
-import com.android.threeday.view.RotePageLayout;
+import com.android.threeday.view.PageSweepLayout;
 
 /**
  * Created by user on 2014/10/29.
  */
 public class YesterdayFragment extends BaseDayFragment {
-    private RotePageLayout mRotePageLayout;
+    private PageSweepLayout mPageSweepLayout;
     private GridView mFrontTaskDoneGridView;
     private GridView mBackTaskUndoneGridView;
+    private PageSweepLayout.PageSweepListener mPageSweepListener = new PageSweepLayout.PageSweepListener() {
+        @Override
+        public void onPageSweepStart(int direction) {
+            if(isCurrentUndonePage()){
+                mTaskUndoneGridAdapter.onPause();
+            }else if(isCurrentDonePage()){
+                mTaskDoneGridAdapter.onPause();
+            }
+        }
+
+        @Override
+        public void onPageSelected(int pageIndex) {
+            if(isCurrentUndonePage()){
+                mTaskUndoneGridAdapter.onResume();
+            }else if(isCurrentDonePage()){
+                mTaskDoneGridAdapter.onResume();
+            }
+        }
+    };
 
     public YesterdayFragment( ){
         super();
@@ -28,21 +48,27 @@ public class YesterdayFragment extends BaseDayFragment {
 
     @Override
     protected void initView(Context context) {
-        this.mMainLayout = new RotePageLayout(context);
-        this.mRotePageLayout = (RotePageLayout) this.mMainLayout;
+        this.mMainLayout = new PageSweepLayout(context);
+        this.mPageSweepLayout = (PageSweepLayout) this.mMainLayout;
 
         View frontView = ((Activity) context).getLayoutInflater().inflate(R.layout.page_main, null);
         this.mFrontTaskDoneGridView = (GridView) frontView.findViewById(R.id.gridView);
         frontView.findViewById(R.id.addButton).setVisibility(View.GONE);
         ((TextView)frontView.findViewById(R.id.taskStateTextView)).setText(R.string.task_state_done);
+        frontView.findViewById(R.id.pageContainer).setBackgroundResource(R.drawable.page_background_gray);
 
         View backView = ((Activity) context).getLayoutInflater().inflate(R.layout.page_main, null);
         this.mBackTaskUndoneGridView = (GridView) backView.findViewById(R.id.gridView);
         this.mBackTaskUndoneGridView.setClickable(false);
         backView.findViewById(R.id.addButton).setVisibility(View.GONE);
         ((TextView)backView.findViewById(R.id.taskStateTextView)).setText(R.string.task_state_undone);
+        backView.findViewById(R.id.pageContainer).setBackgroundResource(R.drawable.page_background_blue);
 
-        this.mRotePageLayout.setPageView(frontView, backView);
+        this.mPageSweepLayout.setPageView(frontView, backView);
+        DisplayMetrics metrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        this.mPageSweepLayout.setDensity(metrics.density);
+        this.mPageSweepLayout.setPageSweepListener(this.mPageSweepListener);
     }
 
     @Override
@@ -76,12 +102,17 @@ public class YesterdayFragment extends BaseDayFragment {
 
     @Override
     protected boolean isCurrentDonePage() {
-        return this.mRotePageLayout.getPageState() == RotePageLayout.PAGE_STATE_FRONT;
+        return this.mPageSweepLayout.getCurrentPage() == PageSweepLayout.PAGE_FIRST;
     }
 
     @Override
     protected boolean isCurrentUndonePage() {
-        return this.mRotePageLayout.getPageState() == RotePageLayout.PAGE_STATE_BACK;
+        return this.mPageSweepLayout.getCurrentPage() == PageSweepLayout.PAGE_SECOND;
     }
 
+    @Override
+    public void initMainViewHeightIfNeeded(int width, int height) {
+        super.initMainViewHeightIfNeeded(width, height);
+        this.mPageSweepLayout.initViewSize(width, height);
+    }
 }

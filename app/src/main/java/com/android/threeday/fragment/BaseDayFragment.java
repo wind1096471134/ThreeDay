@@ -15,7 +15,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.android.threeday.activity.AddTaskActivity;
-import com.android.threeday.activity.mainActivity.FragmentAttachListener;
+import com.android.threeday.activity.mainActivity.FragmentStateListener;
 import com.android.threeday.activity.mainActivity.FragmentTaskLongClickListener;
 import com.android.threeday.activity.mainActivity.TaskOperateListener;
 import com.android.threeday.fragment.GridAdapter.BaseTaskGridAdapter;
@@ -32,11 +32,13 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
     protected BaseDayModel mModel;
     protected View mMainLayout;
     protected FragmentTaskLongClickListener mFragmentTaskLongClickListener;
-    protected FragmentAttachListener mFragmentAttachListener;
+    protected FragmentStateListener mFragmentStateListener;
 
     protected BaseTaskGridAdapter mTaskDoneGridAdapter;
     protected BaseTaskGridAdapter mTaskUndoneGridAdapter;
 
+    protected int mMainViewWidth;
+    protected int mMainViewHeight;
     protected int mTaskLongClickPosition;
     protected boolean mAttach;
 
@@ -52,8 +54,8 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
         initView(activity);
         setAdapter();
         this.mFragmentTaskLongClickListener = (FragmentTaskLongClickListener) activity;
-        this.mFragmentAttachListener = (FragmentAttachListener) activity;
-        this.mFragmentAttachListener.onFragmentAttach(this);
+        this.mFragmentStateListener = (FragmentStateListener) activity;
+        this.mFragmentStateListener.onFragmentAttach(this);
     }
 
     @Override
@@ -63,17 +65,15 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if(this.mMainLayout == null){
             initView(getActivity());
         }
         if(this.mMainLayout.getParent() != null){
             ((ViewGroup)this.mMainLayout.getParent()).removeView(this.mMainLayout);
+        }
+        if(this.mFragmentStateListener != null){
+            this.mFragmentStateListener.onFragmentViewCreate(this);
         }
         return this.mMainLayout;
     }
@@ -311,5 +311,18 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
                 this.mTaskUndoneGridAdapter.onResume();
             }
         }
+    }
+
+    public int getMainViewWidth( ){
+        return this.mMainLayout == null ? 0 : this.mMainLayout.getWidth();
+    }
+
+    public int getMainViewHeight( ){
+        return this.mMainLayout == null ? 0 : this.mMainLayout.getHeight();
+    }
+
+    public void initMainViewHeightIfNeeded(int width, int height){
+        this.mMainViewWidth = width;
+        this.mMainViewHeight = height;
     }
 }

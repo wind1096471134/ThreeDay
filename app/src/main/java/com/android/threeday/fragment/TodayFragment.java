@@ -2,7 +2,7 @@ package com.android.threeday.fragment;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -15,21 +15,39 @@ import com.android.threeday.fragment.GridAdapter.TaskUnFinishGridAdapter;
 import com.android.threeday.model.BaseDayModel;
 import com.android.threeday.model.TodayModel;
 import com.android.threeday.util.Util;
-import com.android.threeday.view.RotePageLayout;
+import com.android.threeday.view.PageSweepLayout;
 
 /**
  * Created by user on 2014/10/29.
  */
 public class TodayFragment extends BaseDayFragment {
-    private RotePageLayout mRotePageLayout;
+    private PageSweepLayout mPageSweepLayout;
     private GridView mFrontTaskUndoneGridView;
     private GridView mBackTaskDoneGridView;
+    private PageSweepLayout.PageSweepListener mPageSweepListener = new PageSweepLayout.PageSweepListener() {
+        @Override
+        public void onPageSweepStart(int direction) {
+            if(isCurrentUndonePage()){
+                mTaskUndoneGridAdapter.onPause();
+            }else if(isCurrentDonePage()){
+                mTaskDoneGridAdapter.onPause();
+            }
+        }
+
+        @Override
+        public void onPageSelected(int pageIndex) {
+            if(isCurrentUndonePage()){
+                mTaskUndoneGridAdapter.onResume();
+            }else if(isCurrentDonePage()){
+                mTaskDoneGridAdapter.onResume();
+            }
+        }
+    };
 
     private AdapterView.OnItemLongClickListener mFontTaskUndoneGridViewLongClickListener = new AdapterView.OnItemLongClickListener() {
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
             if(mFragmentTaskLongClickListener != null){
-                Log.e("wind11",view.toString());
                 mTaskLongClickPosition = position;
                 boolean toRemain = mModel.getUndoneTasks().get(position).getRemain();
                 mFragmentTaskLongClickListener.onTaskUndoneLongClick(TodayFragment.this, toRemain, true);
@@ -67,20 +85,26 @@ public class TodayFragment extends BaseDayFragment {
 
     @Override
     protected void initView(Context context) {
-        this.mMainLayout = new RotePageLayout(context);
-        this.mRotePageLayout = (RotePageLayout) this.mMainLayout;
+        this.mPageSweepLayout = new PageSweepLayout(context);
+        this.mMainLayout = this.mPageSweepLayout;
 
         View frontPageView = ((Activity) context).getLayoutInflater().inflate(R.layout.page_main, null);
         this.mFrontTaskUndoneGridView = (GridView) frontPageView.findViewById(R.id.gridView);
         frontPageView.findViewById(R.id.addButton).setOnClickListener(this.mAddUndoneTaskClickListener);
         ((TextView)frontPageView.findViewById(R.id.taskStateTextView)).setText(R.string.task_state_undone);
+        frontPageView.findViewById(R.id.pageContainer).setBackgroundResource(R.drawable.page_background_gray);
 
         View backPageView = ((Activity) context).getLayoutInflater().inflate(R.layout.page_main, null);
         this.mBackTaskDoneGridView = (GridView) backPageView.findViewById(R.id.gridView);
         backPageView.findViewById(R.id.addButton).setOnClickListener(this.mAddDoneTaskClickListener);
         ((TextView)backPageView.findViewById(R.id.taskStateTextView)).setText(R.string.task_state_done);
+        backPageView.findViewById(R.id.pageContainer).setBackgroundResource(R.drawable.page_background_blue);
 
-        this.mRotePageLayout.setPageView(frontPageView, backPageView);
+        this.mPageSweepLayout.setPageView(frontPageView, backPageView);
+        DisplayMetrics metrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        this.mPageSweepLayout.setDensity(metrics.density);
+        this.mPageSweepLayout.setPageSweepListener(this.mPageSweepListener);
 
         this.mFrontTaskUndoneGridView.setOnItemLongClickListener(this.mFontTaskUndoneGridViewLongClickListener);
         this.mBackTaskDoneGridView.setOnItemLongClickListener(this.mBackTaskDoneGridViewLongClickListener);
@@ -119,12 +143,23 @@ public class TodayFragment extends BaseDayFragment {
 
     @Override
     protected boolean isCurrentDonePage() {
-        return this.mRotePageLayout.getPageState() == RotePageLayout.PAGE_STATE_BACK;
+        return this.mPageSweepLayout.getCurrentPage() == PageSweepLayout.PAGE_SECOND;
     }
 
     @Override
     protected boolean isCurrentUndonePage() {
-        return this.mRotePageLayout.getPageState() == RotePageLayout.PAGE_STATE_FRONT;
+        return this.mPageSweepLayout.getCurrentPage() == PageSweepLayout.PAGE_FIRST;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        this.mPageSweepLayout.onDestroy();
+    }
+
+    @Override
+    public void initMainViewHeightIfNeeded(int width, int height) {
+        super.initMainViewHeightIfNeeded(width, height);
+        this.mPageSweepLayout.initViewSize(width, height);
+    }
 }

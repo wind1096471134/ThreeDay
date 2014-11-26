@@ -67,15 +67,6 @@ public abstract class BaseTaskGridAdapter extends BaseAdapter {
         }
     }
 
-    protected void startAllContentChange( ){
-        this.mContentChanging = true;
-        for(BaseContentChangeView baseContentChangeView : this.mBaseContentChangeViews){
-            if(!baseContentChangeView.isContentChanging()){
-                baseContentChangeView.startChangeContent(getRandomStartDelay());
-            }
-        }
-    }
-
     @Override
     public int getCount() {
         return this.mTaskItems.size();
@@ -130,11 +121,11 @@ public abstract class BaseTaskGridAdapter extends BaseAdapter {
             }
 
             convertView = contentChangeView;
-            Log.e("wind","1 id:" + taskItem.getId() + " p:"+ position + " " +
-                    convertView.toString() );
+            /*Log.e("wind","1 id:" + taskItem.getId() + " p:"+ position + " " +
+                    convertView.toString() );*/
         }else{
-            Log.e("wind","2 id:" + taskItem.getId() + " p:" + position + " " + convertView.toString()
-            );
+            /*Log.e("wind","2 id:" + taskItem.getId() + " p:" + position + " " + convertView.toString()
+            );*/
             contentChangeView = (BaseContentChangeView) convertView;
 
             if(contentChangeView.getViewId() != taskItem.getId() && contentChangeView.canChangeContent()){
