@@ -3,12 +3,10 @@ package com.android.threeday.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
 import com.android.threeday.R;
-import com.android.threeday.model.TaskItem;
 import com.android.threeday.util.Util;
 
 /**
@@ -20,7 +18,7 @@ public class AddTaskActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.add_task_main);
+        setContentView(R.layout.add_done_task_main);
         mEditText = (EditText) findViewById(R.id.taskInformationEditText);
     }
 
