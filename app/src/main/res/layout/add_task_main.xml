@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/custom_action_bar_height"
+        android:layout_gravity="center_horizontal"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:background="@color/custom_action_bar_background">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="back"
+            android:id="@+id/backButton"
+            android:layout_gravity="center_horizontal|left"
+            android:onClick="back" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="title"
+            android:id="@+id/titleTextView"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textSize="@dimen/custom_action_bar_font_size" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="complete"
+            android:id="@+id/completeButton"
+            android:layout_gravity="center_vertical|right"
+            android:onClick="complete" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/cancelDeleteButton"
+            android:layout_gravity="right|center_vertical"
+            android:text="@string/cancel"
+            android:visibility="invisible"
+            android:onClick="cancelDelete" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal|top"
+        android:padding="5dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:padding="20dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/task_information_advice"
+                android:id="@+id/textView"
+                android:gravity="center"
+                android:textSize="@dimen/label_font_size" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/informationEditText"
+                android:layout_gravity="center_horizontal"
+                android:singleLine="true"
+                android:hint="@string/label_words_limit" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/useful_labels"
+                android:layout_margin="5dp"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <GridView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/labelGridView"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:numColumns="auto_fit"
+                android:horizontalSpacing="@dimen/grid_item_space"
+                android:verticalSpacing="@dimen/label_grid_item_vertical_space"
+                android:listSelector="#0FFF"
+                android:fadeScrollbars="true"
+                android:fadingEdge="none"
+                android:requiresFadingEdge="none"
+                android:scrollbarAlwaysDrawHorizontalTrack="false"
+                android:scrollbars="none"
+                android:overScrollMode="never"
+                android:columnWidth="@dimen/label_grid_item_width"
+                />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

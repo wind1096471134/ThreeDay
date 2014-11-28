@@ -3,6 +3,7 @@ package com.android.threeday.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -12,8 +13,8 @@ import com.android.threeday.R;
 import com.android.threeday.activity.mainActivity.MainActivityManager;
 import com.android.threeday.fragment.GridAdapter.TaskFinishGridAdapter;
 import com.android.threeday.fragment.GridAdapter.TaskUnFinishGridAdapter;
-import com.android.threeday.model.BaseDayModel;
-import com.android.threeday.model.TodayModel;
+import com.android.threeday.model.threeDay.BaseDayModel;
+import com.android.threeday.model.threeDay.TodayModel;
 import com.android.threeday.util.Util;
 import com.android.threeday.view.PageSweepLayout;
 
@@ -85,6 +86,7 @@ public class TodayFragment extends BaseDayFragment {
 
     @Override
     protected void initView(Context context) {
+
         this.mPageSweepLayout = new PageSweepLayout(context);
         this.mMainLayout = this.mPageSweepLayout;
 
@@ -111,21 +113,26 @@ public class TodayFragment extends BaseDayFragment {
     }
 
     @Override
-    protected void setAdapter() {
+    protected void initAdapter(Context context) {
         int itemHeight = getActivity().getResources().getDimensionPixelSize(R.dimen.grid_item_height);
 
         this.mTaskDoneGridAdapter = new TaskFinishGridAdapter(getActivity(), this.mModel.getDoneTasks());
         this.mTaskDoneGridAdapter.setItemPressBackgroundResource(R.drawable.content_change_view_press);
         this.mTaskDoneGridAdapter.setGridItemHeight(itemHeight);
         this.mTaskDoneGridAdapter.setLooper(MainActivityManager.getHandlerThread().getLooper());
-        if(this.mBackTaskDoneGridView != null){
-            this.mBackTaskDoneGridView.setAdapter(this.mTaskDoneGridAdapter);
-        }
 
         this.mTaskUndoneGridAdapter = new TaskUnFinishGridAdapter(getActivity(), this.mModel.getUndoneTasks());
         this.mTaskUndoneGridAdapter.setItemPressBackgroundResource(R.drawable.content_change_view_press);
         this.mTaskUndoneGridAdapter.setGridItemHeight(itemHeight);
         this.mTaskUndoneGridAdapter.setLooper(MainActivityManager.getHandlerThread().getLooper());
+    }
+
+    @Override
+    protected void setAdapter() {
+        if(this.mBackTaskDoneGridView != null){
+            this.mBackTaskDoneGridView.setAdapter(this.mTaskDoneGridAdapter);
+        }
+
         if(this.mFrontTaskUndoneGridView != null){
             this.mFrontTaskUndoneGridView.setAdapter(this.mTaskUndoneGridAdapter);
         }

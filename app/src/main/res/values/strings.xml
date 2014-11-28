@@ -13,10 +13,21 @@
     <string name="task_evaluation_dialog_title">评价一下你自己吧</string>
     <string name="remain_to_do">记得完成哦</string>
     <string name="about">约</string>
+    <string name="half">半</string>
     <string name="hour">小时</string>
     <string name="minute">分钟</string>
     <string name="second">秒</string>
     <string name="after">后哦</string>
     <string name="now_to_do">现在就要完成哦</string>
+    <string name="useful_labels">常用标签</string>
+    <string name="label_words_limit">10个字以内哦</string>
+    <string name="add_label_dialog_title">添加常用标签</string>
+    <string name="sure">确定</string>
+    <string name="cancel">取消</string>
+    <string name="task_information_advice">任务：</string>
+    <string name="information_empty">你还没填任务信息哦！</string>
+    <string name="remain_title">提示</string>
+    <string name="yes">好的</string>
+    <string name="no">不了</string>
 
 </resources>

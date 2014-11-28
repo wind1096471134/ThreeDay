@@ -10,8 +10,8 @@ import android.widget.TextView;
 import com.android.threeday.R;
 import com.android.threeday.activity.mainActivity.MainActivityManager;
 import com.android.threeday.fragment.GridAdapter.TaskFinishGridAdapter;
-import com.android.threeday.model.BaseDayModel;
-import com.android.threeday.model.YesterdayModel;
+import com.android.threeday.model.threeDay.BaseDayModel;
+import com.android.threeday.model.threeDay.YesterdayModel;
 import com.android.threeday.util.Util;
 import com.android.threeday.view.PageSweepLayout;
 
@@ -48,8 +48,8 @@ public class YesterdayFragment extends BaseDayFragment {
 
     @Override
     protected void initView(Context context) {
-        this.mMainLayout = new PageSweepLayout(context);
-        this.mPageSweepLayout = (PageSweepLayout) this.mMainLayout;
+        this.mPageSweepLayout = new PageSweepLayout(context);
+        this.mMainLayout = this.mPageSweepLayout;
 
         View frontView = ((Activity) context).getLayoutInflater().inflate(R.layout.page_main, null);
         this.mFrontTaskDoneGridView = (GridView) frontView.findViewById(R.id.gridView);
@@ -72,19 +72,24 @@ public class YesterdayFragment extends BaseDayFragment {
     }
 
     @Override
-    protected void setAdapter() {
+    protected void initAdapter(Context context) {
         int itemHeight = getActivity().getResources().getDimensionPixelSize(R.dimen.grid_item_height);
 
         this.mTaskDoneGridAdapter = new TaskFinishGridAdapter(getActivity(), this.mModel.getDoneTasks());
         this.mTaskDoneGridAdapter.setGridItemHeight(itemHeight);
         this.mTaskDoneGridAdapter.setLooper(MainActivityManager.getHandlerThread().getLooper());
-        if(this.mFrontTaskDoneGridView != null){
-            this.mFrontTaskDoneGridView.setAdapter(this.mTaskDoneGridAdapter);
-        }
 
         this.mTaskUndoneGridAdapter = new TaskFinishGridAdapter(getActivity(), this.mModel.getUndoneTasks());
         this.mTaskUndoneGridAdapter.setGridItemHeight(itemHeight);
         this.mTaskUndoneGridAdapter.setLooper(MainActivityManager.getHandlerThread().getLooper());
+    }
+
+    @Override
+    protected void setAdapter() {
+        if(this.mFrontTaskDoneGridView != null){
+            this.mFrontTaskDoneGridView.setAdapter(this.mTaskDoneGridAdapter);
+        }
+
         if(this.mBackTaskUndoneGridView != null){
             this.mBackTaskUndoneGridView.setAdapter(this.mTaskUndoneGridAdapter);
         }      

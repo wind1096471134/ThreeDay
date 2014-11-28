@@ -3,11 +3,12 @@ package com.android.threeday.fragment.GridAdapter;
 import android.content.Context;
 import android.graphics.Color;
 import android.text.format.Time;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.android.threeday.R;
-import com.android.threeday.model.TaskItem;
+import com.android.threeday.model.threeDay.TaskItem;
 import com.android.threeday.view.BaseContentChangeView;
 
 import java.util.ArrayList;
@@ -57,32 +58,21 @@ public class TaskUnFinishGridAdapter extends BaseTaskGridAdapter {
             Time now = new Time();
             now.setToNow();
             if(!remain.before(now)){
-
                 result = this.mContext.getString(R.string.about);
-                if(remain.hour == now.hour){
-
-                    if(remain.minute == now.minute){
-                        result = this.mContext.getString(R.string.now_to_do);
-                        return result;
-                    }else{
-                        int minute = remain.minute - now.minute;
-                        if(remain.second - now.second > 30){
-                            minute++;
-                        }
-                        result += minute + this.mContext.getString(R.string.minute);
-                    }
-
-                }else{
-
-                    int hour = remain.hour - now.hour;
-                    if(remain.minute - now.minute > 30){
-                        hour++;
-                    }
+                int duration = (int) ((remain.toMillis(false) - now.toMillis(false)) / 1000);
+                int hour = duration / 3600;
+                int minute = duration % 3600 / 60;
+                if(hour > 0){
                     result += hour + this.mContext.getString(R.string.hour);
                 }
-
+                if(minute > 0){
+                    result += minute + this.mContext.getString(R.string.minute);
+                }
                 result += this.mContext.getString(R.string.after);
 
+                if(hour == 0 && minute == 0){
+                    result = this.mContext.getString(R.string.now_to_do);
+                }
             }
         }
         return result;

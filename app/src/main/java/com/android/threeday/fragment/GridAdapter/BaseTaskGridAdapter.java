@@ -2,13 +2,12 @@ package com.android.threeday.fragment.GridAdapter;
 
 import android.content.Context;
 import android.os.Looper;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 
-import com.android.threeday.model.TaskItem;
+import com.android.threeday.model.threeDay.TaskItem;
 import com.android.threeday.view.BaseContentChangeView;
 import com.android.threeday.view.RotateBackContentChangeView;
 import com.android.threeday.view.RotateClockwiseContentChangeView;

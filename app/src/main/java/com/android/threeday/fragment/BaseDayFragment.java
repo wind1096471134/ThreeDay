@@ -8,21 +8,22 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.format.Time;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.android.threeday.activity.AddTaskActivity;
+import com.android.threeday.activity.addTaskActivity.AddTaskActivity;
 import com.android.threeday.activity.mainActivity.FragmentStateListener;
 import com.android.threeday.activity.mainActivity.FragmentTaskLongClickListener;
 import com.android.threeday.activity.mainActivity.TaskOperateListener;
 import com.android.threeday.fragment.GridAdapter.BaseTaskGridAdapter;
 import com.android.threeday.fragment.dialogFragment.TaskEvaluationFragment;
 import com.android.threeday.fragment.dialogFragment.TimePickerFragment;
-import com.android.threeday.model.BaseDayModel;
-import com.android.threeday.model.TaskItem;
+import com.android.threeday.model.threeDay.BaseDayModel;
+import com.android.threeday.model.threeDay.TaskItem;
 import com.android.threeday.util.Util;
 
 /**
@@ -52,6 +53,7 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
         this.mAttach = true;
         initData(activity);
         initView(activity);
+        initAdapter(activity);
         setAdapter();
         this.mFragmentTaskLongClickListener = (FragmentTaskLongClickListener) activity;
         this.mFragmentStateListener = (FragmentStateListener) activity;
@@ -68,6 +70,7 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if(this.mMainLayout == null){
             initView(getActivity());
+            setAdapter();
         }
         if(this.mMainLayout.getParent() != null){
             ((ViewGroup)this.mMainLayout.getParent()).removeView(this.mMainLayout);
@@ -76,6 +79,11 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
             this.mFragmentStateListener.onFragmentViewCreate(this);
         }
         return this.mMainLayout;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
     }
 
     @Override
@@ -93,6 +101,8 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
     }
 
     protected abstract void initView(Context context);
+
+    protected abstract void initAdapter(Context context);
 
     protected abstract void setAdapter( );
 
@@ -198,9 +208,12 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
         time.setToNow();
         time.hour = hour;
         time.minute = minute;
+        if(getDayType() == Util.TYPE_TOMORROW){
+            time.set(time.toMillis(false) + 24 * 3600 * 1000);
+        }
         if(this.mModel.changeUndoneTaskRemainTime(this.mTaskLongClickPosition, time.format2445())){
             this.mTaskUndoneGridAdapter.notifyDataSetChanged(true);
-            Toast.makeText(getActivity(),"success " + time.format("YYYYMMDD HHMMSS"), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(),"success " + time.format2445(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -302,13 +315,15 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
     }
 
     public void resume( ){
-        if(isCurrentDonePage()){
-            if(this.mTaskDoneGridAdapter != null){
-                this.mTaskDoneGridAdapter.onResume();
-            }
-        }else if(isCurrentUndonePage()){
-            if(this.mTaskUndoneGridAdapter != null){
-                this.mTaskUndoneGridAdapter.onResume();
+        if(this.mMainLayout != null){
+            if(isCurrentDonePage()){
+                if(this.mTaskDoneGridAdapter != null){
+                    this.mTaskDoneGridAdapter.onResume();
+                }
+            }else if(isCurrentUndonePage()){
+                if(this.mTaskUndoneGridAdapter != null){
+                    this.mTaskUndoneGridAdapter.onResume();
+                }
             }
         }
     }

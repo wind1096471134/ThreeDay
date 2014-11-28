@@ -16,7 +16,7 @@
             android:paddingBottom="10dp"
             android:paddingLeft="@dimen/page_outside_padding"
             android:paddingRight="@dimen/page_outside_padding"
-            android:paddingTop="20dp">
+            android:paddingTop="10dp">
 
             <TextView
                 android:id="@+id/titleTextView"

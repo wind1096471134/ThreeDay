@@ -34,53 +34,8 @@ public class PageSweepLayoutTest extends ActivityInstrumentationTestCase2<MainAc
     }
 
     public void testGetChildView( ) throws Exception{
-        assertEquals(this.mBackView, this.mPageSweepLayout.getBackView());
-        assertEquals(this.mFrontView, this.mPageSweepLayout.getFrontView());
+        assertEquals(this.mBackView, this.mPageSweepLayout.getSecondView());
+        assertEquals(this.mFrontView, this.mPageSweepLayout.getFirstView());
     }
 
-    public void testGetPageState( ) throws Exception{
-        this.mPageSweepLayout.roteToBackPage( );
-        assertEquals(PageSweepLayout.PAGE_BACK, this.mPageSweepLayout.getPageState());
-        this.mPageSweepLayout.roteToFrontPage( );
-        assertEquals(PageSweepLayout.PAGE_FRONT, this.mPageSweepLayout.getPageState());
-    }
-
-    public void testSetPageStateChangeListener( ) throws Exception{
-        this.mPageSweepLayout.roteToFrontPage();
-        this.mPageSweepLayout.setPageStateChangeListener(new PageSweepLayout.PageStateChangeListener() {
-
-            @Override
-            public void onPageStateChange(int state) {
-                assertEquals(PageSweepLayout.PAGE_BACK, state);
-            }
-        });
-        this.mPageSweepLayout.roteToBackPage();
-
-        this.mPageSweepLayout.setPageStateChangeListener(new PageSweepLayout.PageStateChangeListener() {
-            @Override
-            public void onPageStateChange(int state) {
-                assertEquals(PageSweepLayout.PAGE_FRONT, state);
-            }
-        });
-        this.mPageSweepLayout.roteToFrontPage();
-    }
-
-    public void testSetPageRoteListener( ) throws Exception{
-        this.mPageSweepLayout.setPageRoteListener(new PageSweepLayout.PageRoteListener( ){
-
-            @Override
-            public void onPageRote(int currentDegree, int direction) {
-                assertEquals(10, currentDegree);
-                assertEquals(PageSweepLayout.DIRECTION_ANTICLOCKWISE, direction);
-            }
-
-            @Override
-            public void onPageFling(int speed, int direction) {
-                assertEquals(PageSweepLayout.FLING_SPEED_FAST, speed);
-                assertEquals(PageSweepLayout.DIRECTION_CLOCKWISE, direction);
-            }
-        });
-        this.mPageSweepLayout.rotePage(10, PageSweepLayout.DIRECTION_ANTICLOCKWISE);
-        this.mPageSweepLayout.flingPage(PageSweepLayout.FLING_SPEED_FAST, PageSweepLayout.DIRECTION_CLOCKWISE);
-    }
-}
+ }

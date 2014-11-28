@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 
 import com.android.threeday.R;
@@ -71,6 +72,16 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
         initFragment();
         setViewPagerAdapter();
         setViewPagerListener( );
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        //not save
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        //not restore because we want rebuild all view
     }
 
     @Override

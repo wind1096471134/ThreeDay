@@ -11,8 +11,8 @@ import android.widget.TextView;
 import com.android.threeday.R;
 import com.android.threeday.activity.mainActivity.MainActivityManager;
 import com.android.threeday.fragment.GridAdapter.TaskUnFinishGridAdapter;
-import com.android.threeday.model.BaseDayModel;
-import com.android.threeday.model.TomorrowModel;
+import com.android.threeday.model.threeDay.BaseDayModel;
+import com.android.threeday.model.threeDay.TomorrowModel;
 import com.android.threeday.util.Util;
 import com.android.threeday.view.PageSweepLayout;
 
@@ -83,14 +83,18 @@ public class TomorrowFragment extends BaseDayFragment {
     }
 
     @Override
-    protected void setAdapter() {
+    protected void initAdapter(Context context) {
         int itemHeight = getActivity().getResources().getDimensionPixelSize(R.dimen.grid_item_height);
 
         this.mTaskUndoneGridAdapter = new TaskUnFinishGridAdapter(getActivity(), this.mModel.getUndoneTasks());
         this.mTaskUndoneGridAdapter.setItemPressBackgroundResource(R.drawable.content_change_view_press);
         this.mTaskUndoneGridAdapter.setGridItemHeight(itemHeight);
         this.mTaskUndoneGridAdapter.setLooper(MainActivityManager.getHandlerThread().getLooper());
-        if(this.mFontTaskUndoneGridView != null){
+    }
+
+    @Override
+    protected void setAdapter() {
+                if(this.mFontTaskUndoneGridView != null){
             this.mFontTaskUndoneGridView.setAdapter(this.mTaskUndoneGridAdapter);
         }
     }

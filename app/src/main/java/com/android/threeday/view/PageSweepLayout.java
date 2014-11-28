@@ -480,6 +480,14 @@ public class PageSweepLayout extends FrameLayout {
         return this.mCurrentPage;
     }
 
+    public View getFirstView( ){
+        return this.mFirstView;
+    }
+
+    public View getSecondView( ){
+        return this.mSecondView;
+    }
+
     public void setPageSweepListener(PageSweepListener listener){
         this.mPageSweepListener = listener;
     }

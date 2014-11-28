@@ -7,7 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.threeday.R;
-import com.android.threeday.model.TaskItem;
+import com.android.threeday.model.threeDay.TaskItem;
 import com.android.threeday.util.Util;
 import com.android.threeday.view.BaseContentChangeView;
 

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/label_grid_item_inside_margin"
+        android:background="@drawable/label_background"
+        android:padding="@dimen/label_grid_item_padding"
+        android:id="@+id/controller">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/labelTextView"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textSize="@dimen/label_font_size"
+            android:ellipsize="end" />
+    </FrameLayout>
+
+    <Button
+        android:layout_width="@dimen/label_delete_view_width"
+        android:layout_height="@dimen/label_delete_view_height"
+        android:id="@+id/deleteButton"
+        android:layout_gravity="right|top"
+        android:background="#E00"
+        android:visibility="invisible"
+        android:onClick="deleteLabel" />
+
+</FrameLayout>
