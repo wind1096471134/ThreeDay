@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/page_outside_padding"
+    android:paddingRight="@dimen/page_outside_padding">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:id="@+id/pageContainer"
+        android:paddingLeft="@dimen/page_inside_padding"
+        android:paddingRight="@dimen/page_inside_padding"
+        android:padding="@dimen/page_inside_padding">
+
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/page_top_container"
+            android:layout_gravity="center_horizontal"/>
+
+        <view
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            class="com.android.threeday.view.PageSwitchLayout"
+            android:id="@+id/pageSwitchLayout"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/page_switch_controller_height"
+            android:layout_gravity="center_horizontal"
+            android:id="@+id/switchController"
+            android:background="@drawable/switch_controller_background">
+
+        </FrameLayout>
+    </LinearLayout>
+</FrameLayout>

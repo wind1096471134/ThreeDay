@@ -99,8 +99,8 @@ public abstract class BaseContentChangeView extends FrameLayout{
         this.mFirstContentDuration = firstContentDuration;
         this.mSecondContentDuration = secondContentDuration;
 
-        super.addView(this.mFirstContentView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        super.addView(this.mSecondContentView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        super.addView(this.mFirstContentView);
+        super.addView(this.mSecondContentView);
         if(this.mForegroundView.getParent() != null){
             ((ViewGroup)this.mForegroundView.getParent()).removeView(this.mForegroundView);
         }

@@ -3,13 +3,16 @@ package com.android.threeday.fragment.GridAdapter;
 import android.content.Context;
 import android.graphics.Color;
 import android.text.format.Time;
-import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.android.threeday.R;
 import com.android.threeday.model.threeDay.TaskItem;
 import com.android.threeday.view.BaseContentChangeView;
+import com.android.threeday.view.RotateBackContentChangeView;
+import com.android.threeday.view.RotateClockwiseContentChangeView;
 
 import java.util.ArrayList;
 
@@ -26,14 +29,14 @@ public class TaskUnFinishGridAdapter extends BaseTaskGridAdapter {
     @Override
     protected View getFirstView() {
         View view = View.inflate(this.mContext, R.layout.content_change_view_first_view, null);
-        view.setBackgroundColor(Color.GRAY);
+        view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         return view;
     }
 
     @Override
     protected View getSecondView() {
-        View view = View.inflate(this.mContext, R.layout.content_change_view_second_view, null);
-        view.setBackgroundColor(Color.GRAY);
+        View view = View.inflate(this.mContext, R.layout.undone_content_change_view_second_view, null);
+        view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         return view;
     }
 
@@ -42,11 +45,23 @@ public class TaskUnFinishGridAdapter extends BaseTaskGridAdapter {
         TextView informationTextView = (TextView) contentChangeView.getFirstContentView().findViewById(R.id.informationTextView);
         informationTextView.setText(taskItem.getInformation());
 
-        View secondView = contentChangeView.getSecondContentView();
-        secondView.findViewById(R.id.imageView).setVisibility(View.INVISIBLE);
-        TextView textView = (TextView) secondView.findViewById(R.id.textView);
-        String remainText = getRemainText(taskItem);
-        textView.setText(remainText);
+        if(taskItem.getRemain()){
+            View secondView = contentChangeView.getSecondContentView();
+            TextView textView = (TextView) secondView.findViewById(R.id.textView);
+            String remainText = getRemainText(taskItem);
+            textView.setText(remainText);
+            startChangeContent(contentChangeView);
+        }
+    }
+
+    @Override
+    protected BaseContentChangeView getContentChangeView() {
+        int choice = mRandom.nextInt(2);
+        if(choice == 0){
+            return new RotateClockwiseContentChangeView(this.mContext);
+        }else{
+            return new RotateBackContentChangeView(this.mContext);
+        }
     }
 
     private String getRemainText(TaskItem taskItem){

@@ -217,9 +217,7 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
 
     @Override
     public void onFragmentViewCreate(Fragment fragment) {
-        if(this.mFragmentMainViewWidth != 0 && this.mFragmentMainViewHeight != 0){
-            ((BaseDayFragment) fragment).initMainViewHeightIfNeeded(this.mFragmentMainViewWidth, this.mFragmentMainViewHeight);
-        }
+
     }
 
     @Override
@@ -229,17 +227,4 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
         System.exit(0);
     }
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        for(BaseDayFragment baseDayFragment : this.mFragments){
-            if(baseDayFragment.isAttach()){
-                if(baseDayFragment.getMainViewWidth() != 0 && baseDayFragment.getMainViewHeight() != 0){
-                    this.mFragmentMainViewWidth = baseDayFragment.getMainViewWidth();
-                    this.mFragmentMainViewHeight = baseDayFragment.getMainViewHeight();
-                    baseDayFragment.initMainViewHeightIfNeeded(this.mFragmentMainViewWidth, this.mFragmentMainViewHeight);
-                }
-            }
-        }
-    }
 }

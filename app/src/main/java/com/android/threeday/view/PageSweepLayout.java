@@ -302,6 +302,7 @@ public class PageSweepLayout extends FrameLayout {
 
                             if(this.mLayer_1.getAlpha() < 0.5 || Math.abs(this.mVelocityTracker.getYVelocity()) > this.mVelocityEdge){
                                 long duration = (long) (this.mLayer_1.getAlpha() * this.mSweepAnimationDuration);
+
                                 layer3ObjectAnimator.setFloatValues(this.mLayer_3.getAlpha(), 1f);
                                 layer3ObjectAnimator.setDuration(duration);
                                 layer3ObjectAnimator.addListener(new AnimatorListenerAdapter() {
@@ -313,7 +314,6 @@ public class PageSweepLayout extends FrameLayout {
                                         removeView(mLayer_2);
                                         addView(mLayer_1, 1);
                                         addView(mLayer_2, 2);
-
                                         resetViewProperty(mTopImageView, mLayer_2, mLayer_1, mBottomImageView);
                                         updateBitmap();
                                         onSweepAnimationEnd();

@@ -3,6 +3,11 @@ package com.android.threeday.activity.mainActivity;
 import android.os.HandlerThread;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,11 +32,14 @@ public class MainActivityManager {
     private TextView mTitleTextView;
     private TextView mWordsTextView;
     private ImageView mDayEvaluationImageView;
+    private AnimationSet mTopChangeAnimation;
+    private AnimationSet mBottomChangeAnimation;
     private static final HandlerThread mHandlerThread = new HandlerThread("HandlerThread");
 
     MainActivityManager(FragmentActivity activity){
         this.mActivity = activity;
         initView( );
+        initData( );
         mHandlerThread.start();
     }
 
@@ -44,6 +52,24 @@ public class MainActivityManager {
         this.mTitleTextView = (TextView) mActivity.findViewById(R.id.titleTextView);
         this.mWordsTextView = (TextView) mActivity.findViewById(R.id.wordsTextView);
         this.mDayEvaluationImageView = (ImageView) mActivity.findViewById(R.id.dayEvaluationImageView);
+    }
+
+    private void initData( ){
+        this.mTopChangeAnimation = new AnimationSet(false);
+        AlphaAnimation alphaAnimation = new AlphaAnimation(0f, 1f);
+        TranslateAnimation translateAnimation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, -0.2f, Animation.RELATIVE_TO_SELF , 0f);
+        this.mTopChangeAnimation.addAnimation(alphaAnimation);
+        this.mTopChangeAnimation.addAnimation(translateAnimation);
+        this.mTopChangeAnimation.setDuration(500);
+        this.mTopChangeAnimation.setInterpolator(new DecelerateInterpolator());
+
+        this.mBottomChangeAnimation = new AnimationSet(false);
+        AlphaAnimation alphaAnimation1 = new AlphaAnimation(0f, 1f);
+        TranslateAnimation translateAnimation1 = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 0.2f, Animation.RELATIVE_TO_SELF , 0f);
+        this.mBottomChangeAnimation.addAnimation(alphaAnimation1);
+        this.mBottomChangeAnimation.addAnimation(translateAnimation1);
+        this.mBottomChangeAnimation.setDuration(500);
+        this.mBottomChangeAnimation.setInterpolator(new DecelerateInterpolator());
     }
 
     public static HandlerThread getHandlerThread( ){
@@ -102,6 +128,7 @@ public class MainActivityManager {
                 break;
         }
         this.mDayEvaluationImageView.setImageResource(resId);
+        this.mDayEvaluationImageView.startAnimation(this.mTopChangeAnimation);
     }
 
     void onPageSelected(int position){
@@ -122,6 +149,8 @@ public class MainActivityManager {
                 //TODO
                 break;
         }
+        this.mTitleTextView.startAnimation(this.mTopChangeAnimation);
+        this.mWordsTextView.startAnimation(this.mBottomChangeAnimation);
     }
 
     void onDestroy( ){

@@ -2,12 +2,13 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="page_outside_padding">10dp</dimen>
+    <dimen name="page_outside_padding">15dp</dimen>
     <dimen name="long_click_menu_width">250dp</dimen>
     <dimen name="long_click_menu_padding">5dp</dimen>
     <dimen name="long_click_menu_font_size">25sp</dimen>
     <dimen name="page_add_button_container_height">60dp</dimen>
-    <dimen name="page_bottom_space_height">30dp</dimen>
+    <dimen name="page_bottom_space_height">10dp</dimen>
+    <dimen name="page_switch_controller_height">40dp</dimen>
     <dimen name="page_corner">10dp</dimen>
     <dimen name="title_font_size">30sp</dimen>
     <dimen name="words_font_size">20sp</dimen>
@@ -24,6 +25,7 @@
     <dimen name="label_delete_view_width">15dp</dimen>
     <dimen name="label_delete_view_height">15dp</dimen>
     <dimen name="content_change_view_font_size">25sp</dimen>
+    <dimen name="slide_content_change_view_second_view_height">60dp</dimen>
     <dimen name="task_evaluation_dialog_title_size">30sp</dimen>
     <dimen name="task_evaluation_dialog_font_size">25sp</dimen>
     <dimen name="task_evaluation_dialog_item_padding">10dp</dimen>

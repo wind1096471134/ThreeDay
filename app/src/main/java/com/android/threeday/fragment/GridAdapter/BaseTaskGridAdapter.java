@@ -9,8 +9,6 @@ import android.widget.BaseAdapter;
 
 import com.android.threeday.model.threeDay.TaskItem;
 import com.android.threeday.view.BaseContentChangeView;
-import com.android.threeday.view.RotateBackContentChangeView;
-import com.android.threeday.view.RotateClockwiseContentChangeView;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -25,11 +23,11 @@ public abstract class BaseTaskGridAdapter extends BaseAdapter {
     private int mGridItemHeight = 100;
     private boolean mContentChanging;
 
-    private Random random = new Random(0);
     private ArrayList<TaskItem> mTaskItems;
     //save all contentChangeView from getView to control their behavior
     private ArrayList<BaseContentChangeView> mBaseContentChangeViews;
     private Looper mLooper;
+    protected Random mRandom = new Random(0);
     protected Context mContext;
 
     BaseTaskGridAdapter(Context context, ArrayList<TaskItem> taskItems){
@@ -86,17 +84,8 @@ public abstract class BaseTaskGridAdapter extends BaseAdapter {
         return fetchViewAndData(position, convertView);
     }
 
-    private BaseContentChangeView getContentChangeView( ){
-        int choice = random.nextInt(2);
-        if(choice == 0){
-            return new RotateClockwiseContentChangeView(this.mContext);
-        }else{
-            return new RotateBackContentChangeView(this.mContext);
-        }
-    }
-
     protected int getRandomStartDelay( ){
-        return 1000 + random.nextInt(5000);
+        return 1000 + mRandom.nextInt(5000);
     }
 
     protected View fetchViewAndData(int position, View convertView){
@@ -137,15 +126,17 @@ public abstract class BaseTaskGridAdapter extends BaseAdapter {
         }
         fetchContentChangeView(contentChangeView, taskItem);
 
+        return convertView;
+
+    }
+
+    protected void startChangeContent(BaseContentChangeView contentChangeView){
         //avoid start twice
         if(this.mContentChanging){
             if(!contentChangeView.isContentChanging()){
                 contentChangeView.startChangeContent(getRandomStartDelay());
             }
         }
-
-        return convertView;
-
     }
 
     public void onResume( ){
@@ -162,4 +153,5 @@ public abstract class BaseTaskGridAdapter extends BaseAdapter {
 
     protected abstract void fetchContentChangeView(BaseContentChangeView contentChangeView, TaskItem taskItem);
 
+    protected abstract BaseContentChangeView getContentChangeView( );
 }

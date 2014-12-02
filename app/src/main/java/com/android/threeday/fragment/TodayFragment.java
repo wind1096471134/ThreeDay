@@ -1,10 +1,16 @@
 package com.android.threeday.fragment;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
-import android.util.DisplayMetrics;
-import android.util.Log;
+import android.graphics.Color;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
@@ -16,35 +22,33 @@ import com.android.threeday.fragment.GridAdapter.TaskUnFinishGridAdapter;
 import com.android.threeday.model.threeDay.BaseDayModel;
 import com.android.threeday.model.threeDay.TodayModel;
 import com.android.threeday.util.Util;
-import com.android.threeday.view.PageSweepLayout;
+import com.android.threeday.view.PageSwitchLayout;
 
 /**
  * Created by user on 2014/10/29.
  */
 public class TodayFragment extends BaseDayFragment {
-    private PageSweepLayout mPageSweepLayout;
+    private PageSwitchLayout mPageSwitchLayout;
     private GridView mFrontTaskUndoneGridView;
     private GridView mBackTaskDoneGridView;
-    private PageSweepLayout.PageSweepListener mPageSweepListener = new PageSweepLayout.PageSweepListener() {
+    private TextView mTaskStateTextView;
+    private View mSwitchController;
+    private AnimationSet mTaskStateAnimation;
+    private PageSwitchLayout.OnPageSwitchListener mOnPageSwitchListener = new PageSwitchLayout.OnPageSwitchListener() {
         @Override
-        public void onPageSweepStart(int direction) {
+        public void onPageSwitch(int currentPage) {
             if(isCurrentUndonePage()){
-                mTaskUndoneGridAdapter.onPause();
-            }else if(isCurrentDonePage()){
-                mTaskDoneGridAdapter.onPause();
-            }
-        }
-
-        @Override
-        public void onPageSelected(int pageIndex) {
-            if(isCurrentUndonePage()){
+                mTaskStateTextView.setText(R.string.task_state_undone);
                 mTaskUndoneGridAdapter.onResume();
+                mTaskDoneGridAdapter.onPause();
             }else if(isCurrentDonePage()){
+                mTaskStateTextView.setText(R.string.task_state_done);
                 mTaskDoneGridAdapter.onResume();
+                mTaskUndoneGridAdapter.onPause();
             }
+            mTaskStateTextView.startAnimation(mTaskStateAnimation);
         }
     };
-
     private AdapterView.OnItemLongClickListener mFontTaskUndoneGridViewLongClickListener = new AdapterView.OnItemLongClickListener() {
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -67,49 +71,58 @@ public class TodayFragment extends BaseDayFragment {
             return false;
         }
     };
-    private View.OnClickListener mAddUndoneTaskClickListener = new View.OnClickListener() {
+    private View.OnClickListener mAddTaskClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            startAddTaskActivity(getDayType(), false);
+            startAddTaskActivity(getDayType(), isCurrentDonePage());
         }
     };
-    private View.OnClickListener mAddDoneTaskClickListener = new View.OnClickListener() {
+    private View.OnClickListener mSwitchPageClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            startAddTaskActivity(getDayType(), true);
+            mPageSwitchLayout.switchPage();
         }
     };
 
     public TodayFragment( ){
         super();
+        initData( );
+    }
+
+    private void initData( ){
+        long duration = 500;
+        AlphaAnimation alphaAnimation = new AlphaAnimation(0f, 1f);
+        TranslateAnimation translateAnimation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, -0.3f, Animation.RELATIVE_TO_SELF , 0f);
+        this.mTaskStateAnimation = new AnimationSet(false);
+        this.mTaskStateAnimation.addAnimation(translateAnimation);
+        this.mTaskStateAnimation.addAnimation(alphaAnimation);
+        this.mTaskStateAnimation.setDuration(duration);
+        this.mTaskStateAnimation.setInterpolator(new DecelerateInterpolator());
     }
 
     @Override
     protected void initView(Context context) {
 
-        this.mPageSweepLayout = new PageSweepLayout(context);
-        this.mMainLayout = this.mPageSweepLayout;
+        this.mMainLayout = View.inflate(context, R.layout.fragment_switch_layout, null);
+        this.mMainLayout.findViewById(R.id.pageContainer).setBackgroundResource(R.drawable.page_background_gray);
+        this.mTaskStateTextView = (TextView) this.mMainLayout.findViewById(R.id.taskStateTextView);
+        this.mMainLayout.findViewById(R.id.addButton).setOnClickListener(this.mAddTaskClickListener);
+        this.mPageSwitchLayout = (PageSwitchLayout) this.mMainLayout.findViewById(R.id.pageSwitchLayout);
+        this.mSwitchController = this.mMainLayout.findViewById(R.id.switchController);
+        this.mSwitchController.setOnClickListener(this.mSwitchPageClickListener);
 
-        View frontPageView = ((Activity) context).getLayoutInflater().inflate(R.layout.page_main, null);
+        View frontPageView = View.inflate(context, R.layout.task_container, null);
         this.mFrontTaskUndoneGridView = (GridView) frontPageView.findViewById(R.id.gridView);
-        frontPageView.findViewById(R.id.addButton).setOnClickListener(this.mAddUndoneTaskClickListener);
-        ((TextView)frontPageView.findViewById(R.id.taskStateTextView)).setText(R.string.task_state_undone);
-        frontPageView.findViewById(R.id.pageContainer).setBackgroundResource(R.drawable.page_background_gray);
 
-        View backPageView = ((Activity) context).getLayoutInflater().inflate(R.layout.page_main, null);
+        View backPageView = View.inflate(context, R.layout.task_container, null);
         this.mBackTaskDoneGridView = (GridView) backPageView.findViewById(R.id.gridView);
-        backPageView.findViewById(R.id.addButton).setOnClickListener(this.mAddDoneTaskClickListener);
-        ((TextView)backPageView.findViewById(R.id.taskStateTextView)).setText(R.string.task_state_done);
-        backPageView.findViewById(R.id.pageContainer).setBackgroundResource(R.drawable.page_background_blue);
 
-        this.mPageSweepLayout.setPageView(frontPageView, backPageView);
-        DisplayMetrics metrics = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        this.mPageSweepLayout.setDensity(metrics.density);
-        this.mPageSweepLayout.setPageSweepListener(this.mPageSweepListener);
+        this.mPageSwitchLayout.setPageView(frontPageView, backPageView);
+        this.mPageSwitchLayout.setOnPageSwitchListener(this.mOnPageSwitchListener);
 
         this.mFrontTaskUndoneGridView.setOnItemLongClickListener(this.mFontTaskUndoneGridViewLongClickListener);
         this.mBackTaskDoneGridView.setOnItemLongClickListener(this.mBackTaskDoneGridViewLongClickListener);
+        this.mTaskStateTextView.setText(R.string.task_state_undone);
     }
 
     @Override
@@ -150,23 +163,12 @@ public class TodayFragment extends BaseDayFragment {
 
     @Override
     protected boolean isCurrentDonePage() {
-        return this.mPageSweepLayout.getCurrentPage() == PageSweepLayout.PAGE_SECOND;
+        return this.mPageSwitchLayout.getCurrentPage() == PageSwitchLayout.PAGE_SECOND;
     }
 
     @Override
     protected boolean isCurrentUndonePage() {
-        return this.mPageSweepLayout.getCurrentPage() == PageSweepLayout.PAGE_FIRST;
+        return this.mPageSwitchLayout.getCurrentPage() == PageSwitchLayout.PAGE_FIRST;
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        this.mPageSweepLayout.onDestroy();
-    }
-
-    @Override
-    public void initMainViewHeightIfNeeded(int width, int height) {
-        super.initMainViewHeightIfNeeded(width, height);
-        this.mPageSweepLayout.initViewSize(width, height);
-    }
 }

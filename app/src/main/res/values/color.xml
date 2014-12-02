@@ -10,5 +10,7 @@
     <color name="custom_action_bar_background">#aaa</color>
     <color name="label_normal">#CCC</color>
     <color name="label_press">#999</color>
+    <color name="switch_controller_gray_dark">#ddd</color>
+    <color name="switch_controller_gray_light">#eee</color>
 
 </resources>

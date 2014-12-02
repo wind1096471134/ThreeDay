@@ -38,8 +38,6 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
     protected BaseTaskGridAdapter mTaskDoneGridAdapter;
     protected BaseTaskGridAdapter mTaskUndoneGridAdapter;
 
-    protected int mMainViewWidth;
-    protected int mMainViewHeight;
     protected int mTaskLongClickPosition;
     protected boolean mAttach;
 
@@ -328,16 +326,4 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
         }
     }
 
-    public int getMainViewWidth( ){
-        return this.mMainLayout == null ? 0 : this.mMainLayout.getWidth();
-    }
-
-    public int getMainViewHeight( ){
-        return this.mMainLayout == null ? 0 : this.mMainLayout.getHeight();
-    }
-
-    public void initMainViewHeightIfNeeded(int width, int height){
-        this.mMainViewWidth = width;
-        this.mMainViewHeight = height;
-    }
 }

@@ -2,7 +2,8 @@
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
-    android:padding="10dp">
+    android:padding="10dp"
+    android:background="#777">
 
     <TextView
         android:layout_width="match_parent"
@@ -13,9 +14,4 @@
         android:textColor="@color/grid_item_font_color"
         android:gravity="center" />
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/imageView"
-        android:layout_gravity="center" />
 </FrameLayout>
