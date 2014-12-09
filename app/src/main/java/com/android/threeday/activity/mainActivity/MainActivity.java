@@ -1,5 +1,6 @@
 package com.android.threeday.activity.mainActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -22,8 +23,6 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
     , FragmentStateListener {
     private boolean mFirstCreate;
     private int mCurrentPageIndex = -1;
-    private int mFragmentMainViewWidth;
-    private int mFragmentMainViewHeight;
 
     private BaseDayFragment mTaskLongClickFragment;
     private BaseDayFragment[] mFragments;
@@ -72,6 +71,12 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
         initFragment();
         setViewPagerAdapter();
         setViewPagerListener( );
+        Log.e("wind", "main create " + android.os.Process.myPid());
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
     }
 
     @Override
@@ -81,7 +86,7 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        //not restore because we want rebuild all view
+        //not restore because we want to rebuild all view
     }
 
     @Override
@@ -222,7 +227,7 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
+        super.onDestroy();Log.e("wind", "main destroy");
         this.mMainActivityManager.onDestroy();
         System.exit(0);
     }

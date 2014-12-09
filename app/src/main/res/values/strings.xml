@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="remain_task_broadcast_action_name">RemainTask</string>
     <string name="app_name">ThreeDay</string>
     <string name="title_yesterday">昨天</string>
     <string name="title_today">今天</string>
@@ -10,7 +11,7 @@
     <string name="words_yesterday">昨天已经过去，今天才是最重要！</string>
     <string name="words_today">如果今天是你生命中最后一天，你会做什么？</string>
     <string name="words_tomorrow">明天是多么美好！</string>
-    <string name="task_evaluation_dialog_title">评价一下你自己吧</string>
+    <string name="task_evaluation_dialog_title">亲，觉得你自己表现如何？</string>
     <string name="remain_to_do">记得完成哦</string>
     <string name="about">约</string>
     <string name="half">半</string>
@@ -29,5 +30,14 @@
     <string name="remain_title">提示</string>
     <string name="yes">好的</string>
     <string name="no">不了</string>
+    <string name="check_task_day_evaluation">亲，评价一下你一天的表现哦</string>
+    <string name="task_evaluation_good">满意</string>
+    <string name="task_evaluation_mid">一般般</string>
+    <string name="task_evaluation_bad">不满意</string>
+    <string name="check_task_message">亲，还剩?条哦</string>
+    <string name="task_remain_notification_ticker">亲，时间到了哦！</string>
+    <string name="task_remain_title">亲，你完成了没有？</string>
+    <string name="not_leave_without_finish_remain">亲，设置完再离开哦</string>
+    <string name="remain_activity_label">任务提醒</string>
 
 </resources>

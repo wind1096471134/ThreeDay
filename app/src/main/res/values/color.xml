@@ -12,5 +12,6 @@
     <color name="label_press">#999</color>
     <color name="switch_controller_gray_dark">#ddd</color>
     <color name="switch_controller_gray_light">#eee</color>
+    <color name="check_task_main_background">#aaa</color>
 
 </resources>

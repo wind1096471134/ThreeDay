@@ -2,5 +2,6 @@
 <resources>
 
     <integer name="words_limit_num">10</integer>
+    <integer name="remain_task_receiver_priority">100</integer>
 
 </resources>

@@ -144,4 +144,20 @@ public class DayModelTest implements DayModelInterface {
         assertTrue(result);
         return taskItem;
     }
+
+    @Override
+    public void testUpdateTasks( ) throws Exception{
+        addOneTaskForTest(false);
+        ArrayList<TaskItem> undoneArrayList = this.mModel.getUndoneTasks();
+        int size = undoneArrayList.size();
+
+        TaskDbHelper taskDbHelper = new TodayTaskDbHelper(this.mContext);
+        int rows = taskDbHelper.deleteTask(undoneArrayList.get(0).getId());
+        assertEquals(1, rows);
+
+        this.mModel.updateTasks();
+        undoneArrayList = this.mModel.getUndoneTasks();
+        assertEquals(size - 1, undoneArrayList.size());
+    }
+
 }

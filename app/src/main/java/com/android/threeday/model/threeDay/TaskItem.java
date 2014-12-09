@@ -1,9 +1,11 @@
 package com.android.threeday.model.threeDay;
 
+import java.io.Serializable;
+
 /**
  * Created by user on 2014/10/29.
  */
-public class TaskItem implements Cloneable{
+public class TaskItem implements Cloneable, Serializable {
     private long mId;
     private int mEvaluation;
     private int mDayType;

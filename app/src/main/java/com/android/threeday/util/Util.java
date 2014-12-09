@@ -29,7 +29,12 @@ public class Util {
     public static final String TASK_DONE_TIME = "4";
     public static final String TASK_EVALUATION = "5";
     public static final String TASK_DAY_TYPE = "6";
+    public static final String TASK_ID = "7";
 
     public static final String PREFERENCE_NAME = "ThreeDay";
     public static final String PREFERENCE_KEY_DAY_EVALUATION = "DayEvaluation";
+    public static final String PREFERENCE_KEY_TODAY_TASKS_CHECK = "TodayTasksCheck";
+
+    public static final String REMAIN_BUNDLE_KEY = "BundleKey";
+    public static final String REMAIN_TASKITEM_KEY = "TaskItemKey";
 }

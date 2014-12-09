@@ -48,9 +48,18 @@ public abstract class BaseDayModel implements BaseModel {
     private void initData( ){
         this.mTaskDbHelper = getDbHelper();
         this.dayType = getDayType();
-        ArrayList<TaskItem> arrayList = this.mTaskDbHelper.getTasks();
         this.mDoneTaskItems = new ArrayList<TaskItem>();
         this.mUndoneTaskItems = new ArrayList<TaskItem>();
+        updateTasks();
+
+        SharedPreferences sharedPreferences = this.mContext.getSharedPreferences(Util.PREFERENCE_NAME, Context.MODE_PRIVATE);
+        this.dayEvaluation = sharedPreferences.getInt(Util.PREFERENCE_KEY_DAY_EVALUATION, Util.EVALUATION_DEFAULT);
+    }
+
+    public void updateTasks( ){
+        this.mUndoneTaskItems.clear();
+        this.mDoneTaskItems.clear();
+        ArrayList<TaskItem> arrayList = this.mTaskDbHelper.getTasks();
         for(TaskItem taskItem : arrayList){
             if(taskItem.getDone()){
                 this.mDoneTaskItems.add(taskItem);
@@ -60,9 +69,6 @@ public abstract class BaseDayModel implements BaseModel {
         }
         sortDoneTasks();
         sortUndoneTask();
-
-        SharedPreferences sharedPreferences = this.mContext.getSharedPreferences(Util.PREFERENCE_NAME, Context.MODE_PRIVATE);
-        this.dayEvaluation = sharedPreferences.getInt(Util.PREFERENCE_KEY_DAY_EVALUATION, Util.EVALUATION_DEFAULT);
     }
 
     public ArrayList<TaskItem> getDoneTasks( ){

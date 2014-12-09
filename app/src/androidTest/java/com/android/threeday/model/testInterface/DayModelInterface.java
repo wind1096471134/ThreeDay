@@ -15,4 +15,5 @@ public interface DayModelInterface{
     public void testSetDayEvaluation( ) throws Exception;
     public void testDoneTask( ) throws Exception;
     public void testUndoneTask( ) throws Exception;
+    public void testUpdateTasks( ) throws Exception;
 }

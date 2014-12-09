@@ -30,17 +30,24 @@ public class YesterdayFragment extends BaseDayFragment {
     private AnimationSet mTaskStateAnimation;
     private PageSwitchLayout.OnPageSwitchListener mOnPageSwitchListener = new PageSwitchLayout.OnPageSwitchListener() {
         @Override
-        public void onPageSwitch(int currentPage) {
-            if(isCurrentUndonePage()){
+        public void onPageSwitchStart(int currentPage) {
+            if(isCurrentDonePage()){
                 mTaskStateTextView.setText(R.string.task_state_undone);
+            }else if(isCurrentUndonePage()){
+                mTaskStateTextView.setText(R.string.task_state_done);
+            }
+            mTaskStateTextView.startAnimation(mTaskStateAnimation);
+        }
+
+        @Override
+        public void onPageSwitchEnd(int currentPage) {
+            if(isCurrentUndonePage()){
                 mTaskUndoneGridAdapter.onResume();
                 mTaskDoneGridAdapter.onPause();
             }else if(isCurrentDonePage()){
-                mTaskStateTextView.setText(R.string.task_state_done);
                 mTaskDoneGridAdapter.onResume();
                 mTaskUndoneGridAdapter.onPause();
             }
-            mTaskStateTextView.startAnimation(mTaskStateAnimation);
         }
     };
     private View.OnClickListener mSwitchControllerClickListener = new View.OnClickListener() {
@@ -58,7 +65,7 @@ public class YesterdayFragment extends BaseDayFragment {
     private void initData( ){
         long duration = 500;
         AlphaAnimation alphaAnimation = new AlphaAnimation(0f, 1f);
-        TranslateAnimation translateAnimation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, -0.3f, Animation.RELATIVE_TO_SELF , 0f);
+        TranslateAnimation translateAnimation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, -0.2f, Animation.RELATIVE_TO_SELF , 0f);
         this.mTaskStateAnimation = new AnimationSet(false);
         this.mTaskStateAnimation.addAnimation(translateAnimation);
         this.mTaskStateAnimation.addAnimation(alphaAnimation);

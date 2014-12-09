@@ -40,7 +40,9 @@ public class MainActivityManager {
         this.mActivity = activity;
         initView( );
         initData( );
-        mHandlerThread.start();
+        if(!mHandlerThread.isAlive()){
+            mHandlerThread.start();
+        }
     }
 
     private void initView( ){

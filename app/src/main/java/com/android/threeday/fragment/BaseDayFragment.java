@@ -1,12 +1,18 @@
 package com.android.threeday.fragment;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
 import android.text.format.Time;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +25,7 @@ import com.android.threeday.activity.addTaskActivity.AddTaskActivity;
 import com.android.threeday.activity.mainActivity.FragmentStateListener;
 import com.android.threeday.activity.mainActivity.FragmentTaskLongClickListener;
 import com.android.threeday.activity.mainActivity.TaskOperateListener;
+import com.android.threeday.activity.remainActivity.RemainTaskService;
 import com.android.threeday.fragment.GridAdapter.BaseTaskGridAdapter;
 import com.android.threeday.fragment.dialogFragment.TaskEvaluationFragment;
 import com.android.threeday.fragment.dialogFragment.TimePickerFragment;
@@ -174,7 +181,9 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
         time.minute = minute;
         if(this.mModel.setUndoneTaskRemain(this.mTaskLongClickPosition, time.format2445())){
             this.mTaskUndoneGridAdapter.notifyDataSetChanged(true);
-            Toast.makeText(getActivity(),"success " + time.format("YYYYMMDD HHMMSS"), Toast.LENGTH_SHORT).show();
+
+            setTaskRemainToAlarm(this.mModel.getUndoneTasks().get(this.mTaskLongClickPosition));
+            Toast.makeText(getActivity(),"success " + time.format2445(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -183,6 +192,7 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
         if(this.mModel.cancelUndoneTaskRemain(this.mTaskLongClickPosition)){
             if(this.mTaskUndoneGridAdapter != null){
                 this.mTaskUndoneGridAdapter.notifyDataSetChanged(true);
+                cancelTaskRemainToAlarm(this.mModel.getUndoneTasks().get(this.mTaskLongClickPosition));
                 Toast.makeText(getActivity(),"success", Toast.LENGTH_SHORT).show();
             }
         }
@@ -209,8 +219,10 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
         if(getDayType() == Util.TYPE_TOMORROW){
             time.set(time.toMillis(false) + 24 * 3600 * 1000);
         }
+        Log.e("wind", time.toMillis(false) + " a");
         if(this.mModel.changeUndoneTaskRemainTime(this.mTaskLongClickPosition, time.format2445())){
             this.mTaskUndoneGridAdapter.notifyDataSetChanged(true);
+            setTaskRemainToAlarm(this.mModel.getUndoneTasks().get(this.mTaskLongClickPosition));
             Toast.makeText(getActivity(),"success " + time.format2445(), Toast.LENGTH_SHORT).show();
         }
     }
@@ -264,8 +276,35 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
                     this.mTaskUndoneGridAdapter.notifyDataSetChanged(true);
                 }
             }
+
+            if(taskItem.getRemain()){
+                setTaskRemainToAlarm(taskItem);
+            }
         }
         return result;
+    }
+
+    private void setTaskRemainToAlarm(TaskItem taskItem){
+        Time time = new Time();
+        time.parse(taskItem.getRemainTime());
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC, time.toMillis(false), getAlarmPendingIntent(taskItem));
+    }
+
+    private void cancelTaskRemainToAlarm(TaskItem taskItem){
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(getAlarmPendingIntent(taskItem));
+    }
+
+    private PendingIntent getAlarmPendingIntent(TaskItem taskItem){
+        Intent intent = new Intent(getActivity(), RemainTaskService.class);
+        Bundle bundle = new Bundle(1);
+        bundle.putSerializable(Util.REMAIN_TASKITEM_KEY, taskItem);
+        intent.putExtra(Util.REMAIN_BUNDLE_KEY, bundle);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        //set type to make every intent different
+        intent.setType(Long.toString(taskItem.getId()));
+        return PendingIntent.getService(getActivity(), (int) taskItem.getId(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     @Override
@@ -314,6 +353,7 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
 
     public void resume( ){
         if(this.mMainLayout != null){
+            this.mModel.updateTasks();
             if(isCurrentDonePage()){
                 if(this.mTaskDoneGridAdapter != null){
                     this.mTaskDoneGridAdapter.onResume();

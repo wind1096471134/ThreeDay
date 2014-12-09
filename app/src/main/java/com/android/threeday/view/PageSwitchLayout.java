@@ -28,6 +28,9 @@ public class PageSwitchLayout extends FrameLayout{
         @Override
         public void onAnimationStart(Animator animation) {
             mSecondView.setVisibility(VISIBLE);
+            if(mOnPageSwitchListener != null){
+                mOnPageSwitchListener.onPageSwitchStart(mCurrentPage);
+            }
         }
 
         @Override
@@ -35,7 +38,7 @@ public class PageSwitchLayout extends FrameLayout{
             mFirstView.setVisibility(INVISIBLE);
             mCurrentPage = PAGE_SECOND;
             if(mOnPageSwitchListener != null){
-                mOnPageSwitchListener.onPageSwitch(mCurrentPage);
+                mOnPageSwitchListener.onPageSwitchEnd(mCurrentPage);
             }
             mAnimatorRunning = false;
         }
@@ -44,6 +47,9 @@ public class PageSwitchLayout extends FrameLayout{
         @Override
         public void onAnimationStart(Animator animation) {
             mFirstView.setVisibility(VISIBLE);
+            if(mOnPageSwitchListener != null){
+                mOnPageSwitchListener.onPageSwitchStart(mCurrentPage);
+            }
         }
 
         @Override
@@ -51,7 +57,7 @@ public class PageSwitchLayout extends FrameLayout{
             mSecondView.setVisibility(INVISIBLE);
             mCurrentPage = PAGE_FIRST;
             if(mOnPageSwitchListener != null){
-                mOnPageSwitchListener.onPageSwitch(mCurrentPage);
+                mOnPageSwitchListener.onPageSwitchEnd(mCurrentPage);
             }
             mAnimatorRunning = false;
         }
@@ -145,6 +151,7 @@ public class PageSwitchLayout extends FrameLayout{
     }
 
     public interface OnPageSwitchListener{
-        public void onPageSwitch(int currentPage);
+        public void onPageSwitchStart(int currentPage);
+        public void onPageSwitchEnd(int currentPage);
     }
 }

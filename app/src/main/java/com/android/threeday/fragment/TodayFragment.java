@@ -1,10 +1,8 @@
 package com.android.threeday.fragment;
 
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
+import android.content.Intent;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -36,17 +34,24 @@ public class TodayFragment extends BaseDayFragment {
     private AnimationSet mTaskStateAnimation;
     private PageSwitchLayout.OnPageSwitchListener mOnPageSwitchListener = new PageSwitchLayout.OnPageSwitchListener() {
         @Override
-        public void onPageSwitch(int currentPage) {
+        public void onPageSwitchStart(int currentPage) {
             if(isCurrentUndonePage()){
+                mTaskStateTextView.setText(R.string.task_state_done);
+            }else if(isCurrentDonePage()){
                 mTaskStateTextView.setText(R.string.task_state_undone);
+            }
+            mTaskStateTextView.startAnimation(mTaskStateAnimation);
+        }
+
+        @Override
+        public void onPageSwitchEnd(int currentPage) {
+            if(isCurrentUndonePage()){
                 mTaskUndoneGridAdapter.onResume();
                 mTaskDoneGridAdapter.onPause();
             }else if(isCurrentDonePage()){
-                mTaskStateTextView.setText(R.string.task_state_done);
                 mTaskDoneGridAdapter.onResume();
                 mTaskUndoneGridAdapter.onPause();
             }
-            mTaskStateTextView.startAnimation(mTaskStateAnimation);
         }
     };
     private AdapterView.OnItemLongClickListener mFontTaskUndoneGridViewLongClickListener = new AdapterView.OnItemLongClickListener() {
@@ -84,13 +89,15 @@ public class TodayFragment extends BaseDayFragment {
         }
     };
 
+    private boolean mTodayTasksCheck;
+
     public TodayFragment( ){
         super();
         initData( );
     }
 
     private void initData( ){
-        long duration = 500;
+        long duration = 600;
         AlphaAnimation alphaAnimation = new AlphaAnimation(0f, 1f);
         TranslateAnimation translateAnimation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, -0.3f, Animation.RELATIVE_TO_SELF , 0f);
         this.mTaskStateAnimation = new AnimationSet(false);
@@ -98,10 +105,13 @@ public class TodayFragment extends BaseDayFragment {
         this.mTaskStateAnimation.addAnimation(alphaAnimation);
         this.mTaskStateAnimation.setDuration(duration);
         this.mTaskStateAnimation.setInterpolator(new DecelerateInterpolator());
+
     }
 
     @Override
     protected void initView(Context context) {
+        this.mTodayTasksCheck = context.getSharedPreferences(Util.PREFERENCE_NAME, Context.MODE_PRIVATE).
+                getBoolean(Util.PREFERENCE_KEY_TODAY_TASKS_CHECK, false);
 
         this.mMainLayout = View.inflate(context, R.layout.fragment_switch_layout, null);
         this.mMainLayout.findViewById(R.id.pageContainer).setBackgroundResource(R.drawable.page_background_gray);
@@ -120,8 +130,10 @@ public class TodayFragment extends BaseDayFragment {
         this.mPageSwitchLayout.setPageView(frontPageView, backPageView);
         this.mPageSwitchLayout.setOnPageSwitchListener(this.mOnPageSwitchListener);
 
+        if(!this.mTodayTasksCheck){
+            this.mBackTaskDoneGridView.setOnItemLongClickListener(this.mBackTaskDoneGridViewLongClickListener);
+        }
         this.mFrontTaskUndoneGridView.setOnItemLongClickListener(this.mFontTaskUndoneGridViewLongClickListener);
-        this.mBackTaskDoneGridView.setOnItemLongClickListener(this.mBackTaskDoneGridViewLongClickListener);
         this.mTaskStateTextView.setText(R.string.task_state_undone);
     }
 

@@ -39,6 +39,11 @@ public class TodayModelTest extends ActivityInstrumentationTestCase2<MainActivit
     }
 
     @Override
+    public void testUpdateTasks() throws Exception {
+        this.mDayModelTest.testUpdateTasks();
+    }
+
+    @Override
     public void testGetDayEvaluation() throws Exception {
         mDayModelTest.testGetDayEvaluation();
     }
