@@ -18,6 +18,7 @@ import com.android.threeday.util.Util;
  */
 public class TomorrowFragment extends BaseDayFragment {
     private GridView mFontTaskUndoneGridView;
+    private View mFrontUndoneEmptyView;
 
     private View.OnClickListener mAddUndoneTaskClickListener = new View.OnClickListener() {
         @Override
@@ -45,6 +46,7 @@ public class TomorrowFragment extends BaseDayFragment {
         this.mFontTaskUndoneGridView.setOnItemLongClickListener(this.mFontTaskUndoneGridViewLongClickListener);
         this.mMainLayout.findViewById(R.id.addButton).setOnClickListener(this.mAddUndoneTaskClickListener);
         ((TextView)this.mMainLayout.findViewById(R.id.taskStateTextView)).setText(R.string.task_state_undone);
+        this.mFrontUndoneEmptyView = this.mMainLayout.findViewById(R.id.taskEmptyView);
     }
 
     @Override
@@ -82,5 +84,16 @@ public class TomorrowFragment extends BaseDayFragment {
     @Override
     protected boolean isCurrentUndonePage() {
         return true;
+    }
+
+    @Override
+    protected void checkEmptyView() {
+        if(this.mModel.getUndoneTasks().size() == 0){
+            this.mFrontUndoneEmptyView.setVisibility(View.VISIBLE);
+            this.mFontTaskUndoneGridView.setVisibility(View.INVISIBLE);
+        }else{
+            this.mFrontUndoneEmptyView.setVisibility(View.INVISIBLE);
+            this.mFontTaskUndoneGridView.setVisibility(View.VISIBLE);
+        }
     }
 }

@@ -31,17 +31,28 @@ public class DayModelTest implements DayModelInterface {
     @Override
     public void testGetDayEvaluation() throws Exception {
         SharedPreferences sharedPreferences = this.mContext.getSharedPreferences(Util.PREFERENCE_NAME, Context.MODE_PRIVATE);
-        int evaluation = sharedPreferences.getInt(Util.PREFERENCE_KEY_DAY_EVALUATION, Util.EVALUATION_DEFAULT);
+        int evaluation;
+        if(this.mModel.getDayType() == Util.TYPE_YESTERDAY){
+           evaluation = sharedPreferences.getInt(Util.PREFERENCE_KEY_YESTERDAY_EVALUATION, Util.EVALUATION_DEFAULT);
+        }else if(this.mModel.getDayType() == Util.TYPE_TODAY){
+            evaluation = sharedPreferences.getInt(Util.PREFERENCE_KEY_TODAY_EVALUATION, Util.EVALUATION_DEFAULT);
+        }else{
+            evaluation = Util.EVALUATION_DEFAULT;
+        }
         assertEquals(evaluation, this.mModel.getDayEvaluation());
     }
 
     @Override
     public void testSetDayEvaluation() throws Exception {
+        if(this.mModel.getDayType() == Util.TYPE_TOMORROW){
+            return;
+        }
         SharedPreferences sharedPreferences = this.mContext.getSharedPreferences(Util.PREFERENCE_NAME, Context.MODE_PRIVATE);
-        sharedPreferences.edit().putInt(Util.PREFERENCE_KEY_DAY_EVALUATION, -1).commit();
+        String dayKey = this.mModel.getDayType() == Util.TYPE_YESTERDAY ? Util.PREFERENCE_KEY_YESTERDAY_EVALUATION : Util.PREFERENCE_KEY_TODAY_EVALUATION;
+        sharedPreferences.edit().putInt(dayKey, -1).commit();
         boolean result = this.mModel.setDayEvaluation(Util.EVALUATION_GOOD);
         assertTrue(result);
-        int evaluation = sharedPreferences.getInt(Util.PREFERENCE_KEY_DAY_EVALUATION, Util.EVALUATION_DEFAULT);
+        int evaluation = sharedPreferences.getInt(dayKey, Util.EVALUATION_DEFAULT);
         assertEquals(Util.EVALUATION_GOOD, evaluation);
     }
 

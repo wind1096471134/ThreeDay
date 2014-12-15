@@ -18,6 +18,8 @@ import com.android.threeday.model.threeDay.YesterdayModel;
 import com.android.threeday.util.Util;
 import com.android.threeday.view.PageSwitchLayout;
 
+import java.util.ArrayList;
+
 /**
  * Created by user on 2014/10/29.
  */
@@ -27,6 +29,8 @@ public class YesterdayFragment extends BaseDayFragment {
     private GridView mBackTaskUndoneGridView;
     private TextView mTaskStateTextView;
     private View mSwitchController;
+    private View mFrontDoneEmptyView;
+    private View mBackUndoneEmptyView;
     private AnimationSet mTaskStateAnimation;
     private PageSwitchLayout.OnPageSwitchListener mOnPageSwitchListener = new PageSwitchLayout.OnPageSwitchListener() {
         @Override
@@ -84,10 +88,12 @@ public class YesterdayFragment extends BaseDayFragment {
 
         View frontView = View.inflate(context, R.layout.task_container, null);
         this.mFrontTaskDoneGridView = (GridView) frontView.findViewById(R.id.gridView);
+        this.mFrontDoneEmptyView = frontView.findViewById(R.id.taskEmptyView);
 
         View backView = View.inflate(context, R.layout.task_container, null);
         this.mBackTaskUndoneGridView = (GridView) backView.findViewById(R.id.gridView);
         this.mBackTaskUndoneGridView.setClickable(false);
+        this.mBackUndoneEmptyView = backView.findViewById(R.id.taskEmptyView);
 
         this.mPageSwitchLayout.setPageView(frontView, backView);
         this.mPageSwitchLayout.setOnPageSwitchListener(this.mOnPageSwitchListener);
@@ -141,4 +147,19 @@ public class YesterdayFragment extends BaseDayFragment {
         return this.mPageSwitchLayout.getCurrentPage() == PageSwitchLayout.PAGE_SECOND;
     }
 
+    @Override
+    protected void checkEmptyView() {
+        checkEmptyView(this.mModel.getDoneTasks(), this.mFrontDoneEmptyView, this.mFrontTaskDoneGridView);
+        checkEmptyView(this.mModel.getUndoneTasks(), this.mBackUndoneEmptyView, this.mBackTaskUndoneGridView);
+    }
+
+    private void checkEmptyView(ArrayList tasks, View emptyView, View mainView){
+        if(tasks.size() == 0){
+            emptyView.setVisibility(View.VISIBLE);
+            mainView.setVisibility(View.INVISIBLE);
+        }else{
+            emptyView.setVisibility(View.INVISIBLE);
+            mainView.setVisibility(View.VISIBLE);
+        }
+    }
 }

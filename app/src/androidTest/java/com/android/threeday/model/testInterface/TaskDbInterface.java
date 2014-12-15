@@ -15,4 +15,5 @@ public interface TaskDbInterface{
     public void testSetDoneTime( ) throws Exception;
     public void testSetEvaluation( ) throws Exception;
     public void testUpdateTask( ) throws Exception;
+    public void testDeleteAllDayTasks( ) throws Exception;
 }

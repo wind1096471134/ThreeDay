@@ -3,6 +3,7 @@ package com.android.threeday.model.threeDay;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.format.Time;
+import android.util.Log;
 
 import com.android.threeday.model.BaseModel;
 import com.android.threeday.util.Util;
@@ -45,15 +46,14 @@ public abstract class BaseDayModel implements BaseModel {
 
     protected abstract int getDayType( );
 
+    protected abstract int getBaseDayEvaluation( );
+
     private void initData( ){
         this.mTaskDbHelper = getDbHelper();
         this.dayType = getDayType();
         this.mDoneTaskItems = new ArrayList<TaskItem>();
         this.mUndoneTaskItems = new ArrayList<TaskItem>();
-        updateTasks();
-
-        SharedPreferences sharedPreferences = this.mContext.getSharedPreferences(Util.PREFERENCE_NAME, Context.MODE_PRIVATE);
-        this.dayEvaluation = sharedPreferences.getInt(Util.PREFERENCE_KEY_DAY_EVALUATION, Util.EVALUATION_DEFAULT);
+        reloadData();
     }
 
     public void updateTasks( ){
@@ -71,6 +71,11 @@ public abstract class BaseDayModel implements BaseModel {
         sortUndoneTask();
     }
 
+    public void reloadData( ){
+        updateTasks();
+        this.dayEvaluation = getBaseDayEvaluation();
+    }
+
     public ArrayList<TaskItem> getDoneTasks( ){
         return this.mDoneTaskItems;
     }
@@ -81,6 +86,7 @@ public abstract class BaseDayModel implements BaseModel {
 
     public boolean addTask(TaskItem taskItem) {
         long id = this.mTaskDbHelper.addTask(taskItem);
+        Log.e("wind", "id " + id);
         if(id != -1){
             taskItem.setId(id);
             if(taskItem.getDone()){
@@ -91,6 +97,10 @@ public abstract class BaseDayModel implements BaseModel {
             return true;
         }
         return false;
+    }
+
+    public void deleteAllDayTasks( ){
+        this.mTaskDbHelper.deleteAllDayTasks( );
     }
 
     public boolean deleteUndoneTask(int position){
@@ -199,5 +209,9 @@ public abstract class BaseDayModel implements BaseModel {
 
     public void sortUndoneTask( ){
         Collections.sort(this.mUndoneTaskItems, this.mUndoneTasksComparator);
+    }
+
+    public void resetDataBase( ){
+        this.mTaskDbHelper.resetSQLiteIdToZero( );
     }
 }

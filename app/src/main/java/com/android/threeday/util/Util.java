@@ -16,11 +16,22 @@ public class Util {
 
     public static final int DONE = 1;
     public static final int UNDONE = 0;
-
     public static final int REMAIN = 1;
     public static final int UN_REMAIN = 0;
 
     public static final int REQUEST_ADD_TASK = 0;
+
+    public final static int MORNING_REMAIN_ALARM_ID = -1;
+    public final static int EVENING_CHECK_ALARM_ID = -2;
+    public final static int UPDATE_DATA_AT_NEW_DAY_ALARM_ID = -3;
+
+    public static final int MORNING_REMAIN_TIME_DEFAULT_HOUR = 8;
+    public static final int MORNING_REMAIN_TIME_DEFAULT_MINUTE = 0;
+    public static final int EVENING_CHECK_TIME_DEFAULT_HOUR = 22;
+    public static final int EVENING_CHECK_TIME_DEFAULT_MINUTE = 0;
+    public static final int NEW_DAY_ALARM_HOUR = 0;
+    public static final int NEW_DAY_ALARM_MINUTE = 0;
+    public static final long A_DAY_IN_MILLIS = 24 * 60 * 60 * 1000;
 
     public static final String TASK_INFORMATION = "0";
     public static final String TASK_REMAIN = "1";
@@ -32,8 +43,17 @@ public class Util {
     public static final String TASK_ID = "7";
 
     public static final String PREFERENCE_NAME = "ThreeDay";
-    public static final String PREFERENCE_KEY_DAY_EVALUATION = "DayEvaluation";
+    public static final String PREFERENCE_KEY_YESTERDAY_EVALUATION = "YesterdayEvaluation";
+    public static final String PREFERENCE_KEY_TODAY_EVALUATION = "TodayEvaluation";
     public static final String PREFERENCE_KEY_TODAY_TASKS_CHECK = "TodayTasksCheck";
+    public static final String PREFERENCE_KEY_MORNING_REMAIN = "MorningRemain";
+    public static final String PREFERENCE_KEY_MORNING_REMAIN_TIME_HOUR = "MorningRemainTimeHour";
+    public static final String PREFERENCE_KEY_MORNING_REMAIN_TIME_MINUTE = "MorningRemainTimeMinute";
+    public static final String PREFERENCE_KEY_EVENING_CHECK = "EveningCheck";
+    public static final String PREFERENCE_KEY_EVENING_CHECK_TIME_HOUR = "EveningCheckTimeHour";
+    public static final String PREFERENCE_KEY_EVENING_CHECK_TIME_MINUTE = "EveningCheckTimeMinute";
+    public static final String PREFERENCE_KEY_NEW_DAY_CHECK = "NewDayChecked";
+    public static final String PREFERENCE_KEY_FIRST_USING = "FirstUsing";
 
     public static final String REMAIN_BUNDLE_KEY = "BundleKey";
     public static final String REMAIN_TASKITEM_KEY = "TaskItemKey";

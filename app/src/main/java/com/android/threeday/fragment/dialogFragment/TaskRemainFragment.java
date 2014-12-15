@@ -38,6 +38,7 @@ public class TaskRemainFragment extends DialogFragment {
                         }
                     }
                 }).create();
+        alertDialog.setCanceledOnTouchOutside(true);
         return alertDialog;
     }
 

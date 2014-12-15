@@ -20,12 +20,19 @@
             android:layout_height="wrap_content"
             layout="@layout/page_top_container" />
 
-        <include
-            android:layout_width="match_parent"
+        <FrameLayout
+            android:layout_width="fill_parent"
             android:layout_height="0dp"
-            layout="@layout/task_container"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="1" />
+            android:layout_weight="1">
+
+            <include
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                layout="@layout/task_container"
+                android:layout_gravity="center_horizontal"
+                />
+
+        </FrameLayout>
 
         <FrameLayout
             android:layout_width="match_parent"

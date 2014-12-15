@@ -1,11 +1,9 @@
 package com.android.threeday.fragment.GridAdapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.text.format.Time;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.android.threeday.R;
@@ -44,7 +42,6 @@ public class TaskUnFinishGridAdapter extends BaseTaskGridAdapter {
     protected void fetchContentChangeView(BaseContentChangeView contentChangeView, TaskItem taskItem) {
         TextView informationTextView = (TextView) contentChangeView.getFirstContentView().findViewById(R.id.informationTextView);
         informationTextView.setText(taskItem.getInformation());
-
         if(taskItem.getRemain()){
             View secondView = contentChangeView.getSecondContentView();
             TextView textView = (TextView) secondView.findViewById(R.id.textView);

@@ -154,8 +154,16 @@ public class AddTaskActivity extends FragmentActivity {
                 time.setToNow();
                 time.hour = hourOfDay;
                 time.minute = minute;
+                if(getIntent().getIntExtra(Util.TASK_DAY_TYPE, Util.TYPE_TODAY) == Util.TYPE_TODAY){
+                    Time now = new Time();
+                    now.setToNow();
+                    if(time.before(now)){
+                        Toast.makeText(AddTaskActivity.this, R.string.set_time_before_now_toast, Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }
                 if(getIntent().getIntExtra(Util.TASK_DAY_TYPE, Util.TYPE_TODAY) == Util.TYPE_TOMORROW){
-                    time.set(time.toMillis(false) + 24 * 3600 * 1000);
+                    time.set(time.toMillis(false) + Util.A_DAY_IN_MILLIS);
                 }
                 addUndoneTask(true, time.format2445());
             }

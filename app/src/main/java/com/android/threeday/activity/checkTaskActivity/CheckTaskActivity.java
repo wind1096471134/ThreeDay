@@ -128,7 +128,7 @@ public class CheckTaskActivity extends Activity {
 
     private void onDayEvaluationCheck(int evaluation){
         SharedPreferences sharedPreferences = getSharedPreferences(Util.PREFERENCE_NAME, MODE_PRIVATE);
-        sharedPreferences.edit().putInt(Util.PREFERENCE_KEY_DAY_EVALUATION, evaluation)
+        sharedPreferences.edit().putInt(Util.PREFERENCE_KEY_TODAY_TASKS_CHECK, evaluation)
                 .putBoolean(Util.PREFERENCE_KEY_TODAY_TASKS_CHECK, true).commit();
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -180,8 +180,4 @@ public class CheckTaskActivity extends Activity {
         this.mTaskCheckMessageTextView.setText(this.mTasksCheckMessage.replace("?", Integer.toString(remainNum)));
     }
 
-    @Override
-    public void onBackPressed() {
-
-    }
 }

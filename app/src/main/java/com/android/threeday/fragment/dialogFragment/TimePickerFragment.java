@@ -14,6 +14,9 @@ import android.util.Log;
  */
 public class TimePickerFragment extends DialogFragment{
     private TimePickerDialog.OnTimeSetListener mTimeSetListener;
+    private boolean mInitTime;
+    private int mHour;
+    private int mMinute;
 
     public TimePickerFragment( ){
         super();
@@ -23,13 +26,30 @@ public class TimePickerFragment extends DialogFragment{
         this.mTimeSetListener = listener;
     }
 
+    public void setInitTime(int hour, int minute){
+        this.mHour = hour;
+        this.mMinute = minute;
+        this.mInitTime = true;
+    }
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Time time = new Time();
-        time.setToNow();
-        TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(), this.mTimeSetListener, time.hour,
-                time.minute, true);
+
+        int hour;
+        int minute;
+        if(this.mInitTime){
+            hour = this.mHour;
+            minute = this.mMinute;
+        }else{
+            Time time = new Time();
+            time.setToNow();
+            hour = time.hour;
+            minute = time.minute;
+        }
+        TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(), this.mTimeSetListener, hour,
+                minute, true);
+        timePickerDialog.setCanceledOnTouchOutside(true);
         return timePickerDialog;
     }
 

@@ -1,20 +1,29 @@
 package com.android.threeday.activity.mainActivity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 
 import com.android.threeday.R;
+import com.android.threeday.activity.checkTaskActivity.CheckTaskActivity;
+import com.android.threeday.activity.settingActivity.SettingActivity;
 import com.android.threeday.fragment.BaseDayFragment;
 import com.android.threeday.fragment.TodayFragment;
 import com.android.threeday.fragment.TomorrowFragment;
 import com.android.threeday.fragment.YesterdayFragment;
+import com.android.threeday.model.updateData.UpdateDataModel;
 import com.android.threeday.util.Util;
+import com.android.threeday.view.SlideLayer;
 
 /**
  * Created by user on 2014/10/29.
@@ -22,6 +31,7 @@ import com.android.threeday.util.Util;
 public class MainActivity extends FragmentActivity implements FragmentTaskLongClickListener, TaskOperateListener
     , FragmentStateListener {
     private boolean mFirstCreate;
+    private boolean mNeedToUpdateDataAtNewDay;
     private int mCurrentPageIndex = -1;
 
     private BaseDayFragment mTaskLongClickFragment;
@@ -48,17 +58,45 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
 
         @Override
         public void onPageSelected(int position) {
-            if(mCurrentPageIndex != position){
-                mMainActivityManager.onPageSelected(position);
-                mMainActivityManager.setDayEvaluation(getCurrentPageDayEvaluation(position));
-                onFragmentSelected(position);
+            if(mNeedToUpdateDataAtNewDay){
+            //we want user to see the change from old day to new day, so here don't need to update the view
+                mNeedToUpdateDataAtNewDay = false;
                 mCurrentPageIndex = position;
+                mMainActivityManager.updateDataAtNewDay();
+                for(BaseDayFragment baseDayFragment : mFragments){
+                    baseDayFragment.pause();
+                    baseDayFragment.reloadData();
+                }
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mFragments[mCurrentPageIndex].resume();
+                        mMainActivityManager.onPageSelected(mCurrentPageIndex);
+                        mMainActivityManager.setDayEvaluation(getCurrentPageDayEvaluation(mCurrentPageIndex));
+                    }
+                }, mMainActivityManager.getViewAnimationDuration() + 500);
+
+            }else{
+                if(mCurrentPageIndex != position){
+                    mMainActivityManager.onPageSelected(position);
+                    mMainActivityManager.setDayEvaluation(getCurrentPageDayEvaluation(position));
+                    onFragmentSelected(position);
+                    mCurrentPageIndex = position;
+                }
             }
         }
 
         @Override
         public void onPageScrollStateChanged(int state) {
 
+        }
+    };
+    private SlideLayer.OnLayerSlideListener mOnLayerSlideListener = new SlideLayer.OnLayerSlideListener() {
+        @Override
+        public void onLayerSlide() {
+            mNeedToUpdateDataAtNewDay = true;
+            mMainActivityManager.getViewPager().setCurrentItem(MainActivityManager.YESTERDAY_INDEX, true);
+            mMainActivityManager.setNewDayChecked();
         }
     };
 
@@ -71,12 +109,17 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
         initFragment();
         setViewPagerAdapter();
         setViewPagerListener( );
+        checkNewDay( );
+        checkFirstUsing( );
+        //this.mMainActivityManager.testSetNewDayAlarm();
+
         Log.e("wind", "main create " + android.os.Process.myPid());
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        checkNewDay();
     }
 
     @Override
@@ -87,6 +130,22 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         //not restore because we want to rebuild all view
+    }
+
+    private void checkNewDay( ){
+        boolean checked = this.mMainActivityManager.isNewDayChecked();
+        if(!checked){
+            this.mMainActivityManager.initSlideLayer();
+            this.mMainActivityManager.getSlideLayer().setOnLayerSlideListener(this.mOnLayerSlideListener);
+        }
+    }
+
+    private void checkFirstUsing( ){
+        boolean isFirstUsing = this.mMainActivityManager.isFirstUsing( );
+        if(isFirstUsing){
+            this.mMainActivityManager.setFirstUsingFalse();
+            this.mMainActivityManager.setNewDayAlarm();
+        }
     }
 
     @Override
@@ -201,6 +260,20 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
         }
     }
 
+    public void checkTasks(View view){
+        Intent intent = new Intent(this, CheckTaskActivity.class);
+        startActivity(intent);
+    }
+
+    public void setting(View view){
+        startSettingActivity();
+    }
+
+    private void startSettingActivity( ){
+        Intent intent = new Intent(this, SettingActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     public void onBackPressed() {
         if(this.mMainActivityManager.isMenuVisible()){
@@ -223,6 +296,15 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
     @Override
     public void onFragmentViewCreate(Fragment fragment) {
 
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_MENU){
+            startSettingActivity();
+            return true;
+        }
+        return super.onKeyUp(keyCode, event);
     }
 
     @Override

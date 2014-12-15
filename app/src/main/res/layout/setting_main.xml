@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/custom_action_bar_height"
+        android:background="@color/custom_action_bar_background"
+        android:padding="@dimen/custom_action_bar_padding">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="back"
+            android:id="@+id/button"
+            android:layout_gravity="left|center_vertical"
+            android:onClick="back" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/setting"
+            android:layout_gravity="center"
+            android:textSize="@dimen/custom_action_bar_font_size" />
+    </FrameLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView"
+        android:layout_gravity="center_horizontal" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:animateLayoutChanges="true"
+            android:padding="@dimen/setting_main_padding">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="5dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/morning_remain"
+                    android:id="@+id/textView"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/setting_main_font_size" />
+
+                <com.android.threeday.view.CustomSwitch
+                    android:layout_width="@dimen/setting_switch_width"
+                    android:layout_height="@dimen/setting_switch_height"
+                    android:id="@+id/morningSwitch"
+                    android:layout_gravity="center_vertical"
+                    android:background="#aaa" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:id="@+id/morningRemainView"
+                android:layout_marginBottom="5dp"
+                android:onClick="setMorningRemainTime">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/set_remain_time"
+                    android:id="@+id/textView3"
+                    android:textSize="@dimen/setting_main_font_size"
+                    android:layout_gravity="center_vertical" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="("
+                    android:layout_gravity="center_vertical"
+                    android:textSize="@dimen/setting_main_font_size" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/morningTimeTextView"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="@dimen/setting_main_font_size" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=")"
+                    android:textSize="@dimen/setting_main_font_size" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="5dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/evening_check"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/setting_main_font_size" />
+
+                <com.android.threeday.view.CustomSwitch
+                    android:layout_width="@dimen/setting_switch_width"
+                    android:layout_height="@dimen/setting_switch_height"
+                    android:id="@+id/eveningSwitch"
+                    android:layout_gravity="center_vertical"
+                    android:background="#aaa" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/eveningCheckView"
+                android:onClick="setEveningCheckTime">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/set_remain_time"
+                    android:textSize="@dimen/setting_main_font_size" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="("
+                    android:layout_gravity="center_vertical"
+                    android:textSize="@dimen/setting_main_font_size" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/eveningTimeTextView"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="@dimen/setting_main_font_size" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=")"
+                    android:textSize="@dimen/setting_main_font_size" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

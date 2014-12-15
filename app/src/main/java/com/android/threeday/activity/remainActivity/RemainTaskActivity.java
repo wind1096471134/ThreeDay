@@ -5,11 +5,8 @@ import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.Time;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.threeday.R;
 import com.android.threeday.model.threeDay.TaskItem;
@@ -37,15 +34,12 @@ public class RemainTaskActivity extends Activity {
         initData( );
         initView( );
         fetchViewAndData();
-
-        Log.e("wind","remain create " + this.mRemainTaskId);
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         this.mRemainTaskId = getIntent().getIntExtra(Util.TASK_ID, -1);
-        Log.e("wind","remain new intent " + this.mRemainTaskId);
         fetchViewAndData( );
     }
 
@@ -57,7 +51,6 @@ public class RemainTaskActivity extends Activity {
     private void fetchViewAndData( ){
         TaskItem taskItem = this.mModel.getUndoneTasks().get(getTaskPositionById());
         this.mTaskInformationTextView.setText(taskItem.getInformation());
-
     }
 
     private void initView( ){
@@ -118,6 +111,7 @@ public class RemainTaskActivity extends Activity {
 
     public void undoneTask(View view){
         cancelNotification();
+        this.mModel.cancelUndoneTaskRemain(getTaskPositionById());
         finish();
     }
 
@@ -125,19 +119,9 @@ public class RemainTaskActivity extends Activity {
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         notificationManager.cancel(this.mRemainTaskId);
     }
-/*
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if(keyCode == KeyEvent.KEYCODE_BACK){
-            Toast.makeText(this, R.string.not_leave_without_finish_remain, Toast.LENGTH_SHORT).show();
-            return true;
-        }
-        return super.onKeyUp(keyCode, event);
-    }*/
 
     @Override
     protected void onDestroy() {
-        Log.e("wind", "remain destroy");
         super.onDestroy();
     }
 }

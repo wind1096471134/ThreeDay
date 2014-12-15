@@ -39,5 +39,14 @@
     <string name="task_remain_title">亲，你完成了没有？</string>
     <string name="not_leave_without_finish_remain">亲，设置完再离开哦</string>
     <string name="remain_activity_label">任务提醒</string>
+    <string name="setting">设置</string>
+    <string name="morning_remain">早晨提醒</string>
+    <string name="evening_check">晚上提醒</string>
+    <string name="set_remain_time">设置提醒时间</string>
+    <string name="morning_remain_notification_title">早晨计划</string>
+    <string name="evening_check_notification_title">晚上总结</string>
+    <string name="morning_remain_notification_text">亲，记得做好今天的安排哦！</string>
+    <string name="evening_check_notification_text">亲，记得总结你今天的安排哦！</string>
+    <string name="set_time_before_now_toast">亲，你想穿越吗？</string>
 
 </resources>

@@ -124,6 +124,7 @@ public abstract class BaseTaskGridAdapter extends BaseAdapter {
         if(!this.mBaseContentChangeViews.contains(contentChangeView)){
             this.mBaseContentChangeViews.add(contentChangeView);
         }
+        //Log.e("wind", position + " ");
         fetchContentChangeView(contentChangeView, taskItem);
 
         return convertView;
@@ -132,8 +133,9 @@ public abstract class BaseTaskGridAdapter extends BaseAdapter {
 
     protected void startChangeContent(BaseContentChangeView contentChangeView){
         //avoid start twice
-        if(this.mContentChanging){
-            if(!contentChangeView.isContentChanging()){
+        //Log.e("wind", "C");
+        if(this.mContentChanging){//Log.e("wind","A");
+            if(!contentChangeView.isContentChanging()){//Log.e("wind", "B");
                 contentChangeView.startChangeContent(getRandomStartDelay());
             }
         }
@@ -141,6 +143,10 @@ public abstract class BaseTaskGridAdapter extends BaseAdapter {
 
     public void onResume( ){
         notifyDataSetChanged(true);
+    }
+
+    public void updateData( ){
+        notifyDataSetChanged(false);
     }
 
     public void onPause( ){

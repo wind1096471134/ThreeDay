@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import android.text.format.Time;
+import android.util.Log;
 
 import com.android.threeday.model.testInterface.TaskDbInterface;
 import com.android.threeday.util.Util;
@@ -29,7 +30,8 @@ public class TaskDbHelperTest implements TaskDbInterface {
 
     private void deleteTestData( ){
         TaskSQLiteOpenHelper taskSQLiteOpenHelper = TaskSQLiteOpenHelper.getInstance(mContext);
-        taskSQLiteOpenHelper.getWritableDatabase().delete(TaskSQLiteOpenHelper.TABLE_TASK, null, null);
+        taskSQLiteOpenHelper.getWritableDatabase().delete(TaskSQLiteOpenHelper.TABLE_TASK, TaskSQLiteOpenHelper.COLUMN_DAY_TYPE + "=?",
+                new String[]{Integer.toString(mTaskDbHelper.getDayType())});
     }
 
     private Cursor putTestData( ){
@@ -104,6 +106,14 @@ public class TaskDbHelperTest implements TaskDbInterface {
         cursor.moveToFirst();
         assertEquals(taskItem.getDayType(), cursor.getInt(cursor.getColumnIndex(TaskSQLiteOpenHelper.COLUMN_DAY_TYPE)));
         assertEquals(taskItem.getDone(), cursor.getInt(cursor.getColumnIndex(TaskSQLiteOpenHelper.COLUMN_DONE)) == Util.DONE);
+    }
+
+    @Override
+    public void testDeleteAllDayTasks() throws Exception {
+        putTestData();
+        int size = this.mTaskDbHelper.getTasks().size();
+        assertEquals(size, this.mTaskDbHelper.deleteAllDayTasks());
+        assertEquals(0, this.mTaskDbHelper.getTasks().size());
     }
 
     @Override

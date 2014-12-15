@@ -1,25 +1,34 @@
 package com.android.threeday.activity.mainActivity;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.HandlerThread;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
+import android.text.format.Time;
+import android.view.View;
 import android.view.animation.DecelerateInterpolator;
-import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.threeday.R;
 import com.android.threeday.fragment.dialogFragment.TaskDoneMenuFragment;
 import com.android.threeday.fragment.dialogFragment.TaskUndoneMenuFragment;
+import com.android.threeday.model.updateData.UpdateDataModel;
+import com.android.threeday.service.NewDaySettingService;
 import com.android.threeday.util.Util;
+import com.android.threeday.view.SlideLayer;
 
 /**
  * Created by user on 2014/11/11.
  */
 public class MainActivityManager {
+    private final long mAnimationDuration = 500;
     static final int DAY_NUM = 3;
     static final int YESTERDAY_INDEX = 0;
     static final int TODAY_INDEX = 1;
@@ -29,11 +38,16 @@ public class MainActivityManager {
     private TaskUndoneMenuFragment mTaskUndoneMenuFragment;
     private TaskDoneMenuFragment mTaskDoneMenuFragment;
     private ViewPager mViewPager;
+    private SlideLayer mSlideLayer;
     private TextView mTitleTextView;
     private TextView mWordsTextView;
     private ImageView mDayEvaluationImageView;
-    private AnimationSet mTopChangeAnimation;
-    private AnimationSet mBottomChangeAnimation;
+    private View mCheckTasksView;
+    private AnimatorSet mTopTitleViewChangeAnimator;
+    private AnimatorSet mTopDayEvaluationViewChangeAnimator;
+    private AnimatorSet mTopCheckViewChangeAnimator;
+    private AnimatorSet mBottomChangeAnimator;
+    private SharedPreferences mSharedPreferences;
     private static final HandlerThread mHandlerThread = new HandlerThread("HandlerThread");
 
     MainActivityManager(FragmentActivity activity){
@@ -54,24 +68,35 @@ public class MainActivityManager {
         this.mTitleTextView = (TextView) mActivity.findViewById(R.id.titleTextView);
         this.mWordsTextView = (TextView) mActivity.findViewById(R.id.wordsTextView);
         this.mDayEvaluationImageView = (ImageView) mActivity.findViewById(R.id.dayEvaluationImageView);
+        this.mCheckTasksView = mActivity.findViewById(R.id.checkTaskButton);
     }
 
     private void initData( ){
-        this.mTopChangeAnimation = new AnimationSet(false);
-        AlphaAnimation alphaAnimation = new AlphaAnimation(0f, 1f);
-        TranslateAnimation translateAnimation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, -0.2f, Animation.RELATIVE_TO_SELF , 0f);
-        this.mTopChangeAnimation.addAnimation(alphaAnimation);
-        this.mTopChangeAnimation.addAnimation(translateAnimation);
-        this.mTopChangeAnimation.setDuration(500);
-        this.mTopChangeAnimation.setInterpolator(new DecelerateInterpolator());
+        int startY = -this.mActivity.getResources().getDimensionPixelOffset(R.dimen.main_activity_top_animation_startY);
+        this.mTopTitleViewChangeAnimator = new AnimatorSet();
+        ObjectAnimator topTranslationAnimator = ObjectAnimator.ofFloat(this.mTitleTextView, "translationY", startY, 0f);
+        ObjectAnimator topAlphaAnimation = ObjectAnimator.ofFloat(this.mTitleTextView, "alpha", 0f, 1f);
+        this.mTopTitleViewChangeAnimator.playTogether(topTranslationAnimator, topAlphaAnimation);
+        this.mTopTitleViewChangeAnimator.setDuration(this.mAnimationDuration);
+        this.mTopTitleViewChangeAnimator.setInterpolator(new DecelerateInterpolator());
+        this.mTopTitleViewChangeAnimator.setTarget(this.mTitleTextView);
 
-        this.mBottomChangeAnimation = new AnimationSet(false);
-        AlphaAnimation alphaAnimation1 = new AlphaAnimation(0f, 1f);
-        TranslateAnimation translateAnimation1 = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 0.2f, Animation.RELATIVE_TO_SELF , 0f);
-        this.mBottomChangeAnimation.addAnimation(alphaAnimation1);
-        this.mBottomChangeAnimation.addAnimation(translateAnimation1);
-        this.mBottomChangeAnimation.setDuration(500);
-        this.mBottomChangeAnimation.setInterpolator(new DecelerateInterpolator());
+        this.mTopCheckViewChangeAnimator = this.mTopTitleViewChangeAnimator.clone();
+        this.mTopCheckViewChangeAnimator.setTarget(this.mCheckTasksView);
+
+        this.mTopDayEvaluationViewChangeAnimator = this.mTopTitleViewChangeAnimator.clone();
+        this.mTopDayEvaluationViewChangeAnimator.setTarget(this.mDayEvaluationImageView);
+
+        startY = this.mActivity.getResources().getDimensionPixelOffset(R.dimen.main_activity_bottom_animation_startY);
+        this.mBottomChangeAnimator = new AnimatorSet();
+        ObjectAnimator bottomTranslationAnimator = ObjectAnimator.ofFloat(this.mWordsTextView, "translationY", startY, 0f);
+        ObjectAnimator bottomAlphaAnimator = ObjectAnimator.ofFloat(this.mWordsTextView, "alpha", 0f, 1f);
+        this.mBottomChangeAnimator.playTogether(bottomTranslationAnimator, bottomAlphaAnimator);
+        this.mBottomChangeAnimator.setDuration(this.mAnimationDuration);
+        this.mBottomChangeAnimator.setTarget(this.mWordsTextView);
+        this.mBottomChangeAnimator.setInterpolator(new DecelerateInterpolator());
+
+        this.mSharedPreferences = this.mActivity.getSharedPreferences(Util.PREFERENCE_NAME, Context.MODE_PRIVATE);
     }
 
     public static HandlerThread getHandlerThread( ){
@@ -130,7 +155,8 @@ public class MainActivityManager {
                 break;
         }
         this.mDayEvaluationImageView.setImageResource(resId);
-        this.mDayEvaluationImageView.startAnimation(this.mTopChangeAnimation);
+        this.mTopDayEvaluationViewChangeAnimator.cancel();
+        this.mTopDayEvaluationViewChangeAnimator.start();
     }
 
     void onPageSelected(int position){
@@ -138,21 +164,82 @@ public class MainActivityManager {
             case YESTERDAY_INDEX:
                 this.mTitleTextView.setText(R.string.title_yesterday);
                 this.mWordsTextView.setText(R.string.words_yesterday);
-                //TODO
+                this.mCheckTasksView.setVisibility(View.INVISIBLE);
+                this.mDayEvaluationImageView.setVisibility(View.VISIBLE);
                 break;
             case TODAY_INDEX:
                 this.mTitleTextView.setText(R.string.title_today);
                 this.mWordsTextView.setText(R.string.words_today);
-                //TODO
+                this.mCheckTasksView.setVisibility(View.VISIBLE);
+                this.mDayEvaluationImageView.setVisibility(View.INVISIBLE);
+                this.mTopCheckViewChangeAnimator.cancel();
+                this.mTopCheckViewChangeAnimator.start();
                 break;
             case TOMORROW_INDEX:
                 this.mTitleTextView.setText(R.string.title_tomorrow);
                 this.mWordsTextView.setText(R.string.words_tomorrow);
-                //TODO
+                this.mCheckTasksView.setVisibility(View.INVISIBLE);
+                this.mDayEvaluationImageView.setVisibility(View.INVISIBLE);
                 break;
         }
-        this.mTitleTextView.startAnimation(this.mTopChangeAnimation);
-        this.mWordsTextView.startAnimation(this.mBottomChangeAnimation);
+        this.mTopTitleViewChangeAnimator.start();
+        this.mBottomChangeAnimator.start();
+    }
+
+    void initSlideLayer( ){
+        this.mSlideLayer = (SlideLayer) this.mActivity.findViewById(R.id.slideLayer);
+        this.mSlideLayer.setVisibility(View.VISIBLE);
+        View view = View.inflate(this.mActivity, R.layout.slide_layer_main, null);
+        this.mSlideLayer.setMainView(view);
+    }
+
+    SlideLayer getSlideLayer( ){
+        return this.mSlideLayer;
+    }
+
+    boolean isNewDayChecked( ){
+        return this.mSharedPreferences.getBoolean(Util.PREFERENCE_KEY_NEW_DAY_CHECK, true);
+    }
+
+    void setNewDayChecked( ){
+        this.mSharedPreferences.edit().putBoolean(Util.PREFERENCE_KEY_NEW_DAY_CHECK, true).commit();
+    }
+
+    boolean isFirstUsing( ){
+        return this.mSharedPreferences.getBoolean(Util.PREFERENCE_KEY_FIRST_USING, true);
+    }
+
+    void setFirstUsingFalse( ){
+        this.mSharedPreferences.edit().putBoolean(Util.PREFERENCE_KEY_FIRST_USING, false).commit();
+    }
+
+    void setNewDayAlarm(){
+        Intent intent = new Intent(this.mActivity, NewDaySettingService.class);
+        PendingIntent pendingIntent = PendingIntent.getService(this.mActivity, Util.UPDATE_DATA_AT_NEW_DAY_ALARM_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) this.mActivity.getSystemService(Context.ALARM_SERVICE);
+        Time time = new Time();
+        time.setToNow();
+        time.hour = Util.NEW_DAY_ALARM_HOUR;
+        time.minute = Util.NEW_DAY_ALARM_MINUTE;
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, time.toMillis(false) + Util.A_DAY_IN_MILLIS, Util.A_DAY_IN_MILLIS, pendingIntent);
+    }
+
+    void testSetNewDayAlarm(){
+        Intent intent = new Intent(this.mActivity, NewDaySettingService.class);
+        PendingIntent pendingIntent = PendingIntent.getService(this.mActivity, Util.UPDATE_DATA_AT_NEW_DAY_ALARM_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) this.mActivity.getSystemService(Context.ALARM_SERVICE);
+        Time time = new Time();
+        time.setToNow();
+        alarmManager.set(AlarmManager.RTC_WAKEUP, time.toMillis(false), pendingIntent);
+    }
+
+    void updateDataAtNewDay( ){
+        UpdateDataModel updateDataModel = new UpdateDataModel(this.mActivity);
+        updateDataModel.updateDataAtNewDay();
+    }
+
+    long getViewAnimationDuration( ){
+        return this.mAnimationDuration;
     }
 
     void onDestroy( ){

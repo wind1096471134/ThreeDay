@@ -13,5 +13,8 @@
     <color name="switch_controller_gray_dark">#ddd</color>
     <color name="switch_controller_gray_light">#eee</color>
     <color name="check_task_main_background">#aaa</color>
+    <color name="setting_switch_background_color">#aaa</color>
+    <color name="setting_switch_thumb_color">#888</color>
+    <color name="setting_switch_check_background_color">#99f</color>
 
 </resources>

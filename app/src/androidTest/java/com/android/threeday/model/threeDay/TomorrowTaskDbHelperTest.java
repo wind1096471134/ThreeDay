@@ -62,6 +62,11 @@ public class TomorrowTaskDbHelperTest extends ActivityInstrumentationTestCase2<M
     }
 
     @Override
+    public void testDeleteAllDayTasks() throws Exception {
+        mTaskDbHelperTest.testDeleteAllDayTasks();
+    }
+
+    @Override
     public void testSetDone() throws Exception {
         mTaskDbHelperTest.testSetDone();
     }

@@ -1,6 +1,7 @@
 package com.android.threeday.model.threeDay;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import com.android.threeday.util.Util;
 
@@ -21,6 +22,12 @@ public class YesterdayModel extends BaseDayModel {
     @Override
     protected int getDayType() {
         return Util.TYPE_YESTERDAY;
+    }
+
+    @Override
+    protected int getBaseDayEvaluation() {
+        SharedPreferences sharedPreferences = this.mContext.getSharedPreferences(Util.PREFERENCE_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getInt(Util.PREFERENCE_KEY_YESTERDAY_EVALUATION, Util.EVALUATION_DEFAULT);
     }
 
 }

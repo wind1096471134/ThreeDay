@@ -19,6 +19,8 @@ class TaskSQLiteOpenHelper extends BaseSQLiteOpenHelper {
     public static final String COLUMN_TASK_TIME = "time";
     public static final String COLUMN_DONE = "done";
     public static final String COLUMN_DONE_TIME = "done_time";
+    public static final String RESET_DATABASE_ID = "UPDATE SQLITE_SEQUENCE SET SEQ = 0 WHERE NAME = '"
+            + TABLE_TASK + "'";
 
     private final String CREATE_TABLE_TASK = "CREATE TABLE IF NOT EXISTS " + TABLE_TASK + "(" +
             COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_DAY_TYPE +

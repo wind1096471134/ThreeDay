@@ -1,8 +1,6 @@
 package com.android.threeday.fragment;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -22,6 +20,8 @@ import com.android.threeday.model.threeDay.TodayModel;
 import com.android.threeday.util.Util;
 import com.android.threeday.view.PageSwitchLayout;
 
+import java.util.ArrayList;
+
 /**
  * Created by user on 2014/10/29.
  */
@@ -31,6 +31,8 @@ public class TodayFragment extends BaseDayFragment {
     private GridView mBackTaskDoneGridView;
     private TextView mTaskStateTextView;
     private View mSwitchController;
+    private View mFrontUndoneEmptyView;
+    private View mBackDoneEmptyView;
     private AnimationSet mTaskStateAnimation;
     private PageSwitchLayout.OnPageSwitchListener mOnPageSwitchListener = new PageSwitchLayout.OnPageSwitchListener() {
         @Override
@@ -105,7 +107,6 @@ public class TodayFragment extends BaseDayFragment {
         this.mTaskStateAnimation.addAnimation(alphaAnimation);
         this.mTaskStateAnimation.setDuration(duration);
         this.mTaskStateAnimation.setInterpolator(new DecelerateInterpolator());
-
     }
 
     @Override
@@ -123,9 +124,11 @@ public class TodayFragment extends BaseDayFragment {
 
         View frontPageView = View.inflate(context, R.layout.task_container, null);
         this.mFrontTaskUndoneGridView = (GridView) frontPageView.findViewById(R.id.gridView);
+        this.mFrontUndoneEmptyView = frontPageView.findViewById(R.id.taskEmptyView);
 
         View backPageView = View.inflate(context, R.layout.task_container, null);
         this.mBackTaskDoneGridView = (GridView) backPageView.findViewById(R.id.gridView);
+        this.mBackDoneEmptyView = backPageView.findViewById(R.id.taskEmptyView);
 
         this.mPageSwitchLayout.setPageView(frontPageView, backPageView);
         this.mPageSwitchLayout.setOnPageSwitchListener(this.mOnPageSwitchListener);
@@ -183,4 +186,19 @@ public class TodayFragment extends BaseDayFragment {
         return this.mPageSwitchLayout.getCurrentPage() == PageSwitchLayout.PAGE_FIRST;
     }
 
+    private void checkEmptyView(ArrayList tasks, View emptyView, View mainView){
+        if(tasks.size() == 0){
+            emptyView.setVisibility(View.VISIBLE);
+            mainView.setVisibility(View.INVISIBLE);
+        }else{
+            emptyView.setVisibility(View.INVISIBLE);
+            mainView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    protected void checkEmptyView() {
+        checkEmptyView(this.mModel.getUndoneTasks(), this.mFrontUndoneEmptyView, this.mFrontTaskUndoneGridView);
+        checkEmptyView(this.mModel.getDoneTasks(), this.mBackDoneEmptyView, this.mBackTaskDoneGridView);
+    }
 }

@@ -1,4 +1,4 @@
-package com.android.threeday.activity.remainActivity;
+package com.android.threeday.service;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -11,6 +11,7 @@ import android.support.v4.app.NotificationCompat;
 import android.text.format.Time;
 
 import com.android.threeday.R;
+import com.android.threeday.activity.remainActivity.RemainTaskActivity;
 import com.android.threeday.model.threeDay.TaskItem;
 import com.android.threeday.util.Util;
 
@@ -45,7 +46,7 @@ public class RemainTaskService extends Service {
         builder.setContentText(remainTicker);
         builder.setTicker(remainTicker);
         builder.setDefaults(Notification.DEFAULT_ALL);
-        builder.setContentIntent(getAlarmPendingIntent(context, (int) taskItem.getId()));
+        builder.setContentIntent(getPendingIntent(context, (int) taskItem.getId()));
         builder.setWhen(time.toMillis(false));
         builder.setSmallIcon(R.drawable.ic_launcher);
 
@@ -57,7 +58,7 @@ public class RemainTaskService extends Service {
         return Service.START_NOT_STICKY;
     }
 
-    private PendingIntent getAlarmPendingIntent(Context context, int id){
+    private PendingIntent getPendingIntent(Context context, int id){
         Intent intent = new Intent(context, RemainTaskActivity.class);
         intent.putExtra(Util.TASK_ID, id);
         //setType to make PendingIntent identify

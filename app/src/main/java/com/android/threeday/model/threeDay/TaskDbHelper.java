@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.android.threeday.model.DbHelper;
 import com.android.threeday.util.Util;
@@ -52,6 +53,11 @@ public abstract class TaskDbHelper implements DbHelper {
     public int deleteTask(long id){
         return mSQLiteOpenHelper.getWritableDatabase().delete(TaskSQLiteOpenHelper.TABLE_TASK, TaskSQLiteOpenHelper.COLUMN_ID
             + "=?", new String[]{Long.toString(id)});
+    }
+
+    public int deleteAllDayTasks( ){
+        return mSQLiteOpenHelper.getWritableDatabase().delete(TaskSQLiteOpenHelper.TABLE_TASK, TaskSQLiteOpenHelper.COLUMN_DAY_TYPE + "=?",
+                new String[]{Integer.toString(getDayType())});
     }
 
     private int updateDatabase(long id, ContentValues contentValues){
@@ -140,6 +146,10 @@ public abstract class TaskDbHelper implements DbHelper {
                 }while (cursor.moveToNext());
             }
         }
+    }
+
+    protected void resetSQLiteIdToZero( ){
+        this.mSQLiteOpenHelper.getWritableDatabase().execSQL(TaskSQLiteOpenHelper.RESET_DATABASE_ID);
     }
 
     protected abstract int getDayType( );

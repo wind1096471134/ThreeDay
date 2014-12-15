@@ -23,4 +23,9 @@ public class TomorrowModel extends BaseDayModel {
         return Util.TYPE_TOMORROW;
     }
 
+    @Override
+    protected int getBaseDayEvaluation() {
+        return Util.EVALUATION_DEFAULT;
+    }
+
 }
