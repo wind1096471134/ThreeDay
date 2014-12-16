@@ -1,9 +1,6 @@
 package com.android.threeday.activity.mainActivity;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -15,13 +12,11 @@ import android.view.KeyEvent;
 import android.view.View;
 
 import com.android.threeday.R;
-import com.android.threeday.activity.checkTaskActivity.CheckTaskActivity;
 import com.android.threeday.activity.settingActivity.SettingActivity;
 import com.android.threeday.fragment.BaseDayFragment;
 import com.android.threeday.fragment.TodayFragment;
 import com.android.threeday.fragment.TomorrowFragment;
 import com.android.threeday.fragment.YesterdayFragment;
-import com.android.threeday.model.updateData.UpdateDataModel;
 import com.android.threeday.util.Util;
 import com.android.threeday.view.SlideLayer;
 
@@ -109,8 +104,14 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
         initFragment();
         setViewPagerAdapter();
         setViewPagerListener( );
-        checkNewDay( );
-        checkFirstUsing( );
+        boolean arrangeTomorrow = getIntent().getBooleanExtra(Util.ARRANGE_TOMORROW_KEY, false);
+        if(arrangeTomorrow){
+            this.mFirstCreate = false;
+            this.mMainActivityManager.getViewPager().setCurrentItem(MainActivityManager.TOMORROW_INDEX, false);
+        }else {
+            checkNewDay();
+            checkFirstUsing();
+        }
         //this.mMainActivityManager.testSetNewDayAlarm();
 
         Log.e("wind", "main create " + android.os.Process.myPid());
@@ -119,7 +120,12 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        checkNewDay();
+        boolean arrangeTomorrow = intent.getBooleanExtra(Util.ARRANGE_TOMORROW_KEY, false);
+        if(arrangeTomorrow){
+            this.mMainActivityManager.getViewPager().setCurrentItem(MainActivityManager.TOMORROW_INDEX, false);
+        }else{
+            checkNewDay();
+        }
     }
 
     @Override
@@ -144,7 +150,7 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
         boolean isFirstUsing = this.mMainActivityManager.isFirstUsing( );
         if(isFirstUsing){
             this.mMainActivityManager.setFirstUsingFalse();
-            this.mMainActivityManager.setNewDayAlarm();
+            this.mMainActivityManager.initDefaultAlarm();
         }
     }
 
@@ -260,9 +266,14 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
         }
     }
 
+    @Override
     public void checkTasks(View view){
-        Intent intent = new Intent(this, CheckTaskActivity.class);
-        startActivity(intent);
+        this.mFragments[this.mCurrentPageIndex].checkTasks(view);
+    }
+
+    @Override
+    public void addTasks(View view) {
+        this.mFragments[this.mCurrentPageIndex].addTasks(view);
     }
 
     public void setting(View view){

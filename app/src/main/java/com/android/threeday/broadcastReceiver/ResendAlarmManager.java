@@ -106,7 +106,6 @@ class ResendAlarmManager {
                 resetTime.hour = remainTime.hour;
                 resetTime.minute = remainTime.minute;
                 if(resetTime.before(now)){
-                    Log.e("wind", "cancel " + taskItem.getId());
                     this.mNotificationManager.cancel((int) taskItem.getId());
                     this.mTodayModel.cancelUndoneTaskRemain(taskItems.indexOf(taskItem));
                     cancelAlarm(getRemainAlarmPendingIntent(taskItem));

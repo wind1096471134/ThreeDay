@@ -57,4 +57,9 @@ public class Util {
 
     public static final String REMAIN_BUNDLE_KEY = "BundleKey";
     public static final String REMAIN_TASKITEM_KEY = "TaskItemKey";
+
+    public static final String ARRANGE_TOMORROW_KEY = "ArrangeTomorrow";
+
+    public static final boolean DEFAULT_MORNING_REMAIN = false;
+    public static final boolean DEFAULT_EVENING_CHECK = true;
 }

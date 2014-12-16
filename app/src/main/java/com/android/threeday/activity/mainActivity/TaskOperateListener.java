@@ -20,4 +20,8 @@ public interface TaskOperateListener {
     public void deleteDoneTask(View view);
 
     public void undoneTask(View view);
+
+    public void checkTasks(View view);
+
+    public void addTasks(View view);
 }

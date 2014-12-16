@@ -90,8 +90,8 @@ public class SettingModel implements BaseModel {
     private void initData( ){
         mSharedPreferences = this.mContext.getSharedPreferences(Util.PREFERENCE_NAME, Context.MODE_PRIVATE);
 
-        this.mMorningRemain = this.mSharedPreferences.getBoolean(Util.PREFERENCE_KEY_MORNING_REMAIN, false);
-        this.mEveningCheck = this.mSharedPreferences.getBoolean(Util.PREFERENCE_KEY_EVENING_CHECK, false);
+        this.mMorningRemain = this.mSharedPreferences.getBoolean(Util.PREFERENCE_KEY_MORNING_REMAIN, Util.DEFAULT_MORNING_REMAIN);
+        this.mEveningCheck = this.mSharedPreferences.getBoolean(Util.PREFERENCE_KEY_EVENING_CHECK, Util.DEFAULT_EVENING_CHECK);
 
         this.mMorningRemainTimeHour = mSharedPreferences.getInt(Util.PREFERENCE_KEY_MORNING_REMAIN_TIME_HOUR, Util.MORNING_REMAIN_TIME_DEFAULT_HOUR);
         this.mMorningRemainTimeMinute = mSharedPreferences.getInt(Util.PREFERENCE_KEY_MORNING_REMAIN_TIME_MINUTE, Util.MORNING_REMAIN_TIME_DEFAULT_MINUTE);

@@ -48,5 +48,7 @@
     <string name="morning_remain_notification_text">亲，记得做好今天的安排哦！</string>
     <string name="evening_check_notification_text">亲，记得总结你今天的安排哦！</string>
     <string name="set_time_before_now_toast">亲，你想穿越吗？</string>
+    <string name="arrange_tomorrow_title">亲，安排一下明天吧！</string>
+    <string name="new_day_slide_layer_text">开启新一天</string>
 
 </resources>

@@ -1,12 +1,11 @@
 package com.android.threeday.activity.checkTaskActivity;
 
 import android.animation.ObjectAnimator;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.text.format.Time;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -14,10 +13,10 @@ import android.view.animation.AnimationSet;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.threeday.R;
 import com.android.threeday.activity.mainActivity.MainActivity;
+import com.android.threeday.fragment.dialogFragment.ArrangeTomorrowFragment;
 import com.android.threeday.model.threeDay.TaskItem;
 import com.android.threeday.model.threeDay.TodayModel;
 import com.android.threeday.util.Util;
@@ -26,7 +25,7 @@ import com.android.threeday.view.PageSwitchLayout;
 /**
  * Created by user on 2014/12/2.
  */
-public class CheckTaskActivity extends Activity {
+public class CheckTaskActivity extends FragmentActivity {
     private PageSwitchLayout mPageSwitchLayout;
     private View mFirstTaskStateView;
     private View mSecondTaskEvaluationView;
@@ -130,10 +129,23 @@ public class CheckTaskActivity extends Activity {
         SharedPreferences sharedPreferences = getSharedPreferences(Util.PREFERENCE_NAME, MODE_PRIVATE);
         sharedPreferences.edit().putInt(Util.PREFERENCE_KEY_TODAY_TASKS_CHECK, evaluation)
                 .putBoolean(Util.PREFERENCE_KEY_TODAY_TASKS_CHECK, true).commit();
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        finish();
+        ArrangeTomorrowFragment arrangeTomorrowFragment = new ArrangeTomorrowFragment();
+        arrangeTomorrowFragment.setOnArrangeTomorrowListener(new ArrangeTomorrowFragment.OnArrangeTomorrowListener() {
+            @Override
+            public void onArrangeTomorrowSet() {
+                Intent intent = new Intent(CheckTaskActivity.this, MainActivity.class);
+                intent.putExtra(Util.ARRANGE_TOMORROW_KEY, true);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+            }
+
+            @Override
+            public void onArrangeTomorrowCancel() {
+                finish();
+            }
+        });
+        arrangeTomorrowFragment.show(getSupportFragmentManager(), "ArrangeTomorrow");
     }
 
     private void onTaskEvaluationCheck(int evaluation){

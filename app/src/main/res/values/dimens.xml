@@ -48,5 +48,6 @@
     <dimen name="setting_switch_thumb_width">25dp</dimen>
     <dimen name="main_activity_top_animation_startY">15dp</dimen>
     <dimen name="main_activity_bottom_animation_startY">15dp</dimen>
+    <dimen name="new_day_slide_layer_font_size">40sp</dimen>
 
 </resources>

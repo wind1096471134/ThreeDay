@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.format.Time;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import com.android.threeday.R;
 import com.android.threeday.activity.addTaskActivity.AddTaskActivity;
+import com.android.threeday.activity.checkTaskActivity.CheckTaskActivity;
 import com.android.threeday.activity.mainActivity.FragmentStateListener;
 import com.android.threeday.activity.mainActivity.FragmentTaskLongClickListener;
 import com.android.threeday.activity.mainActivity.TaskOperateListener;
@@ -268,6 +270,16 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
             e.printStackTrace();
             Toast.makeText(getActivity(),"fail", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void checkTasks(View view) {
+
+    }
+
+    @Override
+    public void addTasks(View view) {
+
     }
 
     private boolean addTask(Intent data){

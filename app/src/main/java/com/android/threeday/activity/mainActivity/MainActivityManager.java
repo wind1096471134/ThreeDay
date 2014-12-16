@@ -20,6 +20,7 @@ import com.android.threeday.R;
 import com.android.threeday.fragment.dialogFragment.TaskDoneMenuFragment;
 import com.android.threeday.fragment.dialogFragment.TaskUndoneMenuFragment;
 import com.android.threeday.model.updateData.UpdateDataModel;
+import com.android.threeday.service.EveningCheckService;
 import com.android.threeday.service.NewDaySettingService;
 import com.android.threeday.util.Util;
 import com.android.threeday.view.SlideLayer;
@@ -170,10 +171,16 @@ public class MainActivityManager {
             case TODAY_INDEX:
                 this.mTitleTextView.setText(R.string.title_today);
                 this.mWordsTextView.setText(R.string.words_today);
-                this.mCheckTasksView.setVisibility(View.VISIBLE);
-                this.mDayEvaluationImageView.setVisibility(View.INVISIBLE);
-                this.mTopCheckViewChangeAnimator.cancel();
-                this.mTopCheckViewChangeAnimator.start();
+                boolean check = this.mSharedPreferences.getBoolean(Util.PREFERENCE_KEY_TODAY_TASKS_CHECK, false);
+                if(check){
+                    this.mCheckTasksView.setVisibility(View.INVISIBLE);
+                    this.mDayEvaluationImageView.setVisibility(View.VISIBLE);
+                }else{
+                    this.mCheckTasksView.setVisibility(View.VISIBLE);
+                    this.mDayEvaluationImageView.setVisibility(View.INVISIBLE);
+                    this.mTopCheckViewChangeAnimator.cancel();
+                    this.mTopCheckViewChangeAnimator.start();
+                }
                 break;
             case TOMORROW_INDEX:
                 this.mTitleTextView.setText(R.string.title_tomorrow);
@@ -213,7 +220,26 @@ public class MainActivityManager {
         this.mSharedPreferences.edit().putBoolean(Util.PREFERENCE_KEY_FIRST_USING, false).commit();
     }
 
-    void setNewDayAlarm(){
+    void initDefaultAlarm( ){
+        setNewDayAlarm();
+        setDefaultEveningCheckAlarm();
+    }
+
+    private void setDefaultEveningCheckAlarm( ){
+        Intent intent = new Intent(this.mActivity, EveningCheckService.class);
+        PendingIntent pendingIntent = PendingIntent.getService(this.mActivity, Util.EVENING_CHECK_ALARM_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) this.mActivity.getSystemService(Context.ALARM_SERVICE);
+        Time time = new Time();
+        time.setToNow();
+        time.hour = Util.EVENING_CHECK_TIME_DEFAULT_HOUR;
+        time.minute = Util.EVENING_CHECK_TIME_DEFAULT_MINUTE;
+        Time now = new Time();
+        now.setToNow();
+        long startTime = time.after(now) ? time.toMillis(false) : time.toMillis(false) + Util.A_DAY_IN_MILLIS;
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, startTime, Util.A_DAY_IN_MILLIS, pendingIntent);
+    }
+
+    private void  setNewDayAlarm(){
         Intent intent = new Intent(this.mActivity, NewDaySettingService.class);
         PendingIntent pendingIntent = PendingIntent.getService(this.mActivity, Util.UPDATE_DATA_AT_NEW_DAY_ALARM_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) this.mActivity.getSystemService(Context.ALARM_SERVICE);
@@ -236,6 +262,7 @@ public class MainActivityManager {
     void updateDataAtNewDay( ){
         UpdateDataModel updateDataModel = new UpdateDataModel(this.mActivity);
         updateDataModel.updateDataAtNewDay();
+        this.mSharedPreferences.edit().putBoolean(Util.PREFERENCE_KEY_TODAY_TASKS_CHECK, false).commit();
     }
 
     long getViewAnimationDuration( ){

@@ -1,6 +1,7 @@
 package com.android.threeday.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -12,6 +13,7 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 import com.android.threeday.R;
+import com.android.threeday.activity.checkTaskActivity.CheckTaskActivity;
 import com.android.threeday.activity.mainActivity.MainActivityManager;
 import com.android.threeday.fragment.GridAdapter.TaskFinishGridAdapter;
 import com.android.threeday.fragment.GridAdapter.TaskUnFinishGridAdapter;
@@ -78,12 +80,6 @@ public class TodayFragment extends BaseDayFragment {
             return false;
         }
     };
-    private View.OnClickListener mAddTaskClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            startAddTaskActivity(getDayType(), isCurrentDonePage());
-        }
-    };
     private View.OnClickListener mSwitchPageClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -117,7 +113,6 @@ public class TodayFragment extends BaseDayFragment {
         this.mMainLayout = View.inflate(context, R.layout.fragment_switch_layout, null);
         this.mMainLayout.findViewById(R.id.pageContainer).setBackgroundResource(R.drawable.page_background_gray);
         this.mTaskStateTextView = (TextView) this.mMainLayout.findViewById(R.id.taskStateTextView);
-        this.mMainLayout.findViewById(R.id.addButton).setOnClickListener(this.mAddTaskClickListener);
         this.mPageSwitchLayout = (PageSwitchLayout) this.mMainLayout.findViewById(R.id.pageSwitchLayout);
         this.mSwitchController = this.mMainLayout.findViewById(R.id.switchController);
         this.mSwitchController.setOnClickListener(this.mSwitchPageClickListener);
@@ -184,6 +179,17 @@ public class TodayFragment extends BaseDayFragment {
     @Override
     protected boolean isCurrentUndonePage() {
         return this.mPageSwitchLayout.getCurrentPage() == PageSwitchLayout.PAGE_FIRST;
+    }
+
+    @Override
+    public void checkTasks(View view) {
+        Intent intent = new Intent(getActivity(), CheckTaskActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public void addTasks(View view) {
+        startAddTaskActivity(getDayType(), isCurrentDonePage());
     }
 
     private void checkEmptyView(ArrayList tasks, View emptyView, View mainView){

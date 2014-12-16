@@ -20,12 +20,6 @@ public class TomorrowFragment extends BaseDayFragment {
     private GridView mFontTaskUndoneGridView;
     private View mFrontUndoneEmptyView;
 
-    private View.OnClickListener mAddUndoneTaskClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            startAddTaskActivity(getDayType(), false);
-        }
-    };
     private AdapterView.OnItemLongClickListener mFontTaskUndoneGridViewLongClickListener = new AdapterView.OnItemLongClickListener() {
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -44,7 +38,6 @@ public class TomorrowFragment extends BaseDayFragment {
         this.mMainLayout = View.inflate(context, R.layout.fragment_tomorrow_layout, null);
         this.mFontTaskUndoneGridView = (GridView) this.mMainLayout.findViewById(R.id.gridView);
         this.mFontTaskUndoneGridView.setOnItemLongClickListener(this.mFontTaskUndoneGridViewLongClickListener);
-        this.mMainLayout.findViewById(R.id.addButton).setOnClickListener(this.mAddUndoneTaskClickListener);
         ((TextView)this.mMainLayout.findViewById(R.id.taskStateTextView)).setText(R.string.task_state_undone);
         this.mFrontUndoneEmptyView = this.mMainLayout.findViewById(R.id.taskEmptyView);
     }
@@ -95,5 +88,10 @@ public class TomorrowFragment extends BaseDayFragment {
             this.mFrontUndoneEmptyView.setVisibility(View.INVISIBLE);
             this.mFontTaskUndoneGridView.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void addTasks(View view) {
+        startAddTaskActivity(getDayType(), false);
     }
 }
