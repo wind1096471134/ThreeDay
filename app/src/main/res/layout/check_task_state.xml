@@ -8,7 +8,6 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:text="New Text"
         android:id="@+id/taskInformationTextView"
         android:layout_gravity="center_horizontal"
         android:layout_weight="1"
@@ -24,7 +23,7 @@
         <Button
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:text="New Button"
+            android:text="@string/task_state_done"
             android:id="@+id/doneButton"
             android:layout_weight="1"
             android:onClick="doneTask" />
@@ -32,7 +31,7 @@
         <Button
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:text="New Button"
+            android:text="@string/task_state_undone"
             android:id="@+id/undoneButton"
             android:layout_gravity="right"
             android:layout_weight="1"

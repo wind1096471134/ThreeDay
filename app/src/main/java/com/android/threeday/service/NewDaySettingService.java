@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
-import android.util.Log;
+import android.text.format.Time;
 
 import com.android.threeday.util.Util;
 
@@ -21,7 +21,11 @@ public class NewDaySettingService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences(Util.PREFERENCE_NAME, Context.MODE_PRIVATE);
-        sharedPreferences.edit().putBoolean(Util.PREFERENCE_KEY_NEW_DAY_CHECK, false).commit();
+        Time time = new Time();
+        time.setToNow();
+        long real2 = sharedPreferences.getLong(Util.PREFERENCE_KEY_REAL_DAY_TIME_2, 0);
+        sharedPreferences.edit().putLong(Util.PREFERENCE_KEY_REAL_DAY_TIME_1, real2)
+                .putLong(Util.PREFERENCE_KEY_REAL_DAY_TIME_2, time.toMillis(false)).commit();
         stopSelf(startId);
         return Service.START_NOT_STICKY;
     }

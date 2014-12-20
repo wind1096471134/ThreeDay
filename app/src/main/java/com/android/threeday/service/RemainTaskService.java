@@ -36,34 +36,37 @@ public class RemainTaskService extends Service {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         TaskItem taskItem = (TaskItem) intent.getBundleExtra(Util.REMAIN_BUNDLE_KEY).getSerializable(Util.REMAIN_TASKITEM_KEY);
-        Time time = new Time();
-        time.parse(taskItem.getRemainTime());
+        if(taskItem != null && taskItem.getRemainTime() != null){
+            Time time = new Time();
+            time.parse(taskItem.getRemainTime());
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-        builder.setAutoCancel(false);
-        builder.setContentTitle(taskItem.getInformation());
-        String remainTicker = context.getResources().getString(R.string.task_remain_notification_ticker);
-        builder.setContentText(remainTicker);
-        builder.setTicker(remainTicker);
-        builder.setDefaults(Notification.DEFAULT_ALL);
-        builder.setContentIntent(getPendingIntent(context, (int) taskItem.getId()));
-        builder.setWhen(time.toMillis(false));
-        builder.setSmallIcon(R.drawable.ic_launcher);
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+            builder.setAutoCancel(false);
+            builder.setContentTitle(taskItem.getInformation());
+            String remainTicker = context.getResources().getString(R.string.task_remain_notification_ticker);
+            builder.setContentText(remainTicker);
+            builder.setTicker(remainTicker);
+            builder.setDefaults(Notification.DEFAULT_ALL);
+            builder.setContentIntent(getPendingIntent(context, (int) taskItem.getId()));
+            builder.setWhen(time.toMillis(false));
+            builder.setSmallIcon(R.drawable.ic_launcher);
 
-        Notification notification = builder.build();
-        notification.flags |= Notification.FLAG_NO_CLEAR;
-        notificationManager.notify((int) taskItem.getId(), notification);
-
+            Notification notification = builder.build();
+            notification.flags |= Notification.FLAG_NO_CLEAR;
+            notificationManager.notify((int) taskItem.getId(), notification);
+        }
         stopSelf(startId);
+
         return Service.START_NOT_STICKY;
     }
 
     private PendingIntent getPendingIntent(Context context, int id){
-        Intent intent = new Intent(context, RemainTaskActivity.class);
+        Intent intent = new Intent(context, CheckLockService.class);
+        intent.putExtra(Util.EXTRA_KEY_LOCK_START_ACTIVITY, RemainTaskActivity.class);
         intent.putExtra(Util.TASK_ID, id);
         //setType to make PendingIntent identify
         intent.setType(Integer.toString(id));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        return PendingIntent.getActivity(context, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent.getService(context, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 }

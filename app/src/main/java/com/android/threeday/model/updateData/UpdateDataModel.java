@@ -39,7 +39,17 @@ public class UpdateDataModel implements BaseModel {
         }
     }
 
+    public void deleteAllData( ){
+        this.mYesterdayModel.deleteAllDayTasks();
+        this.mTodayModel.deleteAllDayTasks();
+        this.mTomorrowModel.deleteAllDayTasks();
+        this.mTodayModel.resetDataBase();
+    }
+
     public void updateDataAtNewDay( ){
+        this.mTodayModel.updateTasks();
+        this.mYesterdayModel.updateTasks();
+        this.mTomorrowModel.updateTasks();
         ArrayList<TaskItem> todayDoneArrayList = this.mTodayModel.getDoneTasks();
         ArrayList<TaskItem> todayUndoneArrayList = this.mTodayModel.getUndoneTasks();
         ArrayList<TaskItem> tomorrowArrayList = this.mTomorrowModel.getUndoneTasks();

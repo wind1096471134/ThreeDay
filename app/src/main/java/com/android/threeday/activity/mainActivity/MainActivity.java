@@ -101,20 +101,27 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
         setContentView(R.layout.activity_main);
         this.mFirstCreate = true;
         this.mMainActivityManager = new MainActivityManager(this);
-        initFragment();
-        setViewPagerAdapter();
+        initFragment( );
+        setViewPagerAdapter( );
         setViewPagerListener( );
         boolean arrangeTomorrow = getIntent().getBooleanExtra(Util.ARRANGE_TOMORROW_KEY, false);
         if(arrangeTomorrow){
             this.mFirstCreate = false;
             this.mMainActivityManager.getViewPager().setCurrentItem(MainActivityManager.TOMORROW_INDEX, false);
+            /*avoid the situation that the user didn't open the app util arrange tomorrow from EveningCheck,
+            because the new day hasn't been check so we should update data first*/
+            this.mMainActivityManager.checkNewDayPass();
+            if(this.mMainActivityManager.getNewDayPass() > 0){
+                this.mMainActivityManager.updateDataAtNewDay();
+                this.mMainActivityManager.setNewDayChecked();
+            }
         }else {
-            checkNewDay();
             checkFirstUsing();
+            checkNewDay();
         }
         //this.mMainActivityManager.testSetNewDayAlarm();
 
-        Log.e("wind", "main create " + android.os.Process.myPid());
+        Log.e("wind", "main create ");
     }
 
     @Override
@@ -139,8 +146,9 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
     }
 
     private void checkNewDay( ){
-        boolean checked = this.mMainActivityManager.isNewDayChecked();
-        if(!checked){
+        this.mMainActivityManager.checkNewDayPass();
+        int passDay = this.mMainActivityManager.getNewDayPass();
+        if(passDay > 0){
             this.mMainActivityManager.initSlideLayer();
             this.mMainActivityManager.getSlideLayer().setOnLayerSlideListener(this.mOnLayerSlideListener);
         }
@@ -149,7 +157,7 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
     private void checkFirstUsing( ){
         boolean isFirstUsing = this.mMainActivityManager.isFirstUsing( );
         if(isFirstUsing){
-            this.mMainActivityManager.setFirstUsingFalse();
+            this.mMainActivityManager.setFirstUsingData();
             this.mMainActivityManager.initDefaultAlarm();
         }
     }

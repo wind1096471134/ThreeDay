@@ -12,6 +12,8 @@ import android.text.format.Time;
 
 import com.android.threeday.R;
 import com.android.threeday.activity.checkTaskActivity.CheckTaskActivity;
+import com.android.threeday.activity.lockActivity.LockActivity;
+import com.android.threeday.model.setting.LockModel;
 import com.android.threeday.model.threeDay.TodayModel;
 import com.android.threeday.util.Util;
 
@@ -45,7 +47,7 @@ public class EveningCheckService extends Service {
             builder.setSmallIcon(R.drawable.ic_launcher);
 
             Notification notification = builder.build();
-            notificationManager.notify(Util.EVENING_CHECK_ALARM_ID, notification);
+            notificationManager.notify(Util.EVENING_CHECK_NOTIFICATION_ID, notification);
 
         }
         stopSelf(startId);
@@ -53,7 +55,8 @@ public class EveningCheckService extends Service {
     }
 
     private PendingIntent getPendingIntent(Context context){
-        Intent intent = new Intent(context, CheckTaskActivity.class);
-        return PendingIntent.getActivity(context, Util.EVENING_CHECK_ALARM_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent intent = new Intent(context, CheckLockService.class);
+        intent.putExtra(Util.EXTRA_KEY_LOCK_START_ACTIVITY, CheckTaskActivity.class);
+        return PendingIntent.getService(context, Util.EVENING_CHECK_PENDING_INTENT_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 }

@@ -1,12 +1,9 @@
 package com.android.threeday.model.threeDay;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.text.format.Time;
-import android.util.Log;
 
 import com.android.threeday.model.BaseModel;
-import com.android.threeday.util.Util;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -86,7 +83,6 @@ public abstract class BaseDayModel implements BaseModel {
 
     public boolean addTask(TaskItem taskItem) {
         long id = this.mTaskDbHelper.addTask(taskItem);
-        Log.e("wind", "id " + id);
         if(id != -1){
             taskItem.setId(id);
             if(taskItem.getDone()){

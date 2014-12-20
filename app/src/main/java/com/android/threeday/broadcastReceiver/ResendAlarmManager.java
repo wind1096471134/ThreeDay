@@ -45,22 +45,55 @@ class ResendAlarmManager {
         this.mNotificationManager = (NotificationManager) this.mContext.getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
-    public void resendAlarms( ){
-        ArrayList<TaskItem> taskItems = this.mTodayModel.getUndoneTasks();
-        resendTaskRemainAlarms(taskItems);
-        taskItems = this.mTomorrowModel.getUndoneTasks();
-        resendTaskRemainAlarms(taskItems);
+    public void resetRealTimeWhenTimeChange(){
+        this.mSettingModel.resetRealTime( );
+    }
 
+    public void resetRealTimeWhenBoot( ){
+        Time time = new Time();
+        time.setToNow();
+        this.mSettingModel.resetRealTime(time.toMillis(false));
+    }
+
+    public void resendAlarms( ){
+        int day = this.mSettingModel.compareLastInAndRealDay();
+        Time time = new Time();
+        time.setToNow();
+        long nowTimeMills = time.toMillis(false);
+        Log.e("wind", day + " resend");
+        if(day <= 0){
+            /*user enter the app today, so we should resend all alarm*/
+            ArrayList<TaskItem> taskItems = this.mTodayModel.getUndoneTasks();
+            resendTaskRemainAlarms(taskItems);
+            taskItems = this.mTomorrowModel.getUndoneTasks();
+            resendTaskRemainAlarms(taskItems);
+            this.mSettingModel.resetLastInTime(nowTimeMills);
+        }else if(day == 1){
+            /*user not enter the app today but yesterday, so when the system time has change
+            we should also resend the today's remain alarm */
+            this.mSettingModel.resetLastInTime(nowTimeMills - Util.A_DAY_IN_MILLIS);
+        }else{
+             /*user not enter the app before yesterday so there are not remain alarm we
+             should resend, so we delete all data*/
+            this.mSettingModel.resetLastInTime(nowTimeMills - Util.A_DAY_IN_MILLIS * 2);
+        }
+        resendMorningOrEveningAlarm();
+        resendNewDayAlarm();
+        this.mSettingModel.resetRealTime(nowTimeMills);
+    }
+
+    private void resendMorningOrEveningAlarm( ){
         if(this.mSettingModel.isMorningRemain()){
-            String remainTime = this.mSettingModel.getMorningRemainTime();
+            this.mNotificationManager.cancel(Util.MORNING_REMAIN_NOTIFICATION_ID);
+            long remainTime = this.mSettingModel.getMorningRemainTimeMills();
             resendMorningRemainOrEveningCheckAlarm(remainTime, getMorningRemainPendingIntent());
         }
         if(this.mSettingModel.isEveningCheck()){
-            String checkTime = this.mSettingModel.getEveningCheckTime();
+            Log.e("wind", "evening");
+            this.mNotificationManager.cancel(Util.EVENING_CHECK_NOTIFICATION_ID);
+            long checkTime = this.mSettingModel.getEveningCheckTimeMills();
             resendMorningRemainOrEveningCheckAlarm(checkTime, getEveningCheckPendingIntent());
         }
-
-        resendNewDayAlarm();
     }
 
     private void resendNewDayAlarm(){
@@ -74,24 +107,24 @@ class ResendAlarmManager {
         this.mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, time.toMillis(false) + Util.A_DAY_IN_MILLIS, Util.A_DAY_IN_MILLIS, pendingIntent);
     }
 
-    private void resendMorningRemainOrEveningCheckAlarm(String timeString, PendingIntent pendingIntent){
+    private void resendMorningRemainOrEveningCheckAlarm(long timeMills, PendingIntent pendingIntent){
         Time time = new Time();
-        time.parse(timeString);
+        time.set(timeMills);
         Time now = new Time();
         now.setToNow();
-        long startTime = time.before(now) ? (time.toMillis(false) + SettingModel.ALARM_REPEAT_TIME) : time.toMillis(false);
+        long startTime = time.after(now) ? time.toMillis(false) : (time.toMillis(false) + SettingModel.ALARM_REPEAT_TIME);
         this.mAlarmManager.cancel(pendingIntent);
         this.mAlarmManager.setRepeating(AlarmManager.RTC, startTime, SettingModel.ALARM_REPEAT_TIME, pendingIntent);
     }
 
     private PendingIntent getMorningRemainPendingIntent( ){
         Intent intent = new Intent(this.mContext, MorningRemainService.class);
-        return PendingIntent.getService(this.mContext, Util.MORNING_REMAIN_ALARM_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent.getService(this.mContext, Util.MORNING_REMAIN_PENDING_INTENT_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     private PendingIntent getEveningCheckPendingIntent( ){
         Intent intent = new Intent(this.mContext, EveningCheckService.class);
-        return PendingIntent.getService(this.mContext, Util.EVENING_CHECK_ALARM_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent.getService(this.mContext, Util.EVENING_CHECK_PENDING_INTENT_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     private void resendTaskRemainAlarms(ArrayList<TaskItem> taskItems){
@@ -105,11 +138,13 @@ class ResendAlarmManager {
                 remainTime.parse(taskItem.getRemainTime());
                 resetTime.hour = remainTime.hour;
                 resetTime.minute = remainTime.minute;
+                resetTime.second = remainTime.second;
                 if(resetTime.before(now)){
                     this.mNotificationManager.cancel((int) taskItem.getId());
-                    this.mTodayModel.cancelUndoneTaskRemain(taskItems.indexOf(taskItem));
                     cancelAlarm(getRemainAlarmPendingIntent(taskItem));
+                    this.mTodayModel.cancelUndoneTaskRemain(taskItems.indexOf(taskItem));
                 }else if(resetTime.after(now)){
+                    this.mNotificationManager.cancel((int) taskItem.getId());
                     this.mTodayModel.setUndoneTaskRemain(taskItems.indexOf(taskItem), resetTime.format2445());
                     resendAlarm(resetTime.toMillis(false), getRemainAlarmPendingIntent(taskItem));
                 }

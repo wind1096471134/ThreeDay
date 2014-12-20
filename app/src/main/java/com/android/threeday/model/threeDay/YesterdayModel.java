@@ -30,4 +30,9 @@ public class YesterdayModel extends BaseDayModel {
         return sharedPreferences.getInt(Util.PREFERENCE_KEY_YESTERDAY_EVALUATION, Util.EVALUATION_DEFAULT);
     }
 
+    @Override
+    public boolean setDayEvaluation(int evaluation) {
+        SharedPreferences sharedPreferences = this.mContext.getSharedPreferences(Util.PREFERENCE_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.edit().putInt(Util.PREFERENCE_KEY_YESTERDAY_EVALUATION, evaluation).commit();
+    }
 }

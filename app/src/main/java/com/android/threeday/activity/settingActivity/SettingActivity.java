@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.android.threeday.R;
+import com.android.threeday.activity.lockActivity.LockActivity;
 import com.android.threeday.fragment.dialogFragment.TimePickerFragment;
 import com.android.threeday.model.setting.SettingModel;
 import com.android.threeday.service.EveningCheckService;
@@ -27,8 +28,10 @@ public class SettingActivity extends FragmentActivity {
 
     private CustomSwitch mMorningSwitch;
     private CustomSwitch mEveningSwitch;
+    private CustomSwitch mLockSwitch;
     private View mMorningRemainView;
     private View mEveningCheckView;
+    private View mLockResetView;
     private TextView mMorningTimeTextView;
     private TextView mEveningCheckTextView;
     private CustomSwitch.SwitchCheckChangeListener mMorningSwitchChangeListener = new CustomSwitch.SwitchCheckChangeListener() {
@@ -43,6 +46,18 @@ public class SettingActivity extends FragmentActivity {
             setEveningCheck(check);
         }
     };
+    private CustomSwitch.SwitchCheckChangeListener mLockSwitchChangeListener = new CustomSwitch.SwitchCheckChangeListener() {
+        @Override
+        public void onSwitchCheckChange(boolean check) {
+            if(check){
+                startLockActivityForFirstSet();
+            }else{
+                setLockSetView(check);
+            }
+        }
+    };
+
+    private int mSwitchThumbWidth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,27 +69,21 @@ public class SettingActivity extends FragmentActivity {
 
     private void initData( ){
         this.mSettingModel = new SettingModel(this);
+        this.mSwitchThumbWidth = getResources().getDimensionPixelSize(R.dimen.setting_switch_thumb_width);
     }
 
     private void initView( ){
-        int switchThumbWidth = getResources().getDimensionPixelSize(R.dimen.setting_switch_thumb_width);
         this.mMorningSwitch = (CustomSwitch) findViewById(R.id.morningSwitch);
-        this.mMorningSwitch.setCheckBackgroundColor(getResources().getColor(R.color.setting_switch_check_background_color));
-        this.mMorningSwitch.setSwitchThumbWidth(switchThumbWidth);
-        this.mMorningSwitch.setSwitchThumbBackgroundColor(getResources().getColor(R.color.setting_switch_thumb_color));
-        this.mMorningSwitch.setSwitchCheckChangeListener(this.mMorningSwitchChangeListener);
+        setCustomSwitch(this.mMorningSwitch);
         this.mMorningRemainView = findViewById(R.id.morningRemainView);
         this.mMorningTimeTextView = (TextView) findViewById(R.id.morningTimeTextView);
-        this.mMorningTimeTextView.setText(this.mSettingModel.getMorningRemainTime());
+        this.mMorningTimeTextView.setText(this.mSettingModel.getMorningRemainTimeText());
 
         this.mEveningSwitch = (CustomSwitch) findViewById(R.id.eveningSwitch);
-        this.mEveningSwitch.setSwitchThumbWidth(switchThumbWidth);
-        this.mEveningSwitch.setSwitchThumbBackgroundColor(getResources().getColor(R.color.setting_switch_thumb_color));
-        this.mEveningSwitch.setCheckBackgroundColor(getResources().getColor(R.color.setting_switch_check_background_color));
-        this.mEveningSwitch.setSwitchCheckChangeListener(this.mEveningSwitchChangeListener);
+        setCustomSwitch(this.mEveningSwitch);
         this.mEveningCheckView = findViewById(R.id.eveningCheckView);
         this.mEveningCheckTextView = (TextView) findViewById(R.id.eveningTimeTextView);
-        this.mEveningCheckTextView.setText(this.mSettingModel.getEveningCheckTime());
+        this.mEveningCheckTextView.setText(this.mSettingModel.getEveningCheckTimeText());
 
         boolean check = this.mSettingModel.isMorningRemain();
         this.mMorningSwitch.setSwitchCheck(check);
@@ -82,6 +91,44 @@ public class SettingActivity extends FragmentActivity {
         check = this.mSettingModel.isEveningCheck();
         this.mEveningSwitch.setSwitchCheck(check);
         setEveningCheckView(check);
+
+        this.mLockSwitch = (CustomSwitch) findViewById(R.id.lockSwitch);
+        setCustomSwitch(this.mLockSwitch);
+        check = this.mSettingModel.isLockSet();
+        this.mLockSwitch.setSwitchCheck(check);
+
+        this.mLockResetView = findViewById(R.id.resetLockView);
+        setLockSetView(check);
+
+        //not move these before switch.setCheck() above because we don't need to set data at the first time
+        this.mEveningSwitch.setSwitchCheckChangeListener(this.mEveningSwitchChangeListener);
+        this.mMorningSwitch.setSwitchCheckChangeListener(this.mMorningSwitchChangeListener);
+        this.mLockSwitch.setSwitchCheckChangeListener(this.mLockSwitchChangeListener);
+    }
+
+    private void setCustomSwitch(CustomSwitch customSwitch){
+        customSwitch.setCheckBackgroundColor(getResources().getColor(R.color.setting_switch_check_background_color));
+        customSwitch.setSwitchThumbWidth(this.mSwitchThumbWidth);
+        customSwitch.setSwitchThumbBackgroundColor(getResources().getColor(R.color.setting_switch_thumb_color));
+    }
+
+    private void startLockActivityForFirstSet( ){
+        Intent intent = new Intent(this, LockActivity.class);
+        intent.putExtra(Util.EXTRA_KEY_LOCK_ACTIVITY_STATE, LockActivity.STATE_FIRST_SET);
+        startActivityForResult(intent, Util.REQUEST_FIRST_SET_PASSWORD);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == RESULT_OK){
+            if(requestCode == Util.REQUEST_FIRST_SET_PASSWORD || requestCode == Util.REQUEST_RESET_PASSWORD){
+                this.mLockResetView.setVisibility(View.VISIBLE);
+            }
+        }else if(resultCode == RESULT_CANCELED){
+            if(requestCode == Util.REQUEST_FIRST_SET_PASSWORD){
+                this.mLockSwitch.setSwitchCheck(false);
+            }
+        }
     }
 
     private void setMorningRemain(boolean remain){
@@ -96,12 +143,18 @@ public class SettingActivity extends FragmentActivity {
 
     private void setMorningRemainView(boolean remain){
         int visible = remain ? View.VISIBLE : View.GONE;
-        mMorningRemainView.setVisibility(visible);
+        this.mMorningRemainView.setVisibility(visible);
     }
 
     private void setEveningCheckView(boolean check){
         int visible = check ? View.VISIBLE : View.GONE;
-        mEveningCheckView.setVisibility(visible);
+        this.mEveningCheckView.setVisibility(visible);
+    }
+
+    private void setLockSetView(boolean set){
+        int visible = set ? View.VISIBLE : View.GONE;
+        this.mLockResetView.setVisibility(visible);
+        this.mSettingModel.setLockSet(set);
     }
 
     private void setEveningCheck(boolean check){
@@ -138,9 +191,15 @@ public class SettingActivity extends FragmentActivity {
         timePickerFragment.show(getSupportFragmentManager(), "TimePicker");
     }
 
+    public void resetPassword(View view){
+        Intent intent = new Intent(this, LockActivity.class);
+        intent.putExtra(Util.EXTRA_KEY_LOCK_ACTIVITY_STATE, LockActivity.STATE_RESET);
+        startActivityForResult(intent, Util.REQUEST_RESET_PASSWORD);
+    }
+
     private void onMorningTimeSet(int hour, int minute){
         this.mSettingModel.setMorningRemainTime(hour, minute);
-        this.mMorningTimeTextView.setText(this.mSettingModel.getMorningRemainTime());
+        this.mMorningTimeTextView.setText(this.mSettingModel.getMorningRemainTimeText());
         setAlarm(getMorningPendingIntent(), hour, minute);
     }
 
@@ -164,21 +223,22 @@ public class SettingActivity extends FragmentActivity {
 
     private PendingIntent getMorningPendingIntent( ){
         Intent intent = new Intent(this, MorningRemainService.class);
-        return PendingIntent.getService(this, Util.MORNING_REMAIN_ALARM_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent.getService(this, Util.MORNING_REMAIN_PENDING_INTENT_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     private PendingIntent getEveningPendingIntent( ){
         Intent intent = new Intent(this, EveningCheckService.class);
-        return PendingIntent.getService(this, Util.EVENING_CHECK_ALARM_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent.getService(this, Util.EVENING_CHECK_PENDING_INTENT_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     private void onEveningTimeSet(int hour, int minute){
         this.mSettingModel.setEveningCheckTime(hour, minute);
-        this.mEveningCheckTextView.setText(this.mSettingModel.getEveningCheckTime());
+        this.mEveningCheckTextView.setText(this.mSettingModel.getEveningCheckTimeText());
         setAlarm(getEveningPendingIntent(), hour, minute);
     }
 
     public void back(View view){
         finish();
     }
+
 }

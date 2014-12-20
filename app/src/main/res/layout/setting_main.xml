@@ -123,7 +123,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/eveningCheckView"
-                android:onClick="setEveningCheckTime">
+                android:onClick="setEveningCheckTime"
+                android:layout_marginBottom="5dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -153,6 +154,39 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="5dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/setting_lock"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/setting_main_font_size" />
+
+                <com.android.threeday.view.CustomSwitch
+                    android:layout_width="@dimen/setting_switch_width"
+                    android:layout_height="@dimen/setting_switch_height"
+                    android:id="@+id/lockSwitch"
+                    android:layout_gravity="center_vertical"
+                    android:background="#aaa" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/resetLockView"
+                android:onClick="resetPassword">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/reset_lock"
+                    android:textSize="@dimen/setting_main_font_size" />
+
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

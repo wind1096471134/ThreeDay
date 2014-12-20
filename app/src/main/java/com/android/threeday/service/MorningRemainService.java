@@ -43,15 +43,15 @@ public class MorningRemainService extends Service {
         builder.setSmallIcon(R.drawable.ic_launcher);
 
         Notification notification = builder.build();
-        notificationManager.notify(Util.MORNING_REMAIN_ALARM_ID, notification);
+        notificationManager.notify(Util.MORNING_REMAIN_NOTIFICATION_ID, notification);
 
         stopSelf(startId);
         return Service.START_NOT_STICKY;
     }
 
     private PendingIntent getPendingIntent(Context context){
-        Intent intent = new Intent(context, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        return PendingIntent.getActivity(context, Util.MORNING_REMAIN_ALARM_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent intent = new Intent(context, CheckLockService.class);
+        intent.putExtra(Util.EXTRA_KEY_LOCK_START_ACTIVITY, MainActivity.class);
+        return PendingIntent.getService(context, Util.MORNING_REMAIN_PENDING_INTENT_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 }

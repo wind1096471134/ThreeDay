@@ -51,6 +51,8 @@ public class MainActivityManager {
     private SharedPreferences mSharedPreferences;
     private static final HandlerThread mHandlerThread = new HandlerThread("HandlerThread");
 
+    private int mPassDay;
+
     MainActivityManager(FragmentActivity activity){
         this.mActivity = activity;
         initView( );
@@ -204,20 +206,50 @@ public class MainActivityManager {
         return this.mSlideLayer;
     }
 
-    boolean isNewDayChecked( ){
-        return this.mSharedPreferences.getBoolean(Util.PREFERENCE_KEY_NEW_DAY_CHECK, true);
+    void checkNewDayPass( ){
+        long dayTime = this.mSharedPreferences.getLong(Util.PREFERENCE_KEY_LAST_IN_DAY_TIME, -1);
+        this.mPassDay = -1;
+        if(dayTime != -1){
+            Time time = new Time();
+            time.set(dayTime);
+            Time now = new Time();
+            now.setToNow();
+            if(time.before(now)){
+                if(time.year == now.year){
+                    this.mPassDay = now.yearDay - time.yearDay;
+                }else{
+                    if(time.year % 4 == 0){// 366 day
+                        this.mPassDay = 365 - time.yearDay + now.yearDay + 1;
+                    }else{// 365 day
+                        this.mPassDay = 364 - time.year + now.yearDay + 1;
+                    }
+                }
+            }
+        }
+    }
+
+    int getNewDayPass( ){
+        return this.mPassDay;
     }
 
     void setNewDayChecked( ){
-        this.mSharedPreferences.edit().putBoolean(Util.PREFERENCE_KEY_NEW_DAY_CHECK, true).commit();
+        Time time = new Time();
+        time.setToNow();
+        this.mSharedPreferences.edit().putLong(Util.PREFERENCE_KEY_LAST_IN_DAY_TIME, time.toMillis(false)).commit();
     }
 
     boolean isFirstUsing( ){
         return this.mSharedPreferences.getBoolean(Util.PREFERENCE_KEY_FIRST_USING, true);
     }
 
-    void setFirstUsingFalse( ){
-        this.mSharedPreferences.edit().putBoolean(Util.PREFERENCE_KEY_FIRST_USING, false).commit();
+    void setFirstUsingData(){
+        Time time = new Time();
+        time.setToNow();
+        long timeMills = time.toMillis(false);
+        this.mSharedPreferences.edit().putBoolean(Util.PREFERENCE_KEY_FIRST_USING, false)
+                .putLong(Util.PREFERENCE_KEY_REAL_DAY_TIME_1, timeMills)
+                .putLong(Util.PREFERENCE_KEY_REAL_DAY_TIME_2, timeMills)
+                .putLong(Util.PREFERENCE_KEY_LAST_IN_DAY_TIME, timeMills).commit();
     }
 
     void initDefaultAlarm( ){
@@ -227,7 +259,7 @@ public class MainActivityManager {
 
     private void setDefaultEveningCheckAlarm( ){
         Intent intent = new Intent(this.mActivity, EveningCheckService.class);
-        PendingIntent pendingIntent = PendingIntent.getService(this.mActivity, Util.EVENING_CHECK_ALARM_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getService(this.mActivity, Util.EVENING_CHECK_NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) this.mActivity.getSystemService(Context.ALARM_SERVICE);
         Time time = new Time();
         time.setToNow();
@@ -239,7 +271,7 @@ public class MainActivityManager {
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, startTime, Util.A_DAY_IN_MILLIS, pendingIntent);
     }
 
-    private void  setNewDayAlarm(){
+    private void setNewDayAlarm(){
         Intent intent = new Intent(this.mActivity, NewDaySettingService.class);
         PendingIntent pendingIntent = PendingIntent.getService(this.mActivity, Util.UPDATE_DATA_AT_NEW_DAY_ALARM_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) this.mActivity.getSystemService(Context.ALARM_SERVICE);
@@ -260,9 +292,16 @@ public class MainActivityManager {
     }
 
     void updateDataAtNewDay( ){
-        UpdateDataModel updateDataModel = new UpdateDataModel(this.mActivity);
-        updateDataModel.updateDataAtNewDay();
-        this.mSharedPreferences.edit().putBoolean(Util.PREFERENCE_KEY_TODAY_TASKS_CHECK, false).commit();
+        if(this.mPassDay > 0){
+            UpdateDataModel updateDataModel = new UpdateDataModel(this.mActivity);
+            if(this.mPassDay > 2){
+                updateDataModel.deleteAllData( );
+            }else{
+                for(int i = 0; i < this.mPassDay; i++){
+                    updateDataModel.updateDataAtNewDay();
+                }
+            }
+        }
     }
 
     long getViewAnimationDuration( ){
@@ -271,5 +310,13 @@ public class MainActivityManager {
 
     void onDestroy( ){
         this.mHandlerThread.quit();
+    }
+
+    boolean isPasswordSet( ){
+        return this.mSharedPreferences.getBoolean(Util.PREFERENCE_KEY_LOCK_SET, false);
+    }
+
+    String getLockPassword( ){
+        return this.mSharedPreferences.getString(Util.PREFERENCE_KEY_LOCK_PASSWORD, null);
     }
 }

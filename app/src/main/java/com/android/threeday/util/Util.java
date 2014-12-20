@@ -20,10 +20,14 @@ public class Util {
     public static final int UN_REMAIN = 0;
 
     public static final int REQUEST_ADD_TASK = 0;
+    public static final int REQUEST_RESET_PASSWORD = 1;
+    public static final int REQUEST_FIRST_SET_PASSWORD = 2;
 
-    public final static int MORNING_REMAIN_ALARM_ID = -1;
-    public final static int EVENING_CHECK_ALARM_ID = -2;
-    public final static int UPDATE_DATA_AT_NEW_DAY_ALARM_ID = -3;
+    public final static int MORNING_REMAIN_NOTIFICATION_ID = -1;
+    public final static int MORNING_REMAIN_PENDING_INTENT_ID = -2;
+    public final static int EVENING_CHECK_NOTIFICATION_ID = -3;
+    public final static int EVENING_CHECK_PENDING_INTENT_ID = -4;
+    public final static int UPDATE_DATA_AT_NEW_DAY_ALARM_ID = -5;
 
     public static final int MORNING_REMAIN_TIME_DEFAULT_HOUR = 8;
     public static final int MORNING_REMAIN_TIME_DEFAULT_MINUTE = 0;
@@ -52,13 +56,20 @@ public class Util {
     public static final String PREFERENCE_KEY_EVENING_CHECK = "EveningCheck";
     public static final String PREFERENCE_KEY_EVENING_CHECK_TIME_HOUR = "EveningCheckTimeHour";
     public static final String PREFERENCE_KEY_EVENING_CHECK_TIME_MINUTE = "EveningCheckTimeMinute";
-    public static final String PREFERENCE_KEY_NEW_DAY_CHECK = "NewDayChecked";
+    public static final String PREFERENCE_KEY_REAL_DAY_TIME_1 = "RealDayTime1";
+    public static final String PREFERENCE_KEY_REAL_DAY_TIME_2 = "RealDayTime2";
+    public static final String PREFERENCE_KEY_LAST_IN_DAY_TIME = "DayTime";
     public static final String PREFERENCE_KEY_FIRST_USING = "FirstUsing";
+    public static final String PREFERENCE_KEY_LOCK_SET = "LockSet";
+    public static final String PREFERENCE_KEY_LOCK_PASSWORD = "LockPassword";
 
     public static final String REMAIN_BUNDLE_KEY = "BundleKey";
     public static final String REMAIN_TASKITEM_KEY = "TaskItemKey";
-
     public static final String ARRANGE_TOMORROW_KEY = "ArrangeTomorrow";
+
+    public static final String EXTRA_KEY_LOCK_ACTIVITY_STATE = "LockActivityState";
+    public static final String EXTRA_KEY_LOCK_BACK = "Back";
+    public static final String EXTRA_KEY_LOCK_START_ACTIVITY = "StartActivity";
 
     public static final boolean DEFAULT_MORNING_REMAIN = false;
     public static final boolean DEFAULT_EVENING_CHECK = true;

@@ -71,6 +71,7 @@ public class CustomSwitch extends FrameLayout {
     private void initView( ){
         this.mSwitchView = new View(getContext());
         this.mCheckColorView = new View(getContext());
+        this.mCheckColorView.setAlpha(0f);
         addView(this.mCheckColorView, new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         addView(this.mSwitchView, new LayoutParams(this.mSwitchViewWidth, ViewGroup.LayoutParams.MATCH_PARENT, Gravity.LEFT));
         this.mSwitchAnimator.setTarget(this.mSwitchView);
@@ -99,22 +100,28 @@ public class CustomSwitch extends FrameLayout {
     }
 
     public void setSwitchCheck(boolean check){
-        this.mSwitchCheck = check;
-        float alpha;
-        if(check){
-            if(this.mWidth == 0){//we don't know the width now
-                this.mReAddSwitchView = true;
-                removeView(this.mSwitchView);
-                addView(this.mSwitchView, new LayoutParams(this.mSwitchViewWidth, ViewGroup.LayoutParams.MATCH_PARENT, Gravity.RIGHT));
+        if(this.mSwitchCheck != check){
+            this.mSwitchCheck = check;
+            float alpha;
+            if(check){
+                if(this.mWidth == 0){//we don't know the width now
+                    this.mReAddSwitchView = true;
+                    removeView(this.mSwitchView);
+                    addView(this.mSwitchView, new LayoutParams(this.mSwitchViewWidth, ViewGroup.LayoutParams.MATCH_PARENT, Gravity.RIGHT));
+                }else{
+                    this.mSwitchView.setTranslationX(this.mEndPosition);
+                }
+                alpha = 1f;
             }else{
-                this.mSwitchView.setTranslationX(this.mEndPosition);
+                this.mSwitchView.setTranslationX(0f);
+                alpha = 0f;
             }
-            alpha = 1f;
-        }else{
-            this.mSwitchView.setTranslationY(0f);
-            alpha = 0f;
+            this.mCheckColorView.setAlpha(alpha);
+            if(this.mSwitchCheckChangeListener != null){
+                this.mSwitchCheckChangeListener.onSwitchCheckChange(check);
+            }
         }
-        this.mCheckColorView.setAlpha(alpha);
+
     }
 
     private void animateSwitch( ){

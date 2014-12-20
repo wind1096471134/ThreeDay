@@ -3,7 +3,7 @@
     package="com.android.threeday" >
 
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:allowBackup="true"
@@ -11,9 +11,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".activity.mainActivity.MainActivity"
-            android:label="@string/app_name"
-            android:launchMode="singleTask"
+            android:name=".activity.mainActivity.FirstActivity"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,15 +20,24 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".activity.mainActivity.MainActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
             android:name=".activity.addTaskActivity.AddTaskActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.checkTaskActivity.CheckTaskActivity"
+            android:exported="true"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.remainActivity.RemainTaskActivity"
             android:excludeFromRecents="true"
+            android:exported="true"
             android:label="@string/remain_activity_label"
             android:launchMode="standard"
             android:noHistory="true"
@@ -39,26 +46,30 @@
         <activity
             android:name=".activity.settingActivity.SettingActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.lockActivity.LockActivity"
+            android:exported="true"
+            android:screenOrientation="portrait" />
 
         <service
             android:name=".service.RemainTaskService"
             android:enabled="true"
-            android:exported="false" >
+            android:exported="true" >
         </service>
         <service
             android:name=".service.MorningRemainService"
             android:enabled="true"
-            android:exported="false" >
+            android:exported="true" >
         </service>
         <service
             android:name=".service.EveningCheckService"
             android:enabled="true"
-            android:exported="false" >
+            android:exported="true" >
         </service>
         <service
             android:name=".service.NewDaySettingService"
             android:enabled="true"
-            android:exported="false" >
+            android:exported="true" >
         </service>
 
         <receiver
@@ -75,10 +86,16 @@
             android:name=".broadcastReceiver.SystemBootReceiver"
             android:enabled="true"
             android:exported="true" >
-            <intent-filter android:priority="999">
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            <intent-filter android:priority="999" >
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
+        <service
+            android:name=".service.CheckLockService"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
     </application>
 
 </manifest>

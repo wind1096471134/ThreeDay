@@ -35,7 +35,7 @@
     <dimen name="custom_action_bar_font_size">25sp</dimen>
     <dimen name="label_font_size">20sp</dimen>
     <dimen name="check_task_outside_padding">20dp</dimen>
-    <dimen name="check_task_text_font_size">60sp</dimen>
+    <dimen name="check_task_text_font_size">50sp</dimen>
     <dimen name="check_task_bottom_height">50dp</dimen>
     <dimen name="check_task_evaluation_font_size">30sp</dimen>
     <dimen name="check_task_title_font_size">25sp</dimen>
@@ -49,5 +49,7 @@
     <dimen name="main_activity_top_animation_startY">15dp</dimen>
     <dimen name="main_activity_bottom_animation_startY">15dp</dimen>
     <dimen name="new_day_slide_layer_font_size">40sp</dimen>
+    <dimen name="lock_view_number_view_margin">7dp</dimen>
+    <dimen name="lock_view_title_translationY_start">15dp</dimen>
 
 </resources>

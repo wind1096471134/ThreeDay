@@ -50,5 +50,12 @@
     <string name="set_time_before_now_toast">亲，你想穿越吗？</string>
     <string name="arrange_tomorrow_title">亲，安排一下明天吧！</string>
     <string name="new_day_slide_layer_text">开启新一天</string>
+    <string name="setting_lock">开启密码保护</string>
+    <string name="reset_lock">重新设置密码</string>
+    <string name="input_code">亲，请输入密码</string>
+    <string name="input_code_again">亲，再输入一次密码</string>
+    <string name="input_code_wrong">亲，密码错误哦</string>
+    <string name="input_old_password">亲，请输入原来的密码</string>
+    <string name="input_new_password">亲，请输入新的密码</string>
 
 </resources>

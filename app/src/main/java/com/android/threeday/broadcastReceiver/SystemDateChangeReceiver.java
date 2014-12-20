@@ -11,11 +11,12 @@ public class SystemDateChangeReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.e("wind", "date change");
-        String action = intent.getAction();
+
+        String action = intent.getAction();Log.e("wind", "date change" + action);
         if(action.equals("android.intent.action.DATE_CHANGED") || action.equals("android.intent.action.TIME_SET")
                 || action.equals("android.intent.action.TIME_TICK")){
             ResendAlarmManager resendAlarmManager = new ResendAlarmManager(context);
+            resendAlarmManager.resetRealTimeWhenTimeChange();
             resendAlarmManager.resendAlarms();
         }
     }
