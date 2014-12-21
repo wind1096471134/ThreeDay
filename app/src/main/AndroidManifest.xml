@@ -73,13 +73,11 @@
         </service>
 
         <receiver
-            android:name=".broadcastReceiver.SystemDateChangeReceiver"
+            android:name=".broadcastReceiver.SystemTimeChangeReceiver"
             android:enabled="true"
             android:exported="true" >
             <intent-filter android:priority="999" >
-                <action android:name="android.intent.action.DATE_CHANGED" />
                 <action android:name="android.intent.action.TIME_SET" />
-                <action android:name="android.intent.action.TIME_TICK" />
             </intent-filter>
         </receiver>
         <receiver

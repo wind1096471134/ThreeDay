@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 
@@ -119,9 +118,6 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
             checkFirstUsing();
             checkNewDay();
         }
-        //this.mMainActivityManager.testSetNewDayAlarm();
-
-        Log.e("wind", "main create ");
     }
 
     @Override
@@ -328,7 +324,7 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();Log.e("wind", "main destroy");
+        super.onDestroy();
         this.mMainActivityManager.onDestroy();
         System.exit(0);
     }

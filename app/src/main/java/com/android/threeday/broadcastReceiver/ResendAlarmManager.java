@@ -1,15 +1,13 @@
 package com.android.threeday.broadcastReceiver;
 
 import android.app.AlarmManager;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.Time;
-import android.util.Log;
 
-import com.android.threeday.model.setting.SettingModel;
+import com.android.threeday.model.setting.TimeModel;
 import com.android.threeday.model.threeDay.TaskItem;
 import com.android.threeday.model.threeDay.TodayModel;
 import com.android.threeday.model.threeDay.TomorrowModel;
@@ -27,10 +25,9 @@ import java.util.ArrayList;
 class ResendAlarmManager {
     private Context mContext;
     private AlarmManager mAlarmManager;
-    private NotificationManager mNotificationManager;
     private TodayModel mTodayModel;
     private TomorrowModel mTomorrowModel;
-    private SettingModel mSettingModel;
+    private TimeModel mTimeModel;
 
     public ResendAlarmManager(Context context){
         this.mContext = context;
@@ -40,58 +37,53 @@ class ResendAlarmManager {
     private void initData( ){
         this.mTodayModel = new TodayModel(this.mContext);
         this.mTomorrowModel = new TomorrowModel(this.mContext);
-        this.mSettingModel = new SettingModel(this.mContext);
+        this.mTimeModel = new TimeModel(this.mContext);
         this.mAlarmManager = (AlarmManager) this.mContext.getSystemService(Context.ALARM_SERVICE);
-        this.mNotificationManager = (NotificationManager) this.mContext.getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
     public void resetRealTimeWhenTimeChange(){
-        this.mSettingModel.resetRealTime( );
+        this.mTimeModel.resetRealTime();
     }
 
     public void resetRealTimeWhenBoot( ){
         Time time = new Time();
         time.setToNow();
-        this.mSettingModel.resetRealTime(time.toMillis(false));
+        this.mTimeModel.resetRealTime(time.toMillis(false));
     }
 
     public void resendAlarms( ){
-        int day = this.mSettingModel.compareLastInAndRealDay();
+        int day = this.mTimeModel.compareLastInAndRealDay();
         Time time = new Time();
         time.setToNow();
         long nowTimeMills = time.toMillis(false);
-        Log.e("wind", day + " resend");
         if(day <= 0){
             /*user enter the app today, so we should resend all alarm*/
             ArrayList<TaskItem> taskItems = this.mTodayModel.getUndoneTasks();
             resendTaskRemainAlarms(taskItems);
             taskItems = this.mTomorrowModel.getUndoneTasks();
             resendTaskRemainAlarms(taskItems);
-            this.mSettingModel.resetLastInTime(nowTimeMills);
+            this.mTimeModel.resetLastInTime(nowTimeMills);
         }else if(day == 1){
             /*user not enter the app today but yesterday, so when the system time has change
             we should also resend the today's remain alarm */
-            this.mSettingModel.resetLastInTime(nowTimeMills - Util.A_DAY_IN_MILLIS);
+            this.mTimeModel.resetLastInTime(nowTimeMills - Util.A_DAY_IN_MILLIS);
         }else{
              /*user not enter the app before yesterday so there are not remain alarm we
              should resend, so we delete all data*/
-            this.mSettingModel.resetLastInTime(nowTimeMills - Util.A_DAY_IN_MILLIS * 2);
+            this.mTimeModel.resetLastInTime(nowTimeMills - Util.A_DAY_IN_MILLIS * 2);
         }
         resendMorningOrEveningAlarm();
         resendNewDayAlarm();
-        this.mSettingModel.resetRealTime(nowTimeMills);
+        this.mTimeModel.resetRealTime(nowTimeMills);
     }
 
     private void resendMorningOrEveningAlarm( ){
-        if(this.mSettingModel.isMorningRemain()){
-            this.mNotificationManager.cancel(Util.MORNING_REMAIN_NOTIFICATION_ID);
-            long remainTime = this.mSettingModel.getMorningRemainTimeMills();
+        if(this.mTimeModel.isMorningRemain()){
+            long remainTime = this.mTimeModel.getMorningRemainTimeMills();
             resendMorningRemainOrEveningCheckAlarm(remainTime, getMorningRemainPendingIntent());
         }
-        if(this.mSettingModel.isEveningCheck()){
-            Log.e("wind", "evening");
-            this.mNotificationManager.cancel(Util.EVENING_CHECK_NOTIFICATION_ID);
-            long checkTime = this.mSettingModel.getEveningCheckTimeMills();
+        if(this.mTimeModel.isEveningCheck()){
+            long checkTime = this.mTimeModel.getEveningCheckTimeMills();
             resendMorningRemainOrEveningCheckAlarm(checkTime, getEveningCheckPendingIntent());
         }
     }
@@ -112,9 +104,9 @@ class ResendAlarmManager {
         time.set(timeMills);
         Time now = new Time();
         now.setToNow();
-        long startTime = time.after(now) ? time.toMillis(false) : (time.toMillis(false) + SettingModel.ALARM_REPEAT_TIME);
+        long startTime = time.after(now) ? time.toMillis(false) : (time.toMillis(false) + Util.A_DAY_IN_MILLIS);
         this.mAlarmManager.cancel(pendingIntent);
-        this.mAlarmManager.setRepeating(AlarmManager.RTC, startTime, SettingModel.ALARM_REPEAT_TIME, pendingIntent);
+        this.mAlarmManager.setRepeating(AlarmManager.RTC, startTime, Util.A_DAY_IN_MILLIS, pendingIntent);
     }
 
     private PendingIntent getMorningRemainPendingIntent( ){
@@ -140,11 +132,9 @@ class ResendAlarmManager {
                 resetTime.minute = remainTime.minute;
                 resetTime.second = remainTime.second;
                 if(resetTime.before(now)){
-                    this.mNotificationManager.cancel((int) taskItem.getId());
                     cancelAlarm(getRemainAlarmPendingIntent(taskItem));
                     this.mTodayModel.cancelUndoneTaskRemain(taskItems.indexOf(taskItem));
                 }else if(resetTime.after(now)){
-                    this.mNotificationManager.cancel((int) taskItem.getId());
                     this.mTodayModel.setUndoneTaskRemain(taskItems.indexOf(taskItem), resetTime.format2445());
                     resendAlarm(resetTime.toMillis(false), getRemainAlarmPendingIntent(taskItem));
                 }

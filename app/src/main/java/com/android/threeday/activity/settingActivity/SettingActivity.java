@@ -212,8 +212,8 @@ public class SettingActivity extends FragmentActivity {
         time.minute = minute;
         Time now = new Time();
         now.setToNow();
-        long startTime = time.before(now) ? (time.toMillis(false) + SettingModel.ALARM_REPEAT_TIME) : time.toMillis(false);
-        alarmManager.setRepeating(AlarmManager.RTC, startTime, SettingModel.ALARM_REPEAT_TIME, pendingIntent);
+        long startTime = time.before(now) ? (time.toMillis(false) + Util.A_DAY_IN_MILLIS) : time.toMillis(false);
+        alarmManager.setRepeating(AlarmManager.RTC, startTime, Util.A_DAY_IN_MILLIS, pendingIntent);
     }
 
     private void cancelAlarm(PendingIntent pendingIntent){

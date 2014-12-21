@@ -60,6 +60,9 @@ public class MainActivityManager {
         if(!mHandlerThread.isAlive()){
             mHandlerThread.start();
         }
+        /*we send new day alarm every time user enter the app, because the alarm may be killed by
+         system, so we should prevent this alarm from never being sent*/
+        setNewDayAlarm();
     }
 
     private void initView( ){
@@ -279,6 +282,7 @@ public class MainActivityManager {
         time.setToNow();
         time.hour = Util.NEW_DAY_ALARM_HOUR;
         time.minute = Util.NEW_DAY_ALARM_MINUTE;
+        alarmManager.cancel(pendingIntent);
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, time.toMillis(false) + Util.A_DAY_IN_MILLIS, Util.A_DAY_IN_MILLIS, pendingIntent);
     }
 
