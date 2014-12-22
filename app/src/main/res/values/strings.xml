@@ -27,7 +27,7 @@
     <string name="cancel">取消</string>
     <string name="task_information_advice">任务：</string>
     <string name="information_empty">你还没填任务信息哦！</string>
-    <string name="remain_title">提示</string>
+    <string name="remain_title">是否设置提醒？</string>
     <string name="yes">好的</string>
     <string name="no">不了</string>
     <string name="check_task_day_evaluation">亲，评价一下你一天的表现哦</string>
@@ -57,5 +57,7 @@
     <string name="input_code_wrong">亲，密码错误哦</string>
     <string name="input_old_password">亲，请输入原来的密码</string>
     <string name="input_new_password">亲，请输入新的密码</string>
+    <string name="back_press_again_exit">再按返回键退出</string>
+    <string name="about_threeday">关于ThreeDay</string>
 
 </resources>

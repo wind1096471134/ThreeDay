@@ -18,7 +18,6 @@ import android.widget.Toast;
 
 import com.android.threeday.R;
 import com.android.threeday.activity.addTaskActivity.AddTaskActivity;
-import com.android.threeday.activity.checkTaskActivity.CheckTaskActivity;
 import com.android.threeday.activity.mainActivity.FragmentStateListener;
 import com.android.threeday.activity.mainActivity.FragmentTaskLongClickListener;
 import com.android.threeday.activity.mainActivity.TaskOperateListener;
@@ -356,6 +355,7 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
         intent.putExtra(Util.TASK_DAY_TYPE, dayType);
         intent.putExtra(Util.TASK_DONE, done);
         startActivityForResult(intent, Util.REQUEST_ADD_TASK);
+        getActivity().overridePendingTransition(R.anim.activity_down_in, android.R.anim.fade_out);
     }
 
     public void onPageSelected( ){

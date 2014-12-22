@@ -142,6 +142,12 @@ public class MainActivityManager {
     }
 
     void setDayEvaluation(int evaluation){
+        setDayEvaluationImageViewResource(evaluation);
+        this.mTopDayEvaluationViewChangeAnimator.cancel();
+        this.mTopDayEvaluationViewChangeAnimator.start();
+    }
+
+    private void setDayEvaluationImageViewResource(int evaluation){
         int resId;
         switch (evaluation){
             case Util.EVALUATION_DEFAULT:
@@ -161,8 +167,6 @@ public class MainActivityManager {
                 break;
         }
         this.mDayEvaluationImageView.setImageResource(resId);
-        this.mTopDayEvaluationViewChangeAnimator.cancel();
-        this.mTopDayEvaluationViewChangeAnimator.start();
     }
 
     void onPageSelected(int position){
@@ -238,7 +242,9 @@ public class MainActivityManager {
     void setNewDayChecked( ){
         Time time = new Time();
         time.setToNow();
-        this.mSharedPreferences.edit().putLong(Util.PREFERENCE_KEY_LAST_IN_DAY_TIME, time.toMillis(false)).commit();
+        this.mSharedPreferences.edit().
+                putLong(Util.PREFERENCE_KEY_LAST_IN_DAY_TIME, time.toMillis(false))
+                .putBoolean(Util.PREFERENCE_KEY_TODAY_TASKS_CHECK, false).commit();
     }
 
     boolean isFirstUsing( ){
@@ -286,15 +292,6 @@ public class MainActivityManager {
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, time.toMillis(false) + Util.A_DAY_IN_MILLIS, Util.A_DAY_IN_MILLIS, pendingIntent);
     }
 
-    void testSetNewDayAlarm(){
-        Intent intent = new Intent(this.mActivity, NewDaySettingService.class);
-        PendingIntent pendingIntent = PendingIntent.getService(this.mActivity, Util.UPDATE_DATA_AT_NEW_DAY_ALARM_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager alarmManager = (AlarmManager) this.mActivity.getSystemService(Context.ALARM_SERVICE);
-        Time time = new Time();
-        time.setToNow();
-        alarmManager.set(AlarmManager.RTC_WAKEUP, time.toMillis(false), pendingIntent);
-    }
-
     void updateDataAtNewDay( ){
         if(this.mPassDay > 0){
             UpdateDataModel updateDataModel = new UpdateDataModel(this.mActivity);
@@ -316,11 +313,15 @@ public class MainActivityManager {
         this.mHandlerThread.quit();
     }
 
-    boolean isPasswordSet( ){
-        return this.mSharedPreferences.getBoolean(Util.PREFERENCE_KEY_LOCK_SET, false);
-    }
-
-    String getLockPassword( ){
-        return this.mSharedPreferences.getString(Util.PREFERENCE_KEY_LOCK_PASSWORD, null);
+    void checkTodayCheck(int todayEvaluation) {
+        boolean todayCheck = this.mSharedPreferences.getBoolean(Util.PREFERENCE_KEY_TODAY_TASKS_CHECK, false);
+        if(todayCheck){
+            this.mCheckTasksView.setVisibility(View.INVISIBLE);
+            this.mDayEvaluationImageView.setVisibility(View.VISIBLE);
+            setDayEvaluationImageViewResource(todayEvaluation);
+        }else{
+            this.mCheckTasksView.setVisibility(View.VISIBLE);
+            this.mDayEvaluationImageView.setVisibility(View.INVISIBLE);
+        }
     }
 }

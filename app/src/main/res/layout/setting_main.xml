@@ -178,7 +178,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/resetLockView"
-                android:onClick="resetPassword">
+                android:onClick="resetPassword"
+                android:layout_marginBottom="5dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -187,6 +188,15 @@
                     android:textSize="@dimen/setting_main_font_size" />
 
             </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/about_threeday"
+                android:id="@+id/textView2"
+                android:layout_gravity="center_horizontal"
+                android:textSize="@dimen/setting_main_font_size" />
         </LinearLayout>
     </ScrollView>
+
 </LinearLayout>

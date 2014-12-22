@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import com.android.threeday.R;
 import com.android.threeday.activity.settingActivity.SettingActivity;
@@ -24,6 +25,7 @@ import com.android.threeday.view.SlideLayer;
  */
 public class MainActivity extends FragmentActivity implements FragmentTaskLongClickListener, TaskOperateListener
     , FragmentStateListener {
+    private boolean mBackPress;
     private boolean mFirstCreate;
     private boolean mNeedToUpdateDataAtNewDay;
     private int mCurrentPageIndex = -1;
@@ -161,8 +163,19 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
     @Override
     protected void onResume() {
         super.onResume();
+        if(getIntent().getBooleanExtra(Util.ARRANGE_TOMORROW_KEY, false)){
+            getIntent().putExtra(Util.ARRANGE_TOMORROW_KEY, false);
+        }else{
+            /*if user enter the app not to arrangeTomorrow from eveningCheck, we should checkNewDay even
+            we had check in onCreate, because user may enter the app in new day and press home, then he
+            enter the app after another day later*/
+            checkNewDay();
+        }
         if(this.mCurrentPageIndex != -1){
             this.mFragments[this.mCurrentPageIndex].resume();
+            if(this.mCurrentPageIndex == MainActivityManager.TODAY_INDEX){
+                this.mMainActivityManager.checkTodayCheck(getCurrentPageDayEvaluation(this.mCurrentPageIndex));
+            }
         }
     }
 
@@ -287,6 +300,7 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
     private void startSettingActivity( ){
         Intent intent = new Intent(this, SettingActivity.class);
         startActivity(intent);
+        overridePendingTransition(R.anim.activity_down_in, android.R.anim.fade_out);
     }
 
     @Override
@@ -294,10 +308,25 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
         if(this.mMainActivityManager.isMenuVisible()){
             this.mMainActivityManager.hideMenu();
         }else{
-            super.onBackPressed();
+            backPressedToExit( );
         }
     }
 
+    private void backPressedToExit( ){
+        if(this.mBackPress){
+            finish();
+        }else{
+            this.mBackPress = true;
+            Toast.makeText(this, R.string.back_press_again_exit, Toast.LENGTH_SHORT).show();
+            new Handler( ).postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mBackPress = false;
+                }
+            }, Util.BACK_PRESS_DELAY_TIME);
+        }
+
+    }
     @Override
     public void onFragmentAttach(Fragment fragment) {
         if(fragment instanceof TodayFragment){

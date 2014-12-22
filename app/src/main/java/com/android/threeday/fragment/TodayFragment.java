@@ -107,9 +107,6 @@ public class TodayFragment extends BaseDayFragment {
 
     @Override
     protected void initView(Context context) {
-        this.mTodayTasksCheck = context.getSharedPreferences(Util.PREFERENCE_NAME, Context.MODE_PRIVATE).
-                getBoolean(Util.PREFERENCE_KEY_TODAY_TASKS_CHECK, false);
-
         this.mMainLayout = View.inflate(context, R.layout.fragment_switch_layout, null);
         this.mMainLayout.findViewById(R.id.pageContainer).setBackgroundResource(R.drawable.page_background_gray);
         this.mTaskStateTextView = (TextView) this.mMainLayout.findViewById(R.id.taskStateTextView);
@@ -128,13 +125,22 @@ public class TodayFragment extends BaseDayFragment {
         this.mPageSwitchLayout.setPageView(frontPageView, backPageView);
         this.mPageSwitchLayout.setOnPageSwitchListener(this.mOnPageSwitchListener);
 
-        if(!this.mTodayTasksCheck){
-            this.mBackTaskDoneGridView.setOnItemLongClickListener(this.mBackTaskDoneGridViewLongClickListener);
-        }
+        this.mBackTaskDoneGridView.setOnItemLongClickListener(this.mBackTaskDoneGridViewLongClickListener);
         this.mFrontTaskUndoneGridView.setOnItemLongClickListener(this.mFontTaskUndoneGridViewLongClickListener);
         this.mTaskStateTextView.setText(R.string.task_state_undone);
+
+        resetGridViewLongClickable();
     }
 
+    private void resetGridViewLongClickable( ){
+        checkTodayTasksCheck();
+        this.mBackTaskDoneGridView.setLongClickable(!this.mTodayTasksCheck);
+    }
+
+    private void checkTodayTasksCheck( ){
+        this.mTodayTasksCheck = getActivity().getSharedPreferences(Util.PREFERENCE_NAME, Context.MODE_PRIVATE).
+                getBoolean(Util.PREFERENCE_KEY_TODAY_TASKS_CHECK, false);
+    }
     @Override
     protected void initAdapter(Context context) {
         int itemHeight = getActivity().getResources().getDimensionPixelSize(R.dimen.grid_item_height);
@@ -185,6 +191,7 @@ public class TodayFragment extends BaseDayFragment {
     public void checkTasks(View view) {
         Intent intent = new Intent(getActivity(), CheckTaskActivity.class);
         startActivity(intent);
+        getActivity().overridePendingTransition(android.R.anim.fade_in, R.anim.activity_up_out);
     }
 
     @Override
@@ -206,5 +213,11 @@ public class TodayFragment extends BaseDayFragment {
     protected void checkEmptyView() {
         checkEmptyView(this.mModel.getUndoneTasks(), this.mFrontUndoneEmptyView, this.mFrontTaskUndoneGridView);
         checkEmptyView(this.mModel.getDoneTasks(), this.mBackDoneEmptyView, this.mBackTaskDoneGridView);
+    }
+
+    @Override
+    public void resume() {
+        super.resume();
+        resetGridViewLongClickable();
     }
 }

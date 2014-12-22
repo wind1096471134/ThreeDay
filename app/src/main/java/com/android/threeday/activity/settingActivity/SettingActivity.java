@@ -116,6 +116,7 @@ public class SettingActivity extends FragmentActivity {
         Intent intent = new Intent(this, LockActivity.class);
         intent.putExtra(Util.EXTRA_KEY_LOCK_ACTIVITY_STATE, LockActivity.STATE_FIRST_SET);
         startActivityForResult(intent, Util.REQUEST_FIRST_SET_PASSWORD);
+        overridePendingTransition(R.anim.activity_down_in, android.R.anim.fade_out);
     }
 
     @Override
@@ -195,6 +196,7 @@ public class SettingActivity extends FragmentActivity {
         Intent intent = new Intent(this, LockActivity.class);
         intent.putExtra(Util.EXTRA_KEY_LOCK_ACTIVITY_STATE, LockActivity.STATE_RESET);
         startActivityForResult(intent, Util.REQUEST_RESET_PASSWORD);
+        overridePendingTransition(R.anim.activity_down_in, android.R.anim.fade_out);
     }
 
     private void onMorningTimeSet(int hour, int minute){
@@ -238,7 +240,16 @@ public class SettingActivity extends FragmentActivity {
     }
 
     public void back(View view){
-        finish();
+        exit();
     }
 
+    @Override
+    public void onBackPressed() {
+        exit();
+    }
+
+    private void exit( ){
+        finish();
+        overridePendingTransition(android.R.anim.fade_in, R.anim.activity_up_out);
+    }
 }

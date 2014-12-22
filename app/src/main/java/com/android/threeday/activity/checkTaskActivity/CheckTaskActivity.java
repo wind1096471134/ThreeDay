@@ -137,15 +137,25 @@ public class CheckTaskActivity extends FragmentActivity {
                 intent.putExtra(Util.ARRANGE_TOMORROW_KEY, true);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
-                finish();
+                exit();
             }
 
             @Override
             public void onArrangeTomorrowCancel() {
-                finish();
+                exit();
             }
         });
         arrangeTomorrowFragment.show(getSupportFragmentManager(), "ArrangeTomorrow");
+    }
+
+    private void exit( ){
+        finish();
+        overridePendingTransition(android.R.anim.fade_in, R.anim.activity_up_out);
+    }
+
+    @Override
+    public void onBackPressed() {
+        exit();
     }
 
     private void onTaskEvaluationCheck(int evaluation){

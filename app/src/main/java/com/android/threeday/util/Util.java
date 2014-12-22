@@ -36,6 +36,7 @@ public class Util {
     public static final int NEW_DAY_ALARM_HOUR = 0;
     public static final int NEW_DAY_ALARM_MINUTE = 0;
     public static final long A_DAY_IN_MILLIS = 24 * 60 * 60 * 1000;
+    public static final long BACK_PRESS_DELAY_TIME = 3 * 1000;
 
     public static final String TASK_INFORMATION = "0";
     public static final String TASK_REMAIN = "1";

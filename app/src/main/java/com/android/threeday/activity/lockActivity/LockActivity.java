@@ -91,6 +91,11 @@ public class LockActivity extends Activity{
         this.mState.onBackPressed( );
     }
 
+    private void exit( ){
+        finish();
+        overridePendingTransition(android.R.anim.fade_in, R.anim.activity_up_out);
+    }
+
     private abstract class LockState{
         protected abstract void onLockSet(ArrayList<Integer> lockNumbers);
 
@@ -130,7 +135,7 @@ public class LockActivity extends Activity{
                     mLockModel.setLockPassword(this.mPassword);
                     Intent intent = new Intent();
                     setResult(RESULT_OK, intent);
-                    finish();
+                    exit();
                 }else{
                     mLockView.clear();
                     setTitleText(R.string.input_code_wrong);
@@ -143,7 +148,7 @@ public class LockActivity extends Activity{
             Intent intent = new Intent();
             intent.putExtra(Util.EXTRA_KEY_LOCK_BACK, true);
             setResult(RESULT_CANCELED, intent);
-            finish();
+            exit();
         }
     }
 
@@ -169,7 +174,7 @@ public class LockActivity extends Activity{
                         mLockModel.setLockPassword(this.mNewPassword);
                         Intent intent = new Intent();
                         setResult(RESULT_OK, intent);
-                        finish();
+                        exit();
                         return;
                     }else{
                         setTitleText(R.string.input_code_wrong);
@@ -192,7 +197,7 @@ public class LockActivity extends Activity{
             Intent intent = new Intent();
             intent.putExtra(Util.EXTRA_KEY_LOCK_BACK, true);
             setResult(RESULT_CANCELED, intent);
-            finish();
+            exit();
         }
 
     }
@@ -214,7 +219,7 @@ public class LockActivity extends Activity{
                 intent.setClass(LockActivity.this, activityClass);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
-                finish();
+                exit();
             }else{
                 mLockView.clear();
                 setTitleText(R.string.input_code_wrong);

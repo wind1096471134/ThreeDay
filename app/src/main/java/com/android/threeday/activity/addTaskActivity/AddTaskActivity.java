@@ -183,7 +183,7 @@ public class AddTaskActivity extends FragmentActivity {
             intent.putExtra(Util.TASK_REMAIN, false);
         }
         setResult(RESULT_OK, intent);
-        finish();
+        exit();
     }
 
     private void addDoneTask(int evaluation){
@@ -196,7 +196,7 @@ public class AddTaskActivity extends FragmentActivity {
         intent.putExtra(Util.TASK_DONE_TIME, time.format2445());
         intent.putExtra(Util.TASK_EVALUATION, evaluation);
         setResult(RESULT_OK, intent);
-        finish();
+        exit();
     }
 
     public void deleteLabel(View view){
@@ -219,7 +219,7 @@ public class AddTaskActivity extends FragmentActivity {
     }
 
     public void back(View view){
-        finish();
+        exit();
     }
 
     @Override
@@ -227,7 +227,12 @@ public class AddTaskActivity extends FragmentActivity {
         if(this.mLabelGridAdapter.isDeleteLabelsEnable()){
             cancelDeleteLabels();
         }else{
-            super.onBackPressed();
+            exit();
         }
+    }
+
+    private void exit( ){
+        finish();
+        overridePendingTransition(android.R.anim.fade_in, R.anim.activity_up_out);
     }
 }
