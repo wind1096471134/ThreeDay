@@ -13,5 +13,6 @@
         android:textSize="@dimen/content_change_view_font_size"
         android:textColor="@color/grid_item_font_color"
         android:ellipsize="end"
-        android:gravity="center" />
+        android:gravity="center"
+        android:singleLine="true" />
 </FrameLayout>

@@ -63,6 +63,14 @@ public class Util {
     public static final String PREFERENCE_KEY_FIRST_USING = "FirstUsing";
     public static final String PREFERENCE_KEY_LOCK_SET = "LockSet";
     public static final String PREFERENCE_KEY_LOCK_PASSWORD = "LockPassword";
+    public static final String PREFERENCE_KEY_WEATHER_UPDATE_TIME = "WeatherUpdateTime";
+    public static final String PREFERENCE_KEY_WEATHER1_WEATHER = "W1W";
+    public static final String PREFERENCE_KEY_WEATHER2_WEATHER = "W2W";
+    public static final String PREFERENCE_KEY_WEATHER3_WEATHER = "W3W";
+    public static final String PREFERENCE_KEY_WEATHER1_TEMPERATURE = "W1T";
+    public static final String PREFERENCE_KEY_WEATHER2_TEMPERATURE = "W2T";
+    public static final String PREFERENCE_KEY_WEATHER3_TEMPERATURE = "W3T";
+    public static final String PREFERENCE_KEY_WEATHER_CITY_NAME = "CityName";
 
     public static final String REMAIN_BUNDLE_KEY = "BundleKey";
     public static final String REMAIN_TASKITEM_KEY = "TaskItemKey";
@@ -71,6 +79,9 @@ public class Util {
     public static final String EXTRA_KEY_LOCK_ACTIVITY_STATE = "LockActivityState";
     public static final String EXTRA_KEY_LOCK_BACK = "Back";
     public static final String EXTRA_KEY_LOCK_START_ACTIVITY = "StartActivity";
+
+    public static final String WEATHER_BAIDU_APPKEY = "N7FGEP5dDYxXoo12TGKhTl5e";
+    public static final String WEATHER_BAIDU_MCODE = "50:04:7E:94:0D:E1:BC:F2:B5:4F:5A:8B:B0:2C:7D:3A:B0:0E:61:C6;com.android.threeday";
 
     public static final boolean DEFAULT_MORNING_REMAIN = false;
     public static final boolean DEFAULT_EVENING_CHECK = true;

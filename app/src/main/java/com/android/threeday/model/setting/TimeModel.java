@@ -20,6 +20,7 @@ public class TimeModel implements BaseModel {
     private int mEveningCheckTimeMinute;
     private boolean mMorningRemain;
     private boolean mEveningCheck;
+    private boolean mTodayTasksCheck;
 
     public TimeModel(Context context){
         mSharedPreferences = context.getSharedPreferences(Util.PREFERENCE_NAME, Context.MODE_PRIVATE);
@@ -33,6 +34,11 @@ public class TimeModel implements BaseModel {
         this.mEveningCheckTimeMinute = this.mSharedPreferences.getInt(Util.PREFERENCE_KEY_EVENING_CHECK_TIME_MINUTE, Util.EVENING_CHECK_TIME_DEFAULT_MINUTE);
         this.mMorningRemain = this.mSharedPreferences.getBoolean(Util.PREFERENCE_KEY_MORNING_REMAIN, Util.DEFAULT_MORNING_REMAIN);
         this.mEveningCheck = this.mSharedPreferences.getBoolean(Util.PREFERENCE_KEY_EVENING_CHECK, Util.DEFAULT_EVENING_CHECK);
+        this.mTodayTasksCheck = this.mSharedPreferences.getBoolean(Util.PREFERENCE_KEY_TODAY_TASKS_CHECK, false);
+    }
+
+    public boolean isTodayTasksCheck( ){
+        return this.mTodayTasksCheck;
     }
 
     public boolean setMorningRemain(boolean remain){

@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.text.format.Time;
+import android.util.Log;
 
 import com.android.threeday.R;
 import com.android.threeday.activity.mainActivity.MainActivity;
@@ -29,13 +30,15 @@ public class MorningRemainService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Context context = getApplicationContext();
         TimeModel timeModel = new TimeModel(context);
-        if(!timeModel.isDateChangeToLaterDay() && !timeModel.isTimeChangeLaterThanMorningTime()){
+
+        if(true/*!timeModel.isDateChangeToLaterDay() && !timeModel.isTimeChangeLaterThanMorningTime()*/){
             /*because when user change the system's time later, this receive may be invoke too,
              so we should check first*/
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
             builder.setAutoCancel(true);
-            builder.setContentTitle(context.getResources().getString(R.string.morning_remain_notification_title));
+            //builder.setContentTitle(context.getResources().getString(R.string.morning_remain_notification_title));
+            builder.setContentTitle(timeModel.isDateChangeToLaterDay() + "+" + timeModel.isTimeChangeLaterThanMorningTime());
             builder.setContentText(context.getResources().getString(R.string.morning_remain_notification_text));
             String remainTicker = context.getResources().getString(R.string.task_remain_notification_ticker);
             builder.setTicker(remainTicker);

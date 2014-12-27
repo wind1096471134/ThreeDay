@@ -21,7 +21,7 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="delete"
+        android:text="@string/delete_task"
         android:id="@+id/deleteButton"
         android:onClick="deleteUndoneTask"
         android:textSize="@dimen/long_click_menu_font_size"
@@ -30,7 +30,7 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="done"
+        android:text="@string/done_task"
         android:id="@+id/doneButton"
         android:onClick="doneTask"
         android:textSize="@dimen/long_click_menu_font_size"
@@ -39,7 +39,7 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="set remain"
+        android:text="@string/set_remain"
         android:id="@+id/setRemianButton"
         android:onClick="setUndoneTaskRemain"
         android:textSize="@dimen/long_click_menu_font_size"
@@ -48,7 +48,7 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="not remain"
+        android:text="@string/cancel_remain"
         android:id="@+id/cancelRemainButton"
         android:onClick="cancelUndoneTaskRemain"
         android:textSize="@dimen/long_click_menu_font_size"
@@ -57,7 +57,7 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="change RemainTime"
+        android:text="@string/reset_remain_time"
         android:id="@+id/changeRemainTimeButton"
         android:onClick="changeUndoneTaskRemainTime"
         android:textSize="@dimen/long_click_menu_font_size"

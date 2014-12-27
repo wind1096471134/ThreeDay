@@ -15,8 +15,8 @@
     <dimen name="task_state_font_size">25sp</dimen>
     <dimen name="page_inside_padding">10dp</dimen>
     <dimen name="grid_item_space">10dp</dimen>
-    <dimen name="grid_item_width">120dp</dimen>
-    <dimen name="grid_item_height">120dp</dimen>
+    <dimen name="grid_item_width">200dp</dimen>
+    <dimen name="grid_item_height">80dp</dimen>
     <dimen name="label_grid_item_width">120dp</dimen>
     <dimen name="label_grid_item.height">120dp</dimen>
     <dimen name="label_grid_item_vertical_space">3dp</dimen>
@@ -51,5 +51,6 @@
     <dimen name="new_day_slide_layer_font_size">40sp</dimen>
     <dimen name="lock_view_number_view_margin">7dp</dimen>
     <dimen name="lock_view_title_translationY_start">15dp</dimen>
+    <dimen name="weather_font_size">18sp</dimen>
 
 </resources>

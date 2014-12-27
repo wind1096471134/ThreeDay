@@ -141,6 +141,7 @@ public class TodayFragment extends BaseDayFragment {
         this.mTodayTasksCheck = getActivity().getSharedPreferences(Util.PREFERENCE_NAME, Context.MODE_PRIVATE).
                 getBoolean(Util.PREFERENCE_KEY_TODAY_TASKS_CHECK, false);
     }
+
     @Override
     protected void initAdapter(Context context) {
         int itemHeight = getActivity().getResources().getDimensionPixelSize(R.dimen.grid_item_height);
@@ -191,7 +192,7 @@ public class TodayFragment extends BaseDayFragment {
     public void checkTasks(View view) {
         Intent intent = new Intent(getActivity(), CheckTaskActivity.class);
         startActivity(intent);
-        getActivity().overridePendingTransition(android.R.anim.fade_in, R.anim.activity_up_out);
+        getActivity().overridePendingTransition(R.anim.activity_down_in, android.R.anim.fade_out);
     }
 
     @Override

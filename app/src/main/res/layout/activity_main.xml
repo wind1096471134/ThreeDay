@@ -1,7 +1,24 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#aaaf">
+
+    <view
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        class="com.android.threeday.view.BgScrollView"
+        android:id="@+id/bgScrollView" />
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/bgView1"></FrameLayout>
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/bgView2"></FrameLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,6 +34,36 @@
             android:paddingLeft="@dimen/page_outside_padding"
             android:paddingRight="@dimen/page_outside_padding"
             android:paddingTop="10dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_gravity="center_vertical|left"
+                android:id="@+id/weatherView"
+                android:visibility="invisible">
+
+                <com.android.threeday.view.RunningTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/weatherTextView"
+                    android:textSize="@dimen/weather_font_size"
+                    android:singleLine="true"
+                    android:focusable="true"
+                    android:ellipsize="marquee"
+                    android:layout_marginBottom="5dp"
+                    android:gravity="center" />
+
+                <com.android.threeday.view.RunningTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:focusable="true"
+                    android:ellipsize="marquee"
+                    android:id="@+id/temperatureTextView"
+                    android:textSize="@dimen/weather_font_size"
+                    android:gravity="center" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/titleTextView"
@@ -46,6 +93,7 @@
                     android:layout_gravity="center"
                     android:visibility="invisible"
                     android:onClick="checkTasks" />
+
             </FrameLayout>
         </FrameLayout>
 

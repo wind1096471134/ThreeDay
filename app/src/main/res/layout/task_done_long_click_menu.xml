@@ -20,17 +20,18 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="delete"
+        android:text="@string/delete_task"
         android:id="@+id/deleteButton"
         android:layout_gravity="center_horizontal"
         android:textSize="@dimen/long_click_menu_font_size"
         android:gravity="left"
-        android:onClick="deleteDoneTask" />
+        android:onClick="deleteDoneTask"
+        android:singleLine="false" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="unDone"
+        android:text="@string/undone_task"
         android:id="@+id/unDoneButton"
         android:layout_gravity="center_horizontal"
         android:gravity="left"

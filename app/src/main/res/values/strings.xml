@@ -59,5 +59,23 @@
     <string name="input_new_password">亲，请输入新的密码</string>
     <string name="back_press_again_exit">再按返回键退出</string>
     <string name="about_threeday">关于ThreeDay</string>
+    <string name="delete_task">删除此任务</string>
+    <string name="set_remain">设置提醒</string>
+    <string name="cancel_remain">取消提醒</string>
+    <string name="reset_remain_time">修改提醒时间</string>
+    <string name="done_task">已完成此任务</string>
+    <string name="undone_task">还没完成此任务</string>
+    <string name="location_disable">位置服务未打开，无法获取当地天气。</string>
+
+    <string-array name="first_using_task_information">
+        <item>亲，添加今天的安排吧</item>
+    </string-array>
+
+    <string-array name="add_label_default_items">
+        <item>锻炼</item>
+        <item>起床</item>
+        <item>上班</item>
+        <item>上课</item>
+    </string-array>
 
 </resources>

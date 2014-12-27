@@ -127,7 +127,7 @@ public class CheckTaskActivity extends FragmentActivity {
 
     private void onDayEvaluationCheck(int evaluation){
         SharedPreferences sharedPreferences = getSharedPreferences(Util.PREFERENCE_NAME, MODE_PRIVATE);
-        sharedPreferences.edit().putInt(Util.PREFERENCE_KEY_TODAY_TASKS_CHECK, evaluation)
+        sharedPreferences.edit().putInt(Util.PREFERENCE_KEY_TODAY_EVALUATION, evaluation)
                 .putBoolean(Util.PREFERENCE_KEY_TODAY_TASKS_CHECK, true).commit();
         ArrangeTomorrowFragment arrangeTomorrowFragment = new ArrangeTomorrowFragment();
         arrangeTomorrowFragment.setOnArrangeTomorrowListener(new ArrangeTomorrowFragment.OnArrangeTomorrowListener() {

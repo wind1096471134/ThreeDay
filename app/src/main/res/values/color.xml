@@ -6,7 +6,7 @@
     <color name="content_change_view_press_color">#4eee</color>
     <color name="grid_item_font_color">#FFF</color>
     <color name="page_background_green">#cdc</color>
-    <color name="page_background_blue">#aaf</color>
+    <color name="page_background_blue">#aaaa</color>
     <color name="custom_action_bar_background">#aaa</color>
     <color name="label_normal">#CCC</color>
     <color name="label_press">#999</color>

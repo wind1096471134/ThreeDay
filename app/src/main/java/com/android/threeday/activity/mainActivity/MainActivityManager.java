@@ -1,28 +1,29 @@
 package com.android.threeday.activity.mainActivity;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.HandlerThread;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.text.format.Time;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.threeday.R;
+import com.android.threeday.broadcastReceiver.ResendAlarmManager;
 import com.android.threeday.fragment.dialogFragment.TaskDoneMenuFragment;
 import com.android.threeday.fragment.dialogFragment.TaskUndoneMenuFragment;
 import com.android.threeday.model.updateData.UpdateDataModel;
-import com.android.threeday.service.EveningCheckService;
-import com.android.threeday.service.NewDaySettingService;
 import com.android.threeday.util.Util;
+import com.android.threeday.view.BgScrollView;
 import com.android.threeday.view.SlideLayer;
 
 /**
@@ -30,14 +31,23 @@ import com.android.threeday.view.SlideLayer;
  */
 public class MainActivityManager {
     private final long mAnimationDuration = 500;
+    private final long mBgViewDuration = 1000;
     static final int DAY_NUM = 3;
     static final int YESTERDAY_INDEX = 0;
     static final int TODAY_INDEX = 1;
     static final int TOMORROW_INDEX = 2;
 
+    private ObjectAnimator mBgView1Animator;
+    private ObjectAnimator mBgView2Animator;
     private FragmentActivity mActivity;
     private TaskUndoneMenuFragment mTaskUndoneMenuFragment;
     private TaskDoneMenuFragment mTaskDoneMenuFragment;
+    private View mWeatherView;
+    private TextView mWeatherTextView;
+    private TextView mTemperatureView;
+    private View mBgView1;
+    private View mBgView2;
+    private BgScrollView mBgScrollView;
     private ViewPager mViewPager;
     private SlideLayer mSlideLayer;
     private TextView mTitleTextView;
@@ -46,26 +56,51 @@ public class MainActivityManager {
     private View mCheckTasksView;
     private AnimatorSet mTopTitleViewChangeAnimator;
     private AnimatorSet mTopDayEvaluationViewChangeAnimator;
+    private AnimatorSet mWeatherViewChangeAnimator;
     private AnimatorSet mTopCheckViewChangeAnimator;
     private AnimatorSet mBottomChangeAnimator;
     private SharedPreferences mSharedPreferences;
+    private WeatherManager mWeatherManager;
+    private WeatherManager.WeatherLoadListener mWeatherLoadListener = new WeatherManager.WeatherLoadListener() {
+        @Override
+        public void onWeatherLoadSuccess() {
+            mBgScrollView.setVisibility(View.GONE);
+            if(mCurrentPosition != -1){
+                initBackground(mCurrentPosition);
+            }
+            setWeatherView( );
+        }
+
+        @Override
+        public void onWeatherLoadFail() {
+
+        }
+    };
     private static final HandlerThread mHandlerThread = new HandlerThread("HandlerThread");
 
     private int mPassDay;
+    private int mBgResId;
+    private int mCurrentPosition = -1;
+    private boolean mBg1AnimatorCancel;
 
     MainActivityManager(FragmentActivity activity){
         this.mActivity = activity;
-        initView( );
-        initData( );
+        initView();
+        initData();
         if(!mHandlerThread.isAlive()){
             mHandlerThread.start();
         }
-        /*we send new day alarm every time user enter the app, because the alarm may be killed by
-         system, so we should prevent this alarm from never being sent*/
-        setNewDayAlarm();
     }
 
     private void initView( ){
+        this.mBgView1 = mActivity.findViewById(R.id.bgView1);
+        this.mBgView2 = mActivity.findViewById(R.id.bgView2);
+        this.mBgScrollView = (BgScrollView) mActivity.findViewById(R.id.bgScrollView);
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        mActivity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        this.mBgScrollView.init(DAY_NUM, displayMetrics.widthPixels, displayMetrics.widthPixels * 2);
+        this.mBgScrollView.setScrollBackgroundRes(R.drawable.bg_full_day);
+
         this.mViewPager = (ViewPager) mActivity.findViewById(R.id.fragmentViewPager);
 
         this.mTaskDoneMenuFragment = new TaskDoneMenuFragment();
@@ -75,6 +110,10 @@ public class MainActivityManager {
         this.mWordsTextView = (TextView) mActivity.findViewById(R.id.wordsTextView);
         this.mDayEvaluationImageView = (ImageView) mActivity.findViewById(R.id.dayEvaluationImageView);
         this.mCheckTasksView = mActivity.findViewById(R.id.checkTaskButton);
+
+        this.mWeatherView = mActivity.findViewById(R.id.weatherView);
+        this.mWeatherTextView = (TextView) mActivity.findViewById(R.id.weatherTextView);
+        this.mTemperatureView = (TextView) mActivity.findViewById(R.id.temperatureTextView);
     }
 
     private void initData( ){
@@ -93,6 +132,9 @@ public class MainActivityManager {
         this.mTopDayEvaluationViewChangeAnimator = this.mTopTitleViewChangeAnimator.clone();
         this.mTopDayEvaluationViewChangeAnimator.setTarget(this.mDayEvaluationImageView);
 
+        this.mWeatherViewChangeAnimator = this.mTopTitleViewChangeAnimator.clone();
+        this.mWeatherViewChangeAnimator.setTarget(this.mWeatherView);
+
         startY = this.mActivity.getResources().getDimensionPixelOffset(R.dimen.main_activity_bottom_animation_startY);
         this.mBottomChangeAnimator = new AnimatorSet();
         ObjectAnimator bottomTranslationAnimator = ObjectAnimator.ofFloat(this.mWordsTextView, "translationY", startY, 0f);
@@ -103,6 +145,59 @@ public class MainActivityManager {
         this.mBottomChangeAnimator.setInterpolator(new DecelerateInterpolator());
 
         this.mSharedPreferences = this.mActivity.getSharedPreferences(Util.PREFERENCE_NAME, Context.MODE_PRIVATE);
+
+        this.mBgView1Animator = ObjectAnimator.ofFloat(this.mBgView1, "alpha", 1f, 0f)
+                .setDuration(this.mBgViewDuration);
+        this.mBgView1Animator.addListener(new AnimatorListenerAdapter() {
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mBgView2Animator.start();
+            }
+
+        });
+        this.mBgView2Animator = ObjectAnimator.ofFloat(this.mBgView2, "alpha", 0f, 1f).setDuration(this.mBgViewDuration);
+        this.mBgView2Animator.addListener(new AnimatorListenerAdapter() {
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                switchBgView();
+                if(mBg1AnimatorCancel){
+                    startBgAnimator();
+                    mBg1AnimatorCancel = false;
+                }
+            }
+        });
+
+        this.mWeatherManager = new WeatherManager(this.mActivity);
+        this.mWeatherManager.setWeatherLoadListener(this.mWeatherLoadListener);
+    }
+
+    private void switchBgView( ){
+        View view = mBgView1;
+        mBgView1 = mBgView2;
+        mBgView2 = view;
+    }
+
+    private void setWeatherView( ){
+        if(this.mCurrentPosition != -1){
+            if(this.mWeatherManager.isWeatherAvailable()){
+                this.mWeatherView.setVisibility(View.VISIBLE);
+                if(this.mCurrentPosition == TODAY_INDEX){
+                    this.mWeatherTextView.setText(this.mWeatherManager.getTodayWeather());
+                    this.mTemperatureView.setText(this.mWeatherManager.getTodayTemperature());
+                }else if(this.mCurrentPosition == TOMORROW_INDEX){
+                    this.mWeatherTextView.setText(this.mWeatherManager.getTomorrowWeather());
+                    this.mTemperatureView.setText(this.mWeatherManager.getTomorrowTemperature());
+                }
+                if(this.mWeatherViewChangeAnimator.isRunning()){
+                    this.mWeatherViewChangeAnimator.cancel();
+                }
+                this.mWeatherViewChangeAnimator.start();
+            }else{
+                this.mWordsTextView.setVisibility(View.INVISIBLE);
+            }
+        }
     }
 
     public static HandlerThread getHandlerThread( ){
@@ -143,7 +238,9 @@ public class MainActivityManager {
 
     void setDayEvaluation(int evaluation){
         setDayEvaluationImageViewResource(evaluation);
-        this.mTopDayEvaluationViewChangeAnimator.cancel();
+        if(this.mTopDayEvaluationViewChangeAnimator.isRunning()){
+            this.mTopDayEvaluationViewChangeAnimator.cancel();
+        }
         this.mTopDayEvaluationViewChangeAnimator.start();
     }
 
@@ -169,13 +266,62 @@ public class MainActivityManager {
         this.mDayEvaluationImageView.setImageResource(resId);
     }
 
+    void initBackground(int position){
+        if(this.mWeatherManager.isWeatherAvailable()){
+            setWeatherBackgroundResId(position);
+            this.mBgView2.setAlpha(0f);
+            this.mBgView1.setBackgroundResource(this.mBgResId);
+        }else{
+            this.mBgScrollView.scrollToPage(position);
+        }
+    }
+
+    void setWeatherBackgroundResId(int position){
+
+        switch (position){
+            case YESTERDAY_INDEX:
+                this.mBgResId = R.drawable.bg_fog_day;
+                break;
+            case TODAY_INDEX:
+                this.mBgResId = R.drawable.bg_snow_night;
+                break;
+            case TOMORROW_INDEX:
+                this.mBgResId = R.drawable.bg_slight_rain_day;
+                break;
+            default:
+                this.mBgResId = R.drawable.bg0_fine_day;
+        }
+    }
+
+    void changeBackground(int position){
+        if(this.mWeatherManager.isWeatherAvailable()){
+            setWeatherBackgroundResId(position);
+            if(this.mBgView1Animator.isRunning() || this.mBgView2Animator.isRunning()){
+                this.mBg1AnimatorCancel = true;
+            }else{
+                startBgAnimator();
+            }
+        }else{
+            this.mBgScrollView.smoothScrollToPage(position);
+        }
+    }
+
+    private void startBgAnimator( ){
+        this.mBgView2.setBackgroundResource(this.mBgResId);
+        this.mBgView1Animator.setTarget(this.mBgView1);
+        this.mBgView2Animator.setTarget(this.mBgView2);
+        this.mBgView1Animator.start();
+    }
+
     void onPageSelected(int position){
+        this.mCurrentPosition = position;
         switch (position){
             case YESTERDAY_INDEX:
                 this.mTitleTextView.setText(R.string.title_yesterday);
                 this.mWordsTextView.setText(R.string.words_yesterday);
                 this.mCheckTasksView.setVisibility(View.INVISIBLE);
                 this.mDayEvaluationImageView.setVisibility(View.VISIBLE);
+                this.mWeatherView.setVisibility(View.INVISIBLE);
                 break;
             case TODAY_INDEX:
                 this.mTitleTextView.setText(R.string.title_today);
@@ -187,16 +333,26 @@ public class MainActivityManager {
                 }else{
                     this.mCheckTasksView.setVisibility(View.VISIBLE);
                     this.mDayEvaluationImageView.setVisibility(View.INVISIBLE);
-                    this.mTopCheckViewChangeAnimator.cancel();
+                    if(this.mTopCheckViewChangeAnimator.isRunning()){
+                        this.mTopCheckViewChangeAnimator.cancel();
+                    }
                     this.mTopCheckViewChangeAnimator.start();
                 }
+                setWeatherView();
                 break;
             case TOMORROW_INDEX:
                 this.mTitleTextView.setText(R.string.title_tomorrow);
                 this.mWordsTextView.setText(R.string.words_tomorrow);
                 this.mCheckTasksView.setVisibility(View.INVISIBLE);
                 this.mDayEvaluationImageView.setVisibility(View.INVISIBLE);
+                setWeatherView();
                 break;
+        }
+        if(this.mTopTitleViewChangeAnimator.isRunning()){
+            this.mTopTitleViewChangeAnimator.cancel();
+        }
+        if(this.mBottomChangeAnimator.isRunning()){
+            this.mBottomChangeAnimator.cancel();
         }
         this.mTopTitleViewChangeAnimator.start();
         this.mBottomChangeAnimator.start();
@@ -247,49 +403,9 @@ public class MainActivityManager {
                 .putBoolean(Util.PREFERENCE_KEY_TODAY_TASKS_CHECK, false).commit();
     }
 
-    boolean isFirstUsing( ){
-        return this.mSharedPreferences.getBoolean(Util.PREFERENCE_KEY_FIRST_USING, true);
-    }
-
-    void setFirstUsingData(){
-        Time time = new Time();
-        time.setToNow();
-        long timeMills = time.toMillis(false);
-        this.mSharedPreferences.edit().putBoolean(Util.PREFERENCE_KEY_FIRST_USING, false)
-                .putLong(Util.PREFERENCE_KEY_REAL_DAY_TIME_1, timeMills)
-                .putLong(Util.PREFERENCE_KEY_REAL_DAY_TIME_2, timeMills)
-                .putLong(Util.PREFERENCE_KEY_LAST_IN_DAY_TIME, timeMills).commit();
-    }
-
-    void initDefaultAlarm( ){
-        setNewDayAlarm();
-        setDefaultEveningCheckAlarm();
-    }
-
-    private void setDefaultEveningCheckAlarm( ){
-        Intent intent = new Intent(this.mActivity, EveningCheckService.class);
-        PendingIntent pendingIntent = PendingIntent.getService(this.mActivity, Util.EVENING_CHECK_NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager alarmManager = (AlarmManager) this.mActivity.getSystemService(Context.ALARM_SERVICE);
-        Time time = new Time();
-        time.setToNow();
-        time.hour = Util.EVENING_CHECK_TIME_DEFAULT_HOUR;
-        time.minute = Util.EVENING_CHECK_TIME_DEFAULT_MINUTE;
-        Time now = new Time();
-        now.setToNow();
-        long startTime = time.after(now) ? time.toMillis(false) : time.toMillis(false) + Util.A_DAY_IN_MILLIS;
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, startTime, Util.A_DAY_IN_MILLIS, pendingIntent);
-    }
-
-    private void setNewDayAlarm(){
-        Intent intent = new Intent(this.mActivity, NewDaySettingService.class);
-        PendingIntent pendingIntent = PendingIntent.getService(this.mActivity, Util.UPDATE_DATA_AT_NEW_DAY_ALARM_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager alarmManager = (AlarmManager) this.mActivity.getSystemService(Context.ALARM_SERVICE);
-        Time time = new Time();
-        time.setToNow();
-        time.hour = Util.NEW_DAY_ALARM_HOUR;
-        time.minute = Util.NEW_DAY_ALARM_MINUTE;
-        alarmManager.cancel(pendingIntent);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, time.toMillis(false) + Util.A_DAY_IN_MILLIS, Util.A_DAY_IN_MILLIS, pendingIntent);
+    void resendAlarm(){
+        ResendAlarmManager resendAlarmManager = new ResendAlarmManager(this.mActivity);
+        resendAlarmManager.sendTaskRemainAlarmsAgain();
     }
 
     void updateDataAtNewDay( ){
@@ -323,5 +439,9 @@ public class MainActivityManager {
             this.mCheckTasksView.setVisibility(View.VISIBLE);
             this.mDayEvaluationImageView.setVisibility(View.INVISIBLE);
         }
+    }
+
+    public void checkWeather() {
+        this.mWeatherManager.checkWeather();
     }
 }

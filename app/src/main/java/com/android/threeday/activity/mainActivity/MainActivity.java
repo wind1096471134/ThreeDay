@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Toast;
@@ -28,6 +29,8 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
     private boolean mBackPress;
     private boolean mFirstCreate;
     private boolean mNeedToUpdateDataAtNewDay;
+    private boolean mChangeBackground;
+    private boolean mInitBackground;
     private int mCurrentPageIndex = -1;
 
     private BaseDayFragment mTaskLongClickFragment;
@@ -49,13 +52,32 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
     private ViewPager.OnPageChangeListener mOnPageChangeListener = new ViewPager.OnPageChangeListener() {
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+            if(positionOffset == 0 && positionOffset == 0){
+                if(!mNeedToUpdateDataAtNewDay){
+                    if(mChangeBackground){
+                        mChangeBackground = false;
+                    }else if(position != mCurrentPageIndex){
+                        /*check this because user hasn't up the finger when the page reach, and
+                         the onPageSelected hasn't been called, so we set mChangeBackground true
+                         and onPageSelected will set it false later*/
+                        mChangeBackground = true;
+                    }else{
+                        return;
+                    }
+                    if(mInitBackground){
+                        mInitBackground = false;
+                        mMainActivityManager.initBackground(position);
+                    }else{
+                        mMainActivityManager.changeBackground(position);
+                    }
+                }
+            }
         }
 
         @Override
         public void onPageSelected(int position) {
             if(mNeedToUpdateDataAtNewDay){
-            //we want user to see the change from old day to new day, so here don't need to update the view
+                //we want user to see the change from old day to new day, so here don't need to update the view
                 mNeedToUpdateDataAtNewDay = false;
                 mCurrentPageIndex = position;
                 mMainActivityManager.updateDataAtNewDay();
@@ -78,6 +100,7 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
                     mMainActivityManager.setDayEvaluation(getCurrentPageDayEvaluation(position));
                     onFragmentSelected(position);
                     mCurrentPageIndex = position;
+                    mChangeBackground = !mChangeBackground;
                 }
             }
         }
@@ -101,6 +124,7 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         this.mFirstCreate = true;
+        this.mInitBackground = true;
         this.mMainActivityManager = new MainActivityManager(this);
         initFragment( );
         setViewPagerAdapter( );
@@ -108,17 +132,21 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
         boolean arrangeTomorrow = getIntent().getBooleanExtra(Util.ARRANGE_TOMORROW_KEY, false);
         if(arrangeTomorrow){
             this.mFirstCreate = false;
-            this.mMainActivityManager.getViewPager().setCurrentItem(MainActivityManager.TOMORROW_INDEX, false);
+            arrangeTomorrow();
+        }else {
+            checkNewDay();
+        }
+        this.mMainActivityManager.resendAlarm();
+    }
+
+    private void arrangeTomorrow( ){
+        this.mMainActivityManager.getViewPager().setCurrentItem(MainActivityManager.TOMORROW_INDEX, false);
             /*avoid the situation that the user didn't open the app util arrange tomorrow from EveningCheck,
             because the new day hasn't been check so we should update data first*/
-            this.mMainActivityManager.checkNewDayPass();
-            if(this.mMainActivityManager.getNewDayPass() > 0){
-                this.mMainActivityManager.updateDataAtNewDay();
-                this.mMainActivityManager.setNewDayChecked();
-            }
-        }else {
-            checkFirstUsing();
-            checkNewDay();
+        this.mMainActivityManager.checkNewDayPass();
+        if(this.mMainActivityManager.getNewDayPass() > 0){
+            this.mMainActivityManager.updateDataAtNewDay();
+            this.mMainActivityManager.setNewDayChecked();
         }
     }
 
@@ -127,7 +155,7 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
         super.onNewIntent(intent);
         boolean arrangeTomorrow = intent.getBooleanExtra(Util.ARRANGE_TOMORROW_KEY, false);
         if(arrangeTomorrow){
-            this.mMainActivityManager.getViewPager().setCurrentItem(MainActivityManager.TOMORROW_INDEX, false);
+            arrangeTomorrow();
         }else{
             checkNewDay();
         }
@@ -152,17 +180,9 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
         }
     }
 
-    private void checkFirstUsing( ){
-        boolean isFirstUsing = this.mMainActivityManager.isFirstUsing( );
-        if(isFirstUsing){
-            this.mMainActivityManager.setFirstUsingData();
-            this.mMainActivityManager.initDefaultAlarm();
-        }
-    }
-
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
         if(getIntent().getBooleanExtra(Util.ARRANGE_TOMORROW_KEY, false)){
             getIntent().putExtra(Util.ARRANGE_TOMORROW_KEY, false);
         }else{
@@ -171,6 +191,7 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
             enter the app after another day later*/
             checkNewDay();
         }
+        this.mMainActivityManager.checkWeather( );
         if(this.mCurrentPageIndex != -1){
             this.mFragments[this.mCurrentPageIndex].resume();
             if(this.mCurrentPageIndex == MainActivityManager.TODAY_INDEX){
@@ -180,8 +201,8 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onStop() {
+        super.onStop();
         this.mFragments[this.mMainActivityManager.getViewPager().getCurrentItem()].pause();
     }
 

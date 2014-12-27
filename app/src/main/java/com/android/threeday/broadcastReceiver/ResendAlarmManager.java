@@ -22,7 +22,7 @@ import java.util.ArrayList;
 /**
  * Created by user on 2014/12/14.
  */
-class ResendAlarmManager {
+public class ResendAlarmManager {
     private Context mContext;
     private AlarmManager mAlarmManager;
     private TodayModel mTodayModel;
@@ -117,6 +117,15 @@ class ResendAlarmManager {
     private PendingIntent getEveningCheckPendingIntent( ){
         Intent intent = new Intent(this.mContext, EveningCheckService.class);
         return PendingIntent.getService(this.mContext, Util.EVENING_CHECK_PENDING_INTENT_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    /*we send all alarms when user enter the app because alarms may be killed by system, so we should make sure again*/
+    public void sendTaskRemainAlarmsAgain( ){
+        resendMorningOrEveningAlarm();
+        resendNewDayAlarm();
+
+        resendTaskRemainAlarms(this.mTodayModel.getUndoneTasks());
+        resendTaskRemainAlarms(this.mTomorrowModel.getUndoneTasks());
     }
 
     private void resendTaskRemainAlarms(ArrayList<TaskItem> taskItems){
