@@ -6,12 +6,12 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.HandlerThread;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.text.format.Time;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
@@ -30,6 +30,14 @@ import com.android.threeday.view.SlideLayer;
  * Created by user on 2014/11/11.
  */
 public class MainActivityManager {
+    private final String WEATHER_SUNNY = "晴";
+    private final String WEATHER_CLOUDY = "多云";
+    private final String WEATHER_RAIN = "雨";
+    private final String WEATHER_SNOW = "雪";
+    private final String WEATHER_YIN = "阴";
+    private final String WEATHER_FOG = "雾";
+    private final String WEATHER_THUNDER = "雷";
+    private final String WEATHER_SAND = "沙";
     private final long mAnimationDuration = 500;
     private final long mBgViewDuration = 1000;
     static final int DAY_NUM = 3;
@@ -45,6 +53,7 @@ public class MainActivityManager {
     private View mWeatherView;
     private TextView mWeatherTextView;
     private TextView mTemperatureView;
+    private View mMainContainer;
     private View mBgView1;
     private View mBgView2;
     private BgScrollView mBgScrollView;
@@ -68,23 +77,26 @@ public class MainActivityManager {
             if(mCurrentPosition != -1){
                 initBackground(mCurrentPosition);
             }
-            setWeatherView( );
+            setWeatherView();
         }
 
         @Override
         public void onWeatherLoadFail() {
-
+            setDefaultFullBackground();
         }
     };
     private static final HandlerThread mHandlerThread = new HandlerThread("HandlerThread");
 
     private int mPassDay;
     private int mBgResId;
+    private int mMainContainerBgColor = Color.WHITE;
     private int mCurrentPosition = -1;
-    private boolean mBg1AnimatorCancel;
+    private boolean mBgAnimatorCancel;
+    private boolean mIsDay;
 
     MainActivityManager(FragmentActivity activity){
         this.mActivity = activity;
+        checkDayOrNight( );
         initView();
         initData();
         if(!mHandlerThread.isAlive()){
@@ -92,14 +104,22 @@ public class MainActivityManager {
         }
     }
 
+    public void checkDayOrNight( ){
+        Time time = new Time();
+        time.setToNow();
+        this.mIsDay = time.hour > 6 && time.hour < 18;
+    }
+
     private void initView( ){
-        this.mBgView1 = mActivity.findViewById(R.id.bgView1);
-        this.mBgView2 = mActivity.findViewById(R.id.bgView2);
+        this.mMainContainer = mActivity.findViewById(R.id.mainContainer);
+
+        this.mBgView1 =  mActivity.findViewById(R.id.bgView1);
+        this.mBgView2 =  mActivity.findViewById(R.id.bgView2);
         this.mBgScrollView = (BgScrollView) mActivity.findViewById(R.id.bgScrollView);
         DisplayMetrics displayMetrics = new DisplayMetrics();
         mActivity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         this.mBgScrollView.init(DAY_NUM, displayMetrics.widthPixels, displayMetrics.widthPixels * 2);
-        this.mBgScrollView.setScrollBackgroundRes(R.drawable.bg_full_day);
+        setDefaultFullBackground();
 
         this.mViewPager = (ViewPager) mActivity.findViewById(R.id.fragmentViewPager);
 
@@ -162,9 +182,9 @@ public class MainActivityManager {
             @Override
             public void onAnimationEnd(Animator animation) {
                 switchBgView();
-                if(mBg1AnimatorCancel){
+                if(mBgAnimatorCancel){
                     startBgAnimator();
-                    mBg1AnimatorCancel = false;
+                    mBgAnimatorCancel = false;
                 }
             }
         });
@@ -177,6 +197,12 @@ public class MainActivityManager {
         View view = mBgView1;
         mBgView1 = mBgView2;
         mBgView2 = view;
+    }
+
+    private void setDefaultFullBackground( ){
+        int resId = this.mIsDay ? R.drawable.bg_full_day : R.drawable.bg_full_night;
+        this.mBgScrollView.setVisibility(View.VISIBLE);
+        this.mBgScrollView.setScrollBackgroundRes(resId);
     }
 
     private void setWeatherView( ){
@@ -195,7 +221,7 @@ public class MainActivityManager {
                 }
                 this.mWeatherViewChangeAnimator.start();
             }else{
-                this.mWordsTextView.setVisibility(View.INVISIBLE);
+                this.mWeatherView.setVisibility(View.INVISIBLE);
             }
         }
     }
@@ -270,6 +296,7 @@ public class MainActivityManager {
         if(this.mWeatherManager.isWeatherAvailable()){
             setWeatherBackgroundResId(position);
             this.mBgView2.setAlpha(0f);
+            this.mBgView1.setAlpha(1f);
             this.mBgView1.setBackgroundResource(this.mBgResId);
         }else{
             this.mBgScrollView.scrollToPage(position);
@@ -277,19 +304,96 @@ public class MainActivityManager {
     }
 
     void setWeatherBackgroundResId(int position){
-
         switch (position){
             case YESTERDAY_INDEX:
-                this.mBgResId = R.drawable.bg_fog_day;
+                if(this.mIsDay){
+                    this.mBgResId = R.drawable.bg_yesterday_day;
+                    this.mMainContainerBgColor = 0xFFC8D9D5;
+                }else{
+                    this.mBgResId = R.drawable.bg_yesterday_night;
+                    this.mMainContainerBgColor = 0xFF5074A7;
+                }
                 break;
             case TODAY_INDEX:
-                this.mBgResId = R.drawable.bg_snow_night;
+                setWeatherBgResId(this.mWeatherManager.getTodayWeather(), position);
                 break;
             case TOMORROW_INDEX:
-                this.mBgResId = R.drawable.bg_slight_rain_day;
+                setWeatherBgResId(this.mWeatherManager.getTomorrowWeather(), position);
                 break;
-            default:
-                this.mBgResId = R.drawable.bg0_fine_day;
+        }
+    }
+
+    private void setWeatherBgResId(String weather, int position){
+        //should not change the order below
+        if(weather.contains(WEATHER_SUNNY)){
+            if(this.mIsDay){
+                this.mBgResId = R.drawable.bg_fine_day;
+                this.mMainContainerBgColor = 0xFF87B5E0;
+            }else{
+                this.mBgResId = R.drawable.bg_fine_night;
+                this.mMainContainerBgColor = 0xFF0A6CC2;
+            }
+        }else if(weather.contains(WEATHER_THUNDER)){
+            if(this.mIsDay){
+                this.mBgResId = R.drawable.bg_thunder_day;
+                this.mMainContainerBgColor = 0xFF647FD2;
+            }else{
+                this.mBgResId = R.drawable.bg_thunder_night;
+                this.mMainContainerBgColor = 0xFF8E98B3;
+            }
+        }else if(weather.contains(WEATHER_RAIN)){
+            if(this.mIsDay){
+                this.mBgResId = R.drawable.bg_rain_day;
+                this.mMainContainerBgColor = 0xFFAED6FA;
+            }else{
+                this.mBgResId = R.drawable.bg_rain_night;
+                this.mMainContainerBgColor = 0xFFEAEAD2;
+            }
+        }else if(weather.contains(WEATHER_SNOW)){
+            if(this.mIsDay){
+                this.mBgResId = R.drawable.bg_snow_day;
+                this.mMainContainerBgColor = 0xFF6091C6;
+            }else{
+                this.mBgResId = R.drawable.bg_snow_night;
+                this.mMainContainerBgColor = 0xFF2876B7;
+            }
+        }else if(weather.contains(WEATHER_SAND)){
+            this.mMainContainerBgColor = 0xFFC2A173;
+            this.mBgResId = R.drawable.bg_sand;
+        }else if(weather.contains(WEATHER_FOG) || weather.contains(WEATHER_YIN)){
+            if(this.mIsDay){
+                this.mBgResId = R.drawable.bg_fog_day;
+                this.mMainContainerBgColor = 0xFFABCBF4;
+            }else{
+                this.mBgResId = R.drawable.bg_fog_night;
+                this.mMainContainerBgColor = 0xFFD0D0C6;
+            }
+        }else if(weather.contains(WEATHER_CLOUDY)){
+            if(this.mIsDay){
+                this.mBgResId = R.drawable.bg_cloudy_day;
+                this.mMainContainerBgColor = 0xFFAECEDF;
+            }else{
+                this.mBgResId = R.drawable.bg_cloudy_night;
+                this.mMainContainerBgColor = 0xFF5174B3;
+            }
+        }else{
+            if(position == TODAY_INDEX){
+                if(this.mIsDay){
+                    this.mBgResId = R.drawable.bg_today_day;
+                    this.mMainContainerBgColor = 0xFFD3E4B3;
+                }else{
+                    this.mBgResId = R.drawable.bg_today_night;
+                    this.mMainContainerBgColor = 0xFF030417;
+                }
+            }else if(position == TOMORROW_INDEX){
+                if(this.mIsDay){
+                    this.mBgResId = R.drawable.bg_tomorrow_day;
+                    this.mMainContainerBgColor = 0xFFB9DDD8;
+                }else{
+                    this.mBgResId = R.drawable.bg_tomorrow_night;
+                    this.mMainContainerBgColor = 0xFF486F92;
+                }
+            }
         }
     }
 
@@ -297,7 +401,7 @@ public class MainActivityManager {
         if(this.mWeatherManager.isWeatherAvailable()){
             setWeatherBackgroundResId(position);
             if(this.mBgView1Animator.isRunning() || this.mBgView2Animator.isRunning()){
-                this.mBg1AnimatorCancel = true;
+                this.mBgAnimatorCancel = true;
             }else{
                 startBgAnimator();
             }
@@ -308,6 +412,7 @@ public class MainActivityManager {
 
     private void startBgAnimator( ){
         this.mBgView2.setBackgroundResource(this.mBgResId);
+        this.mMainContainer.setBackgroundColor(this.mMainContainerBgColor);
         this.mBgView1Animator.setTarget(this.mBgView1);
         this.mBgView2Animator.setTarget(this.mBgView2);
         this.mBgView1Animator.start();

@@ -81,7 +81,7 @@ public class YesterdayFragment extends BaseDayFragment {
     protected void initView(Context context) {
 
         this.mMainLayout = View.inflate(context, R.layout.fragment_switch_layout, null);
-        this.mMainLayout.findViewById(R.id.pageContainer).setBackgroundResource(R.drawable.page_background_gray);
+        this.mMainLayout.findViewById(R.id.pageContainer).setBackgroundResource(R.drawable.page_background);
         this.mMainLayout.findViewById(R.id.addButton).setVisibility(View.INVISIBLE);
         this.mTaskStateTextView = (TextView) this.mMainLayout.findViewById(R.id.taskStateTextView);
         this.mPageSwitchLayout = (PageSwitchLayout) this.mMainLayout.findViewById(R.id.pageSwitchLayout);

@@ -183,6 +183,40 @@ public class TimeModel implements BaseModel {
         }
     }
 
+    public void resetWeatherUpdateTime( ){
+        long weatherTimeMills = this.mSharedPreferences.getLong(Util.PREFERENCE_KEY_WEATHER_UPDATE_TIME, 0);
+        if(weatherTimeMills != 0){
+            Time weatherTime = new Time();
+            weatherTime.set(weatherTimeMills);
+            Time now = new Time();
+            now.setToNow();
+            Time realTime = new Time();
+            realTime.set(this.mSharedPreferences.getLong(Util.PREFERENCE_KEY_REAL_DAY_TIME_2, 0));
+            if(realTime.year == now.year){
+                weatherTime.yearDay += now.yearDay - realTime.yearDay;
+            }else if(realTime.year < now.year){
+                int days;
+                int yearDays;
+                if(realTime.year % 4 == 0){
+                    yearDays = 365;
+                    days = 365 - realTime.yearDay + now.yearDay + 1;
+                }else{
+                    yearDays = 364;
+                    days = 364 - realTime.yearDay + now.yearDay + 1;
+                }
+                int weatherDays = weatherTime.yearDay + days;
+                if(weatherDays > yearDays){
+                    weatherTime.year++;
+                    weatherTime.yearDay = weatherDays - yearDays - 1;
+                }else{
+                    weatherTime.yearDay = weatherDays;
+                }
+                this.mSharedPreferences.edit().
+                        putLong(Util.PREFERENCE_KEY_WEATHER_UPDATE_TIME, weatherTime.toMillis(false)).commit();
+            }
+        }
+    }
+
     public int compareLastInAndRealDay( ){
         long lastIn = this.mSharedPreferences.getLong(Util.PREFERENCE_KEY_LAST_IN_DAY_TIME, -1);
         long real = this.mSharedPreferences.getLong(Util.PREFERENCE_KEY_REAL_DAY_TIME_2, -1);

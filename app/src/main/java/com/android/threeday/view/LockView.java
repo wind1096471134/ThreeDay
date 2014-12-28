@@ -239,7 +239,9 @@ public class LockView extends FrameLayout{
             this.mLinePath.reset();
             invalidate();
             if(LockView.this.mOnLockListener != null){
-                LockView.this.mOnLockListener.onLockSet(mLockNumbers);
+                if(mLockNumbers.size() > 0){
+                    LockView.this.mOnLockListener.onLockSet(mLockNumbers);
+                }
             }
         }
 

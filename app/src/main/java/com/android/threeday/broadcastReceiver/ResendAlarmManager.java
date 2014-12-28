@@ -45,6 +45,10 @@ public class ResendAlarmManager {
         this.mTimeModel.resetRealTime();
     }
 
+    public void resetWeatherUpdateTime( ){
+        this.mTimeModel.resetWeatherUpdateTime( );
+    }
+
     public void resetRealTimeWhenBoot( ){
         Time time = new Time();
         time.setToNow();

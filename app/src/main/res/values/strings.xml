@@ -57,6 +57,7 @@
     <string name="input_code_wrong">亲，密码错误哦</string>
     <string name="input_old_password">亲，请输入原来的密码</string>
     <string name="input_new_password">亲，请输入新的密码</string>
+    <string name="password_less_than_two">亲，至少2位密码哦</string>
     <string name="back_press_again_exit">再按返回键退出</string>
     <string name="about_threeday">关于ThreeDay</string>
     <string name="delete_task">删除此任务</string>

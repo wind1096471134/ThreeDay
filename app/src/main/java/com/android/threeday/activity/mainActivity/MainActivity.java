@@ -191,6 +191,7 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
             enter the app after another day later*/
             checkNewDay();
         }
+        this.mMainActivityManager.checkNewDayPass();
         this.mMainActivityManager.checkWeather( );
         if(this.mCurrentPageIndex != -1){
             this.mFragments[this.mCurrentPageIndex].resume();

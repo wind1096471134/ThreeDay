@@ -11,7 +11,6 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.android.threeday.R;
-import com.android.threeday.activity.mainActivity.MainActivity;
 import com.android.threeday.model.setting.LockModel;
 import com.android.threeday.util.Util;
 import com.android.threeday.view.LockView;
@@ -25,6 +24,7 @@ public class LockActivity extends Activity{
     public static final int STATE_FIRST_SET = 1;
     public static final int STATE_RESET = 2;
     public static final int STATE_LOCK_IN = 3;
+    public static final int PASSWORD_LIMIT = 2;
 
     private LockModel mLockModel;
     private LockView mLockView;
@@ -126,9 +126,12 @@ public class LockActivity extends Activity{
         @Override
         protected void onLockSet(ArrayList<Integer> lockNumbers) {
             if(this.mPassword == null){
-                this.mPassword = getPasswordString(lockNumbers);
-                mLockView.clear();
-                setTitleText(R.string.input_code_again);
+                if(lockNumbers.size() < PASSWORD_LIMIT){
+                    setTitleText(R.string.password_less_than_two);
+                }else{
+                    this.mPassword = getPasswordString(lockNumbers);
+                    setTitleText(R.string.input_code_again);
+                }
             }else{
                 if(this.mPassword.equals(getPasswordString(lockNumbers))){
                     mLockModel.setLock(true);
@@ -141,6 +144,7 @@ public class LockActivity extends Activity{
                     setTitleText(R.string.input_code_wrong);
                 }
             }
+            mLockView.clear();
         }
 
         @Override
@@ -166,8 +170,12 @@ public class LockActivity extends Activity{
         protected void onLockSet(ArrayList<Integer> lockNumbers) {
             if(this.mInputOldPassword){
                 if(this.mNewPassword == null){
-                    setTitleText(R.string.input_code_again);
-                    this.mNewPassword = getPasswordString(lockNumbers);
+                    if(lockNumbers.size() < PASSWORD_LIMIT){
+                        setTitleText(R.string.password_less_than_two);
+                    }else{
+                        setTitleText(R.string.input_code_again);
+                        this.mNewPassword = getPasswordString(lockNumbers);
+                    }
                 }else{
                     if(this.mNewPassword.equals(getPasswordString(lockNumbers))){
                         mLockModel.setLock(true);
@@ -180,7 +188,6 @@ public class LockActivity extends Activity{
                         setTitleText(R.string.input_code_wrong);
                     }
                 }
-                mLockView.clear();
             }else{
                 if(this.mOldPassword.equals(getPasswordString(lockNumbers))){
                     setTitleText(R.string.input_new_password);
@@ -188,8 +195,8 @@ public class LockActivity extends Activity{
                 }else{
                     setTitleText(R.string.input_code_wrong);
                 }
-                mLockView.clear();
             }
+            mLockView.clear();
         }
 
         @Override

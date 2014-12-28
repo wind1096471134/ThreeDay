@@ -13,7 +13,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.format.Time;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.android.threeday.R;
@@ -138,21 +137,20 @@ public class WeatherManager {
         if(nowMills - lastWeatherTimeMills > WEATHER_PAST_TIME){
             this.mIsWeatherAvailable = false;
         }else{
-            long time1 = this.mSharedPreferences.getLong(Util.PREFERENCE_KEY_WEATHER_UPDATE_TIME, 0);
             Time time = new Time();
             Time now = new Time();
             now.setToNow();
-            time.set(time1);
+            time.set(lastWeatherTimeMills);
             if(time.year == now.year){
                 if(time.yearDay == now.yearDay){
-                    setWeather(false, time1);
+                    setWeather(false, lastWeatherTimeMills);
                 }else if(time.yearDay == now.yearDay - 1){
-                    setWeather(true, time1 + Util.A_DAY_IN_MILLIS);
+                    setWeather(true, lastWeatherTimeMills + Util.A_DAY_IN_MILLIS);
                 }else{
                     this.mIsWeatherAvailable = false;
                 }
             }else if(time.year == now.year - 1 && now.yearDay == 0){
-                setWeather(true, time1 + Util.A_DAY_IN_MILLIS);
+                setWeather(true, lastWeatherTimeMills + Util.A_DAY_IN_MILLIS);
             }else{
                 this.mIsWeatherAvailable = false;
             }
@@ -320,7 +318,7 @@ public class WeatherManager {
                     }
                     try {
                         inputStream.close();
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }

@@ -3,7 +3,9 @@
 
     <color name="long_click_menu_background">#9000</color>
     <color name="long_click_menu_foreground">#FFF</color>
-    <color name="content_change_view_press_color">#4eee</color>
+    <color name="content_change_view_press_color">#4FFF</color>
+    <color name="content_change_view_bg_dark">#ADDD</color>
+    <color name="content_change_view_bg_light">#9EEE</color>
     <color name="grid_item_font_color">#FFF</color>
     <color name="page_background_green">#cdc</color>
     <color name="page_background_blue">#aaaa</color>
@@ -16,5 +18,8 @@
     <color name="setting_switch_background_color">#aaa</color>
     <color name="setting_switch_thumb_color">#888</color>
     <color name="setting_switch_check_background_color">#99f</color>
+    <color name="main_activity_font_color">#FFF</color>
+    <color name="page_color">#BCCC</color>
+    <color name="page_state_font_color">#FFFF</color>
 
 </resources>
