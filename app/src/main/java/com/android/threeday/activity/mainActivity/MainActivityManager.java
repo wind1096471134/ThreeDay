@@ -7,13 +7,19 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.text.format.Time;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.AnticipateOvershootInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,6 +27,9 @@ import com.android.threeday.R;
 import com.android.threeday.broadcastReceiver.ResendAlarmManager;
 import com.android.threeday.fragment.dialogFragment.TaskDoneMenuFragment;
 import com.android.threeday.fragment.dialogFragment.TaskUndoneMenuFragment;
+import com.android.threeday.model.addTask.AddTaskLabelModel;
+import com.android.threeday.model.threeDay.TaskItem;
+import com.android.threeday.model.threeDay.TodayModel;
 import com.android.threeday.model.updateData.UpdateDataModel;
 import com.android.threeday.util.Util;
 import com.android.threeday.view.BgScrollView;
@@ -56,6 +65,7 @@ public class MainActivityManager {
     private View mMainContainer;
     private View mBgView1;
     private View mBgView2;
+    private View mSettingButton;
     private BgScrollView mBgScrollView;
     private ViewPager mViewPager;
     private SlideLayer mSlideLayer;
@@ -73,7 +83,9 @@ public class MainActivityManager {
     private WeatherManager.WeatherLoadListener mWeatherLoadListener = new WeatherManager.WeatherLoadListener() {
         @Override
         public void onWeatherLoadSuccess() {
-            mBgScrollView.setVisibility(View.GONE);
+            mBgScrollView.setVisibility(View.INVISIBLE);
+            mBgView1.setVisibility(View.VISIBLE);
+            mBgView2.setVisibility(View.VISIBLE);
             if(mCurrentPosition != -1){
                 initBackground(mCurrentPosition);
             }
@@ -108,6 +120,7 @@ public class MainActivityManager {
         Time time = new Time();
         time.setToNow();
         this.mIsDay = time.hour > 6 && time.hour < 18;
+        changeViewWhenDayOrNight();
     }
 
     private void initView( ){
@@ -134,9 +147,22 @@ public class MainActivityManager {
         this.mWeatherView = mActivity.findViewById(R.id.weatherView);
         this.mWeatherTextView = (TextView) mActivity.findViewById(R.id.weatherTextView);
         this.mTemperatureView = (TextView) mActivity.findViewById(R.id.temperatureTextView);
+
+        this.mSettingButton = mActivity.findViewById(R.id.settingButton);
+        changeViewWhenDayOrNight();
     }
 
-    private void initData( ){
+    private void changeViewWhenDayOrNight( ){
+        if(this.mSettingButton != null){
+            if(this.mIsDay){
+                this.mSettingButton.setBackgroundResource(R.drawable.setting_day);
+            }else{
+                this.mSettingButton.setBackgroundResource(R.drawable.setting_night);
+            }
+        }
+    }
+
+    private void initAnimator( ){
         int startY = -this.mActivity.getResources().getDimensionPixelOffset(R.dimen.main_activity_top_animation_startY);
         this.mTopTitleViewChangeAnimator = new AnimatorSet();
         ObjectAnimator topTranslationAnimator = ObjectAnimator.ofFloat(this.mTitleTextView, "translationY", startY, 0f);
@@ -188,6 +214,10 @@ public class MainActivityManager {
                 }
             }
         });
+     }
+
+    private void initData( ){
+        initAnimator();
 
         this.mWeatherManager = new WeatherManager(this.mActivity);
         this.mWeatherManager.setWeatherLoadListener(this.mWeatherLoadListener);
@@ -203,10 +233,13 @@ public class MainActivityManager {
         int resId = this.mIsDay ? R.drawable.bg_full_day : R.drawable.bg_full_night;
         this.mBgScrollView.setVisibility(View.VISIBLE);
         this.mBgScrollView.setScrollBackgroundRes(resId);
+
+        this.mBgView1.setVisibility(View.INVISIBLE);
+        this.mBgView2.setVisibility(View.INVISIBLE);
     }
 
     private void setWeatherView( ){
-        if(this.mCurrentPosition != -1){
+        if(this.mCurrentPosition != -1 && this.mCurrentPosition != YESTERDAY_INDEX){
             if(this.mWeatherManager.isWeatherAvailable()){
                 this.mWeatherView.setVisibility(View.VISIBLE);
                 if(this.mCurrentPosition == TODAY_INDEX){
@@ -274,22 +307,26 @@ public class MainActivityManager {
         int resId;
         switch (evaluation){
             case Util.EVALUATION_DEFAULT:
-                resId = R.drawable.ic_launcher;
+                resId = R.drawable.day_evaluation_mid_white;
                 break;
             case Util.EVALUATION_GOOD:
-                resId = R.drawable.ic_launcher;
+                resId = R.drawable.day_evaluation_good_white;
                 break;
             case Util.EVALUATION_MID:
-                resId = R.drawable.ic_launcher;
+                resId = R.drawable.day_evaluation_mid_white;
                 break;
             case Util.EVALUATION_BAD:
-                resId = R.drawable.ic_launcher;
+                resId = R.drawable.day_evaluation_bad_white;
                 break;
             default:
-                resId = R.drawable.ic_launcher;
+                resId = R.drawable.day_evaluation_mid_white;
                 break;
         }
         this.mDayEvaluationImageView.setImageResource(resId);
+    }
+
+    void hideDefaultBackground( ){
+        this.mBgScrollView.setVisibility(View.INVISIBLE);
     }
 
     void initBackground(int position){
@@ -299,6 +336,7 @@ public class MainActivityManager {
             this.mBgView1.setAlpha(1f);
             this.mBgView1.setBackgroundResource(this.mBgResId);
         }else{
+            this.mBgScrollView.setVisibility(View.VISIBLE);
             this.mBgScrollView.scrollToPage(position);
         }
     }
@@ -466,8 +504,24 @@ public class MainActivityManager {
     void initSlideLayer( ){
         this.mSlideLayer = (SlideLayer) this.mActivity.findViewById(R.id.slideLayer);
         this.mSlideLayer.setVisibility(View.VISIBLE);
-        View view = View.inflate(this.mActivity, R.layout.slide_layer_main, null);
-        this.mSlideLayer.setMainView(view);
+        final View slideView = View.inflate(this.mActivity, R.layout.slide_layer_main, null);
+        this.mSlideLayer.setMainView(slideView);
+        new Handler( ).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                animSlideLogo(slideView);
+            }
+        }, 500);
+    }
+
+    private void animSlideLogo(View slideView){
+        View view = slideView.findViewById(R.id.slideLogo);
+        view.setVisibility(View.VISIBLE);
+        TranslateAnimation translateAnimation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, -1f, Animation.RELATIVE_TO_SELF, 0,
+                Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 0f);
+        translateAnimation.setDuration(400);
+        translateAnimation.setInterpolator(new DecelerateInterpolator());
+        view.startAnimation(translateAnimation);
     }
 
     SlideLayer getSlideLayer( ){
@@ -489,7 +543,7 @@ public class MainActivityManager {
                     if(time.year % 4 == 0){// 366 day
                         this.mPassDay = 365 - time.yearDay + now.yearDay + 1;
                     }else{// 365 day
-                        this.mPassDay = 364 - time.year + now.yearDay + 1;
+                        this.mPassDay = 364 - time.yearDay + now.yearDay + 1;
                     }
                 }
             }

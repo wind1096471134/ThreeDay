@@ -7,19 +7,22 @@
     <color name="content_change_view_bg_dark">#ADDD</color>
     <color name="content_change_view_bg_light">#9EEE</color>
     <color name="grid_item_font_color">#FFF</color>
-    <color name="page_background_green">#cdc</color>
-    <color name="page_background_blue">#aaaa</color>
-    <color name="custom_action_bar_background">#aaa</color>
-    <color name="label_normal">#CCC</color>
-    <color name="label_press">#999</color>
-    <color name="switch_controller_gray_dark">#ddd</color>
-    <color name="switch_controller_gray_light">#eee</color>
+    <color name="custom_action_bar_background">#FF7FA6E0</color>
+    <color name="label_normal">#FF7FA6E0</color>
+    <color name="label_press">#AA7FA6E0</color>
+    <color name="label_font_color">#FFFF</color>
     <color name="check_task_main_background">#aaa</color>
-    <color name="setting_switch_background_color">#aaa</color>
-    <color name="setting_switch_thumb_color">#888</color>
-    <color name="setting_switch_check_background_color">#99f</color>
+    <color name="setting_switch_background_color">#CCC</color>
+    <color name="setting_switch_thumb_color">#aaa</color>
+    <color name="setting_switch_check_background_color">#FF7FA6E0</color>
     <color name="main_activity_font_color">#FFF</color>
-    <color name="page_color">#BCCC</color>
+    <color name="page_color_d">#ACCC</color>
     <color name="page_state_font_color">#FFFF</color>
+    <color name="setting_item_press">#AA7FA6E0</color>
+    <color name="page_color_l">#AEEE</color>
+    <color name="lock_line_color">#FF7FA6E0</color>
+    <color name="introduction_button_normal">#9CCC</color>
+    <color name="introduction_button_press">#5CCC</color>
+    <color name="theme_color">#FF7FA6E0</color>
 
 </resources>

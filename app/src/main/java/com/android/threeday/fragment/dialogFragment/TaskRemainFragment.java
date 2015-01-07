@@ -22,7 +22,7 @@ public class TaskRemainFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).setTitle(R.string.remain_title)
+        AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).setTitle(R.string.remind_title)
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

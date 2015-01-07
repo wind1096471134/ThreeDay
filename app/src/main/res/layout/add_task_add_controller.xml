@@ -8,5 +8,14 @@
         android:layout_height="match_parent"
         android:layout_margin="@dimen/label_grid_item_inside_margin"
         android:background="@drawable/label_background"
-        android:id="@+id/controller"/>
+        android:id="@+id/controller">
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="@dimen/label_add_size"
+        android:layout_height="@dimen/label_add_size"
+        android:layout_gravity="center"
+        android:background="@drawable/add_button"></FrameLayout>
+
 </FrameLayout>

@@ -124,7 +124,6 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
             if(this.mTaskUndoneGridAdapter != null){
                 checkEmptyView();
                 this.mTaskUndoneGridAdapter.notifyDataSetChanged(true);
-                Toast.makeText(getActivity(),"success", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -154,11 +153,9 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
                 if(this.mTaskUndoneGridAdapter != null){
                     this.mTaskUndoneGridAdapter.notifyDataSetChanged(true);
                 }
-                Toast.makeText(getActivity(),"success " + time.format2445(), Toast.LENGTH_SHORT).show();
             }
         } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-            Toast.makeText(getActivity(),"fail", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(),R.string.operation_fail, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -189,7 +186,6 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
         if(this.mModel.setUndoneTaskRemain(this.mTaskLongClickPosition, time.format2445())){
             this.mTaskUndoneGridAdapter.notifyDataSetChanged(true);
             setTaskRemainToAlarm(this.mModel.getUndoneTasks().get(this.mTaskLongClickPosition));
-            Toast.makeText(getActivity(),"success " + time.format2445(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -199,7 +195,6 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
             if(this.mTaskUndoneGridAdapter != null){
                 this.mTaskUndoneGridAdapter.notifyDataSetChanged(true);
                 cancelTaskRemainToAlarm(this.mModel.getUndoneTasks().get(this.mTaskLongClickPosition));
-                Toast.makeText(getActivity(),"success", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -236,7 +231,6 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
         if(this.mModel.changeUndoneTaskRemainTime(this.mTaskLongClickPosition, time.format2445())){
             this.mTaskUndoneGridAdapter.notifyDataSetChanged(true);
             setTaskRemainToAlarm(this.mModel.getUndoneTasks().get(this.mTaskLongClickPosition));
-            Toast.makeText(getActivity(),"success " + time.format2445(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -246,7 +240,6 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
             if(this.mTaskDoneGridAdapter != null){
                 checkEmptyView();
                 this.mTaskDoneGridAdapter.notifyDataSetChanged(true);
-                Toast.makeText(getActivity(),"success", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -262,11 +255,10 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
                 if(this.mTaskUndoneGridAdapter != null){
                     this.mTaskUndoneGridAdapter.notifyDataSetChanged(false);
                 }
-                Toast.makeText(getActivity(),"success", Toast.LENGTH_SHORT).show();
             }
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
-            Toast.makeText(getActivity(),"fail", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(),R.string.operation_fail, Toast.LENGTH_SHORT).show();
         }
     }
 

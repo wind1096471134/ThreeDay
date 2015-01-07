@@ -74,7 +74,17 @@ public class CheckTaskActivity extends FragmentActivity {
         moveToNext();
     }
 
+    private boolean isDay( ){
+        Time time = new Time();
+        time.setToNow();
+        return time.hour > 6 && time.hour < 18;
+    }
+
     private void initView( ){
+        View mainContainer = findViewById(R.id.mainContainer);
+        int resId = isDay() ? R.drawable.bg_yesterday_day : R.drawable.bg_fine_night;
+        mainContainer.setBackgroundResource(resId);
+
         this.mPageSwitchLayout = (PageSwitchLayout) findViewById(R.id.pageSwitchLayout);
         this.mPageSwitchLayout.setOnPageSwitchListener(this.mOnPageSwitchListener);
 
@@ -190,6 +200,7 @@ public class CheckTaskActivity extends FragmentActivity {
             this.mTaskCheckMessageTextView.setText(R.string.check_task_day_evaluation);
             this.mTaskCheckMessageTextView.startAnimation(this.mCheckMessageAnimation);
 
+            this.mPageSwitchLayout.setVisibility(View.INVISIBLE);
             this.mDayEvaluationView.setVisibility(View.VISIBLE);
             ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(this.mDayEvaluationView, "translationY", this.mDayEvaluationView.getHeight(), 0f)
                     .setDuration(500);

@@ -9,10 +9,9 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.text.format.Time;
-import android.util.Log;
 
 import com.android.threeday.R;
-import com.android.threeday.activity.remainActivity.RemainTaskActivity;
+import com.android.threeday.activity.remindActivity.RemindTaskActivity;
 import com.android.threeday.model.setting.TimeModel;
 import com.android.threeday.model.threeDay.TaskItem;
 import com.android.threeday.util.Util;
@@ -45,7 +44,7 @@ public class RemainTaskService extends Service {
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
                 builder.setAutoCancel(false);
                 builder.setContentTitle(taskItem.getInformation());
-                String remainTicker = context.getResources().getString(R.string.task_remain_notification_ticker);
+                String remainTicker = context.getResources().getString(R.string.task_remind_notification_ticker);
                 builder.setContentText(remainTicker);
                 builder.setTicker(remainTicker);
                 builder.setDefaults(Notification.DEFAULT_ALL);
@@ -65,7 +64,7 @@ public class RemainTaskService extends Service {
 
     private PendingIntent getPendingIntent(Context context, int id){
         Intent intent = new Intent(context, CheckLockService.class);
-        intent.putExtra(Util.EXTRA_KEY_LOCK_START_ACTIVITY, RemainTaskActivity.class);
+        intent.putExtra(Util.EXTRA_KEY_LOCK_START_ACTIVITY, RemindTaskActivity.class);
         intent.putExtra(Util.TASK_ID, id);
         //setType to make PendingIntent identify
         intent.setType(Integer.toString(id));

@@ -1,5 +1,7 @@
 package com.android.threeday.fragment;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -32,13 +34,17 @@ public class YesterdayFragment extends BaseDayFragment {
     private View mFrontDoneEmptyView;
     private View mBackUndoneEmptyView;
     private AnimationSet mTaskStateAnimation;
+    private AnimatorSet mSwitchControllerRotateClockwiseAnimator;
+    private AnimatorSet mSwitchControllerRotateAnticlockwiseAnimator;
     private PageSwitchLayout.OnPageSwitchListener mOnPageSwitchListener = new PageSwitchLayout.OnPageSwitchListener() {
         @Override
         public void onPageSwitchStart(int currentPage) {
             if(isCurrentDonePage()){
                 mTaskStateTextView.setText(R.string.task_state_undone);
+                mSwitchControllerRotateClockwiseAnimator.start();
             }else if(isCurrentUndonePage()){
                 mTaskStateTextView.setText(R.string.task_state_done);
+                mSwitchControllerRotateAnticlockwiseAnimator.start();
             }
             mTaskStateTextView.startAnimation(mTaskStateAnimation);
         }
@@ -75,6 +81,17 @@ public class YesterdayFragment extends BaseDayFragment {
         this.mTaskStateAnimation.addAnimation(alphaAnimation);
         this.mTaskStateAnimation.setDuration(duration);
         this.mTaskStateAnimation.setInterpolator(new DecelerateInterpolator());
+
+        duration = 400;
+        this.mSwitchControllerRotateClockwiseAnimator = new AnimatorSet();
+        ObjectAnimator rotateAnimator = ObjectAnimator.ofFloat(this.mSwitchController, "rotation", 0f, 180f);
+        this.mSwitchControllerRotateClockwiseAnimator.setDuration(duration);
+        this.mSwitchControllerRotateClockwiseAnimator.playTogether(rotateAnimator);
+
+        this.mSwitchControllerRotateAnticlockwiseAnimator = new AnimatorSet();
+        rotateAnimator = ObjectAnimator.ofFloat(this.mSwitchController, "rotation", 180f, 0f);
+        this.mSwitchControllerRotateAnticlockwiseAnimator.setDuration(duration);
+        this.mSwitchControllerRotateAnticlockwiseAnimator.playTogether(rotateAnimator);
     }
 
     @Override
@@ -101,6 +118,9 @@ public class YesterdayFragment extends BaseDayFragment {
         this.mSwitchController = this.mMainLayout.findViewById(R.id.switchController);
         this.mSwitchController.setOnClickListener(this.mSwitchControllerClickListener);
         this.mTaskStateTextView.setText(R.string.task_state_done);
+
+        this.mSwitchControllerRotateAnticlockwiseAnimator.setTarget(this.mSwitchController);
+        this.mSwitchControllerRotateClockwiseAnimator.setTarget(this.mSwitchController);
     }
 
     @Override

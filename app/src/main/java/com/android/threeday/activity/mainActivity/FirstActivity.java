@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.format.Time;
-import android.util.Log;
 
 import com.android.threeday.R;
 import com.android.threeday.activity.lockActivity.LockActivity;
@@ -26,12 +25,13 @@ public class FirstActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.mSharedPreferences = getSharedPreferences(Util.PREFERENCE_NAME, MODE_PRIVATE);
+
+        Intent intent;
         if(this.mSharedPreferences.getBoolean(Util.PREFERENCE_KEY_FIRST_USING, true)){
-            setContentView(R.layout.introduction_main);
             setFirstUsingData();
+            intent = new Intent(this, IntroductionActivity.class);
         }else{
             this.mLockModel = new LockModel(this);
-            Intent intent;
             if(this.mLockModel.isLockSet()){
                 intent = new Intent(this, LockActivity.class);
                 intent.putExtra(Util.EXTRA_KEY_LOCK_START_ACTIVITY, MainActivity.class);
@@ -39,10 +39,9 @@ public class FirstActivity extends Activity {
             }else{
                 intent = new Intent(this, MainActivity.class);
             }
-            startActivity(intent);
-            finish();
         }
-
+        startActivity(intent);
+        finish();
     }
 
     private void setFirstUsingData(){

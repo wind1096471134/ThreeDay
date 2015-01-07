@@ -39,6 +39,11 @@ public class SlideLayer extends ViewPager{
             }
             return super.instantiateItem(container, position);
         }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            container.removeAllViews();
+        }
     };
     private SimpleOnPageChangeListener mOnPageChangeListener = new SimpleOnPageChangeListener(){
         @Override

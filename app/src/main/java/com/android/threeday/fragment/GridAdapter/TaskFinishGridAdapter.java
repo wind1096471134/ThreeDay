@@ -64,16 +64,16 @@ public class TaskFinishGridAdapter extends  BaseTaskGridAdapter{
         int imageSrc;
         switch (evaluation){
             case Util.EVALUATION_BAD:
-                imageSrc = R.drawable.ic_launcher;
+                imageSrc = R.drawable.evaluation_bad_blue;
                 break;
             case Util.EVALUATION_MID:
-                imageSrc = R.drawable.ic_launcher;
+                imageSrc = R.drawable.evaluation_mid_blue;
                 break;
             case Util.EVALUATION_GOOD:
-                imageSrc = R.drawable.ic_launcher;
+                imageSrc = R.drawable.evaluation_good_blue;
                 break;
             default:
-                imageSrc = R.drawable.ic_launcher;
+                imageSrc = R.drawable.evaluation_mid_blue;
         }
         imageView.setImageResource(imageSrc);
     }

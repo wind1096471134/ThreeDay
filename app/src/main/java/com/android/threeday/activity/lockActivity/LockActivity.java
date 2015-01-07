@@ -4,13 +4,18 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Bundle;
+import android.os.*;
+import android.os.Process;
+import android.text.format.Time;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.android.threeday.R;
+import com.android.threeday.activity.mainActivity.MainActivity;
 import com.android.threeday.model.setting.LockModel;
 import com.android.threeday.util.Util;
 import com.android.threeday.view.LockView;
@@ -71,11 +76,21 @@ public class LockActivity extends Activity{
         }
     }
 
+    private boolean isDay( ){
+        Time time = new Time();
+        time.setToNow();
+        return time.hour > 6 && time.hour < 18;
+    }
+
     private void initView( ){
+        View mainContainer = findViewById(R.id.mainContainer);
+        int resId = isDay() ? R.drawable.bg_yesterday_day : R.drawable.bg_fine_night;
+        mainContainer.setBackgroundResource(resId);
+
         this.mLockView = (LockView) findViewById(R.id.lockView);
         this.mLockView.setOnLockListener(this.mOnLockListener);
         this.mLockView.setNumberViewBackgroundResource(R.drawable.lock_number_bg);
-        this.mLockView.setDrawLineColor(Color.BLUE);
+        this.mLockView.setDrawLineColor(getResources().getColor(R.color.lock_line_color));
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int size = (int) (displayMetrics.widthPixels * 0.9);
@@ -235,9 +250,9 @@ public class LockActivity extends Activity{
 
         @Override
         protected void onBackPressed() {
-            System.exit(0);
-            finish();
+            exit();
         }
 
     }
+
 }

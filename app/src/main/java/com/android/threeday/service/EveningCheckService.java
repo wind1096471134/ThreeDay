@@ -31,17 +31,16 @@ public class EveningCheckService extends Service {
         TimeModel timeModel = new TimeModel(context);
 
         if(!timeModel.isTodayTasksCheck()){
-            if(true/*!timeModel.isDateChangeToLaterDay() && !timeModel.isTimeChangeLaterThanEveningTime()*/){
+            if(!timeModel.isDateChangeToLaterDay() && !timeModel.isTimeChangeLaterThanEveningTime()){
                 TodayModel todayModel = new TodayModel(context);
                 if(todayModel.getUndoneTasks().size() > 0 || todayModel.getDoneTasks().size() > 0){
                     NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
                     NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
                     builder.setAutoCancel(true);
-                    //builder.setContentTitle(context.getResources().getString(R.string.evening_check_notification_title));
-                    builder.setContentTitle(timeModel.isDateChangeToLaterDay() + "-" + timeModel.isTimeChangeLaterThanEveningTime());
+                    builder.setContentTitle(context.getResources().getString(R.string.evening_check_notification_title));
                     builder.setContentText(context.getResources().getString(R.string.evening_check_notification_text));
-                    String remainTicker = context.getResources().getString(R.string.task_remain_notification_ticker);
+                    String remainTicker = context.getResources().getString(R.string.task_remind_notification_ticker);
                     builder.setTicker(remainTicker);
                     builder.setDefaults(Notification.DEFAULT_ALL);
                     builder.setContentIntent(getPendingIntent(context));

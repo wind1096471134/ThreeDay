@@ -243,6 +243,12 @@ public class SettingActivity extends FragmentActivity {
         exit();
     }
 
+    public void clickAbout(View view){
+        Intent intent = new Intent(this, AboutActivity.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.activity_down_in, android.R.anim.fade_out);
+    }
+
     @Override
     public void onBackPressed() {
         exit();

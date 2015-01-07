@@ -3,10 +3,27 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent">
 
-    <ImageView
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/imageView"
-        android:layout_gravity="center"
-        android:background="@drawable/ic_launcher" />
+        android:layout_gravity="center">
+
+        <ImageView
+            android:layout_width="@dimen/empty_photo_size"
+            android:layout_height="@dimen/empty_photo_size"
+            android:id="@+id/imageView"
+            android:layout_gravity="center"
+            android:background="@drawable/day_evaluation_good_white"
+            android:layout_marginBottom="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/task_empty"
+            android:id="@+id/textView"
+            android:layout_gravity="center"
+            android:textSize="@dimen/empty_font_size"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
 </FrameLayout>

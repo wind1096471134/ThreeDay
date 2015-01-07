@@ -27,7 +27,7 @@
     <string name="cancel">取消</string>
     <string name="task_information_advice">任务：</string>
     <string name="information_empty">你还没填任务信息哦！</string>
-    <string name="remain_title">是否设置提醒？</string>
+    <string name="remind_title">是否设置提醒？</string>
     <string name="yes">好的</string>
     <string name="no">不了</string>
     <string name="check_task_day_evaluation">亲，评价一下你一天的表现哦</string>
@@ -35,8 +35,8 @@
     <string name="task_evaluation_mid">一般般</string>
     <string name="task_evaluation_bad">不满意</string>
     <string name="check_task_message">亲，还剩?条哦</string>
-    <string name="task_remain_notification_ticker">亲，时间到了哦！</string>
-    <string name="task_remain_title">亲，你完成了没有？</string>
+    <string name="task_remind_notification_ticker">亲，时间到了哦！</string>
+    <string name="task_remind_title">亲，你完成了没有？</string>
     <string name="not_leave_without_finish_remain">亲，设置完再离开哦</string>
     <string name="remain_activity_label">任务提醒</string>
     <string name="setting">设置</string>
@@ -66,17 +66,36 @@
     <string name="reset_remain_time">修改提醒时间</string>
     <string name="done_task">已完成此任务</string>
     <string name="undone_task">还没完成此任务</string>
-    <string name="location_disable">位置服务未打开，无法获取当地天气。</string>
+    <string name="task_empty">亲，没有任务哦</string>
+    <string name="operation_fail">操作失败</string>
+    <string name="version">版本 1.0</string>
+    <string name="welcome_page">欢迎页</string>
+    <string name="contact_us">联系我们</string>
+    <string name="contact_message">开发者：wind</string>
+    <string name="contact_email">邮箱：</string>
+    <string name="contact_email_address">1096471134@qq.com</string>
 
     <string-array name="first_using_task_information">
         <item>亲，添加今天的安排吧</item>
     </string-array>
-
     <string-array name="add_label_default_items">
         <item>锻炼</item>
         <item>起床</item>
         <item>上班</item>
         <item>上课</item>
     </string-array>
+
+    <string name="introduction_yesterday">你记得昨天做了什么吗？</string>
+    <string name="introduction_today">你觉得今天是你生命中最后一天吗？</string>
+    <string name="introduction_tomorrow">你想过明天吗</string>
+    <string name="introduction_final">不管你怎么选择，这个世界还是那样。</string>
+    <string name="introduction_final_2">或许，你还可以做点什么。</string>
+    <string name="introduction_yesterday_yes">记得</string>
+    <string name="introduction_yesterday_no">不记得</string>
+    <string name="introduction_today_yes">是</string>
+    <string name="introduction_today_no">不是</string>
+    <string name="introduction_tomorrow_yes">想过</string>
+    <string name="introduction_tomorrow_no">没想过</string>
+    <string name="introduction_enter">进入ThreeDay</string>
 
 </resources>

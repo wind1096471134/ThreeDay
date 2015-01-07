@@ -1,17 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:padding="10dp"
-    android:background="@color/content_change_view_bg_light">
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/content_change_view_bg_light"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/textView"
-        android:layout_gravity="center"
-        android:textSize="@dimen/content_change_view_font_size"
-        android:textColor="@color/grid_item_font_color"
-        android:gravity="center" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:orientation="horizontal"
+        android:layout_gravity="center">
+
+        <ImageView
+            android:layout_height="@dimen/remain_photo_size"
+            android:layout_width="@dimen/remain_photo_size"
+            android:background="@drawable/clock"
+            android:id="@+id/imageView"
+            android:layout_marginRight="10dp"
+            android:layout_gravity="center_vertical" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/textView"
+            android:layout_gravity="center"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textSize="@dimen/content_change_view_font_size"
+            android:textColor="@color/grid_item_font_color"
+            android:gravity="left|fill_vertical" />
+
+    </LinearLayout>
 
 </FrameLayout>
+

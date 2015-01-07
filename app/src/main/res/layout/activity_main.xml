@@ -2,7 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/mainContainer">
+    android:id="@+id/mainContainer"
+    android:background="@color/theme_color">
 
     <view
         android:layout_width="match_parent"
@@ -82,20 +83,20 @@
 
                 <ImageView
                     android:id="@+id/dayEvaluationImageView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/day_evaluation_size"
+                    android:layout_height="@dimen/day_evaluation_size"
                     android:layout_gravity="center_vertical|right"
                     android:src="@drawable/ic_launcher"
                     android:visibility="invisible" />
 
                 <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Check"
+                    android:layout_width="@dimen/check_button_size"
+                    android:layout_height="@dimen/check_button_size"
                     android:id="@+id/checkTaskButton"
                     android:layout_gravity="center"
                     android:visibility="invisible"
-                    android:onClick="checkTasks" />
+                    android:onClick="checkTasks"
+                    android:background="@drawable/check_button" />
 
             </FrameLayout>
         </FrameLayout>
@@ -122,7 +123,6 @@
                 android:id="@+id/settingButton"
                 android:layout_width="@dimen/setting_button_size"
                 android:layout_height="@dimen/setting_button_size"
-                android:background="@drawable/setting"
                 android:layout_marginRight="10dp"
                 android:onClick="setting" />
 
@@ -153,5 +153,20 @@
         android:requiresFadingEdge="none"
         android:id="@+id/slideLayer"
         android:visibility="gone" />
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@color/theme_color"
+        android:id="@+id/firstLayer">
+
+        <ImageView
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:id="@+id/logoView"
+            android:layout_gravity="center"
+            android:background="@drawable/about_logo"
+            android:visibility="invisible" />
+    </FrameLayout>
 
 </FrameLayout>

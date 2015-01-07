@@ -4,18 +4,33 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingLeft="@dimen/check_task_outside_padding"
-    android:paddingRight="@dimen/check_task_outside_padding">
+    android:paddingRight="@dimen/check_task_outside_padding"
+    android:id="@+id/mainContainer">
 
-    <view
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        class="com.android.threeday.view.RunningTextView"
-        android:id="@+id/remainTaskTitleTextView"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:textSize="@dimen/check_task_title_font_size"
-        android:text="@string/task_remain_title" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/imageView"
+            android:background="@drawable/check_l"
+            android:layout_marginRight="10dp" />
+
+        <view
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            class="com.android.threeday.view.RunningTextView"
+            android:id="@+id/remainTaskTitleTextView"
+            android:layout_gravity="center"
+            android:textSize="@dimen/check_task_title_font_size"
+            android:text="@string/task_remind_title"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
 
     <view
         android:layout_width="match_parent"
@@ -29,4 +44,5 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/check_task_bottom_height"
         android:layout_gravity="center_horizontal"></FrameLayout>
+
 </LinearLayout>

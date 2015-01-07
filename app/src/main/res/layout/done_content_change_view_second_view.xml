@@ -7,8 +7,8 @@
     android:background="@color/content_change_view_bg_light">
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/task_evaluation_photo_size"
+        android:layout_height="@dimen/task_evaluation_photo_size"
         android:id="@+id/evaluationImageView"
         android:layout_gravity="center"
         android:scaleType="fitXY" />

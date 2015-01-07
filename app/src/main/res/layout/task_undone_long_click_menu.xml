@@ -10,14 +10,6 @@
     android:padding="@dimen/long_click_menu_padding"
     android:id="@+id/menuContainer">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="menu"
-        android:id="@+id/textView"
-        android:textSize="@dimen/long_click_menu_font_size"
-        android:gravity="left" />
-
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -25,7 +17,13 @@
         android:id="@+id/deleteButton"
         android:onClick="deleteUndoneTask"
         android:textSize="@dimen/long_click_menu_font_size"
-        android:gravity="left" />
+        android:gravity="center_vertical|left"
+        android:background="@drawable/setting_item" />
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/setting_line_height"
+        android:background="@color/custom_action_bar_background"/>
 
     <Button
         android:layout_width="match_parent"
@@ -34,32 +32,73 @@
         android:id="@+id/doneButton"
         android:onClick="doneTask"
         android:textSize="@dimen/long_click_menu_font_size"
-        android:gravity="left" />
+        android:background="@drawable/setting_item"
+        android:gravity="center_vertical|left" />
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/set_remain"
+    <LinearLayout
+        android:orientation="vertical"
         android:id="@+id/setRemianButton"
-        android:onClick="setUndoneTaskRemain"
-        android:textSize="@dimen/long_click_menu_font_size"
-        android:gravity="left" />
-
-    <Button
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/cancel_remain"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/setting_line_height"
+            android:background="@color/custom_action_bar_background"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/set_remain"
+            android:onClick="setUndoneTaskRemain"
+            android:textSize="@dimen/long_click_menu_font_size"
+            android:background="@drawable/setting_item"
+            android:gravity="center_vertical|left" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/cancelRemainButton"
-        android:onClick="cancelUndoneTaskRemain"
-        android:textSize="@dimen/long_click_menu_font_size"
-        android:gravity="left" />
-
-    <Button
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/reset_remain_time"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/setting_line_height"
+            android:background="@color/custom_action_bar_background"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/cancel_remain"
+            android:onClick="cancelUndoneTaskRemain"
+            android:textSize="@dimen/long_click_menu_font_size"
+            android:background="@drawable/setting_item"
+            android:gravity="center_vertical|left" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:id="@+id/changeRemainTimeButton"
-        android:onClick="changeUndoneTaskRemainTime"
-        android:textSize="@dimen/long_click_menu_font_size"
-        android:gravity="left" />
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/setting_line_height"
+            android:background="@color/custom_action_bar_background"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/reset_remain_time"
+            android:onClick="changeUndoneTaskRemainTime"
+            android:textSize="@dimen/long_click_menu_font_size"
+            android:background="@drawable/setting_item"
+            android:gravity="center_vertical|left" />
+
+    </LinearLayout>
+
 </LinearLayout>

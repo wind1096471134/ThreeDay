@@ -20,7 +20,7 @@
             android:id="@+id/addButton"
             android:layout_width="@dimen/add_button_size"
             android:layout_height="@dimen/add_button_size"
-            android:background="@drawable/add"
+            android:background="@drawable/add_button"
             android:onClick="addTasks" />
 
 </LinearLayout>

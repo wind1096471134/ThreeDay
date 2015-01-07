@@ -22,6 +22,7 @@ public class Util {
     public static final int REQUEST_ADD_TASK = 0;
     public static final int REQUEST_RESET_PASSWORD = 1;
     public static final int REQUEST_FIRST_SET_PASSWORD = 2;
+    public static final int REQUEST_LOCK_IN = 3;
 
     public final static int MORNING_REMAIN_NOTIFICATION_ID = -1;
     public final static int MORNING_REMAIN_PENDING_INTENT_ID = -2;
@@ -37,6 +38,8 @@ public class Util {
     public static final int NEW_DAY_ALARM_MINUTE = 0;
     public static final long A_DAY_IN_MILLIS = 24 * 60 * 60 * 1000;
     public static final long BACK_PRESS_DELAY_TIME = 3 * 1000;
+
+    public static final String APP_NAME = "ThreeDay";
 
     public static final String TASK_INFORMATION = "0";
     public static final String TASK_REMAIN = "1";

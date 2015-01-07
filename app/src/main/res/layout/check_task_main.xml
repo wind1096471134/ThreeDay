@@ -3,27 +3,41 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:paddingLeft="@dimen/check_task_outside_padding"
-    android:paddingRight="@dimen/check_task_outside_padding">
+    android:paddingRight="@dimen/check_task_outside_padding"
+    android:id="@+id/mainContainer">
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center_horizontal"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp">
+        android:layout_gravity="center_horizontal">
 
-        <com.android.threeday.view.RunningTextView
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/checkTaskMessageTextView"
-            android:layout_gravity="center_horizontal"
-            android:textSize="@dimen/check_task_title_font_size"
-            android:layout_marginBottom="10dp"
-            android:ellipsize="marquee"
-            android:focusable="true"
-            android:singleLine="true"
-            android:layout_marginTop="10dp" />
+            android:layout_marginBottom="15dp"
+            android:layout_marginTop="15dp">
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:id="@+id/imageView"
+                android:background="@drawable/check_l"
+                android:layout_marginRight="10dp" />
+
+            <com.android.threeday.view.RunningTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/checkTaskMessageTextView"
+                android:layout_gravity="center"
+                android:textSize="@dimen/check_task_title_font_size"
+                android:layout_marginBottom="10dp"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:singleLine="true"
+                android:layout_marginTop="10dp" />
+        </LinearLayout>
 
         <FrameLayout
             android:layout_width="fill_parent"
@@ -51,7 +65,7 @@
                 <include
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    layout="@layout/task_evaluation_main"
+                    layout="@layout/task_evaluation_main_white"
                     android:layout_gravity="center" />
 
             </LinearLayout>

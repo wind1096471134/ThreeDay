@@ -2,7 +2,8 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="@dimen/task_evaluation_dialog_height">
+    android:layout_height="@dimen/task_evaluation_dialog_height"
+    android:padding="5dp">
 
     <TextView
         android:layout_width="match_parent"
@@ -14,12 +15,16 @@
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:layout_marginTop="15dp"
-        android:gravity="center" />
+        android:gravity="center"
+        android:singleLine="true"
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
 
     <include
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        layout="@layout/task_evaluation_main"
+        layout="@layout/task_evaluation_main_blue"
         android:layout_gravity="center_horizontal" />
 
 

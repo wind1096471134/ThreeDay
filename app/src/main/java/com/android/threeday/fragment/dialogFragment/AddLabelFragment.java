@@ -3,6 +3,7 @@ package com.android.threeday.fragment.dialogFragment;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -25,6 +26,7 @@ public class AddLabelFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final EditText editText = new EditText(getActivity());
+        editText.setBackgroundColor(Color.TRANSPARENT);
         editText.setHint(R.string.label_words_limit);
         WordsLimitTextWatcher wordsLimitTextWatcher = new WordsLimitTextWatcher();
         wordsLimitTextWatcher.setWordsLimit(getResources().getInteger(R.integer.words_limit_num));

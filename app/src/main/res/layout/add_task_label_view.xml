@@ -20,7 +20,8 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:textSize="@dimen/label_font_size"
-            android:ellipsize="end" />
+            android:ellipsize="end"
+            android:textColor="@color/label_font_color" />
     </FrameLayout>
 
     <Button
@@ -28,7 +29,7 @@
         android:layout_height="@dimen/label_delete_view_height"
         android:id="@+id/deleteButton"
         android:layout_gravity="right|top"
-        android:background="#E00"
+        android:background="@drawable/delete"
         android:visibility="invisible"
         android:onClick="deleteLabel" />
 

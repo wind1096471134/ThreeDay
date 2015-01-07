@@ -1,8 +1,11 @@
 package com.android.threeday.fragment;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
@@ -35,14 +38,18 @@ public class TodayFragment extends BaseDayFragment {
     private View mSwitchController;
     private View mFrontUndoneEmptyView;
     private View mBackDoneEmptyView;
+    private AnimatorSet mSwitchControllerRotateClockwiseAnimator;
+    private AnimatorSet mSwitchControllerRotateAnticlockwiseAnimator;
     private AnimationSet mTaskStateAnimation;
     private PageSwitchLayout.OnPageSwitchListener mOnPageSwitchListener = new PageSwitchLayout.OnPageSwitchListener() {
         @Override
         public void onPageSwitchStart(int currentPage) {
             if(isCurrentUndonePage()){
                 mTaskStateTextView.setText(R.string.task_state_done);
+                mSwitchControllerRotateClockwiseAnimator.start();
             }else if(isCurrentDonePage()){
                 mTaskStateTextView.setText(R.string.task_state_undone);
+                mSwitchControllerRotateAnticlockwiseAnimator.start();
             }
             mTaskStateTextView.startAnimation(mTaskStateAnimation);
         }
@@ -103,6 +110,17 @@ public class TodayFragment extends BaseDayFragment {
         this.mTaskStateAnimation.addAnimation(alphaAnimation);
         this.mTaskStateAnimation.setDuration(duration);
         this.mTaskStateAnimation.setInterpolator(new DecelerateInterpolator());
+
+        duration = 400;
+        this.mSwitchControllerRotateClockwiseAnimator = new AnimatorSet();
+        ObjectAnimator rotateAnimator = ObjectAnimator.ofFloat(this.mSwitchController, "rotation", 0f, 180f);
+        this.mSwitchControllerRotateClockwiseAnimator.setDuration(duration);
+        this.mSwitchControllerRotateClockwiseAnimator.playTogether(rotateAnimator);
+
+        this.mSwitchControllerRotateAnticlockwiseAnimator = new AnimatorSet();
+        rotateAnimator = ObjectAnimator.ofFloat(this.mSwitchController, "rotation", 180f, 0f);
+        this.mSwitchControllerRotateAnticlockwiseAnimator.setDuration(duration);
+        this.mSwitchControllerRotateAnticlockwiseAnimator.playTogether(rotateAnimator);
     }
 
     @Override
@@ -130,6 +148,9 @@ public class TodayFragment extends BaseDayFragment {
         this.mTaskStateTextView.setText(R.string.task_state_undone);
 
         resetGridViewLongClickable();
+
+        this.mSwitchControllerRotateAnticlockwiseAnimator.setTarget(this.mSwitchController);
+        this.mSwitchControllerRotateClockwiseAnimator.setTarget(this.mSwitchController);
     }
 
     private void resetGridViewLongClickable( ){

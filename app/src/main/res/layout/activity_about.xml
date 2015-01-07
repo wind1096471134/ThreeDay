@@ -1,0 +1,171 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.android.threeday.activity.settingActivity.AboutActivity"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/custom_action_bar_height"
+        android:background="@color/custom_action_bar_background"
+        android:paddingLeft="@dimen/custom_action_bar_padding"
+        android:paddingRight="@dimen/custom_action_bar_padding">
+
+        <Button
+            android:layout_width="@dimen/action_bar_button_size"
+            android:layout_height="@dimen/action_bar_button_size"
+            android:id="@+id/button"
+            android:layout_gravity="left|center_vertical"
+            android:onClick="back"
+            android:background="@drawable/back_button" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/about_threeday"
+            android:layout_gravity="center"
+            android:textSize="@dimen/custom_action_bar_font_size"
+            android:textColor="@android:color/white" />
+    </FrameLayout>
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/imageView"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/about_logo"
+        android:layout_margin="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/version"
+        android:id="@+id/textView"
+        android:layout_gravity="center_horizontal"
+        android:textSize="25sp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:animateLayoutChanges="true"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/setting_main_padding">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:onClick="showWelcomePage"
+                android:padding="@dimen/setting_item_padding"
+                android:background="@drawable/setting_item">
+
+                <ImageView
+                    android:layout_width="@dimen/setting_photo_size"
+                    android:layout_height="@dimen/setting_photo_size"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/welcome"
+                    android:layout_marginRight="10dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/welcome_page"
+                    android:textSize="@dimen/setting_main_font_size"
+                    android:layout_gravity="center_vertical" />
+
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/setting_line_height"
+                android:background="@color/custom_action_bar_background"></FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:onClick="showContactMessage"
+                android:padding="@dimen/setting_item_padding"
+                android:background="@drawable/setting_item">
+
+                <ImageView
+                    android:layout_width="@dimen/setting_photo_size"
+                    android:layout_height="@dimen/setting_photo_size"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/contact"
+                    android:layout_marginRight="10dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/contact_us"
+                    android:id="@+id/textView3"
+                    android:textSize="@dimen/setting_main_font_size"
+                    android:layout_gravity="center_vertical" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:id="@+id/contactMessageView"
+                android:visibility="invisible">
+
+                <FrameLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="@dimen/setting_line_height"
+                    android:background="@color/custom_action_bar_background"></FrameLayout>
+
+                <LinearLayout
+                    android:padding="@dimen/setting_item_padding"
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/contact_message"
+                        android:textSize="@dimen/setting_main_font_size" />
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/contact_email"
+                            android:textSize="@dimen/setting_main_font_size"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:singleLine="true"
+                            android:focusable="true"
+                            android:ellipsize="marquee"
+                            android:marqueeRepeatLimit="marquee_forever"
+                            android:focusableInTouchMode="true"
+                            android:textSize="@dimen/setting_main_font_size"
+                            android:text="@string/contact_email_address"
+                        />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+</LinearLayout>

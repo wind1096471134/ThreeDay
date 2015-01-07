@@ -9,7 +9,7 @@ import android.text.TextWatcher;
 public class WordsLimitTextWatcher implements TextWatcher {
     private int mWordsLimitNum = -1;
 
-    public WordsLimitTextWatcher( ){
+    public WordsLimitTextWatcher(){
         super();
     }
 
@@ -29,8 +29,17 @@ public class WordsLimitTextWatcher implements TextWatcher {
 
     @Override
     public void afterTextChanged(Editable s) {
-        if(s.length() > this.mWordsLimitNum){
-            s.delete(this.mWordsLimitNum, s.length());
+        char []chars = s.toString().toCharArray();
+        int wordsNum = 0;
+        for(char c : chars){
+            if((c >= 65 && c <= 90) || (c >= 97 && c <= 122)){
+                continue;
+            }else{
+                wordsNum++;
+            }
+        }
+        if(wordsNum > this.mWordsLimitNum){
+            s.delete(s.length() - 1, s.length());
         }
     }
 }

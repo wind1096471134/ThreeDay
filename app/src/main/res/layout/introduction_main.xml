@@ -1,7 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_fine_night"
+    android:paddingTop="40dp"
+    android:paddingBottom="40dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp">
 
-</LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/informationTextView"
+            android:layout_gravity="center_horizontal|top"
+            android:textSize="@dimen/introduction_font_size"
+            android:textColor="@android:color/white"
+            android:gravity="center" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/informationTextView2"
+        android:gravity="center"
+        android:textSize="@dimen/introduction_font_size"
+        android:textColor="@android:color/white"
+        android:layout_gravity="center" />
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom">
+
+            <Button
+                android:layout_width="@dimen/introduction_button_width"
+                android:layout_height="@dimen/introduction_button_height"
+                android:id="@+id/yesButton"
+                android:layout_marginRight="30dp"
+                android:background="@drawable/introduction_button"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/introduction_button_font_size"
+                android:padding="10dp"
+                android:onClick="clickYes" />
+
+            <Button
+                android:layout_width="@dimen/introduction_button_width"
+                android:layout_height="@dimen/introduction_button_height"
+                android:id="@+id/noButton"
+                android:background="@drawable/introduction_button"
+                android:padding="10dp"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/introduction_button_font_size"
+                android:onClick="clickNo" />
+        </LinearLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/introduction_button_height"
+        android:id="@+id/enterButton"
+        android:background="@drawable/introduction_button"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/introduction_button_font_size"
+        android:onClick="clickEnter"
+        android:layout_gravity="center_horizontal|bottom"
+        android:text="@string/introduction_enter"
+        android:gravity="center"
+        android:padding="10dp"
+        android:visibility="invisible" />
+
+</FrameLayout>

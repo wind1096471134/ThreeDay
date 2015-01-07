@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="remain_task_broadcast_action_name">RemainTask</string>
+    <string name="app_name">ThreeDay</string>
+    <string name="title_yesterday">Yesterday</string>
+    <string name="title_today">Today</string>
+    <string name="title_tomorrow">Tomorrow</string>
+    <string name="task_state_done">Done</string>
+    <string name="task_state_undone">Undone</string>
+    <string name="words_yesterday">Today is more important than Yesterday!</string>
+    <string name="words_today">If today is the last day of your life, what will you do ?</string>
+    <string name="words_tomorrow">Tomorrow is beautiful!</string>
+    <string name="task_evaluation_dialog_title">Give yourself an evaluation</string>
+    <string name="remain_to_do">Remember to finish it.</string>
+    <string name="about">about&#160;</string>
+    <string name="half">&#160;half of a</string>
+    <string name="hour">&#160;hour&#160;</string>
+    <string name="minute">&#160;minute&#160;</string>
+    <string name="second">&#160;second&#160;</string>
+    <string name="after">&#160;later</string>
+    <string name="now_to_do">It\'s time to finish.</string>
+    <string name="useful_labels">Useful labels</string>
+    <string name="label_words_limit">within 10 words</string>
+    <string name="add_label_dialog_title">add useful label</string>
+    <string name="sure">sure</string>
+    <string name="cancel">cancel</string>
+    <string name="task_information_advice">Task:</string>
+    <string name="information_empty">You haven\'t input the task\'s information.</string>
+    <string name="remind_title">Set task remind ?</string>
+    <string name="yes">Ok</string>
+    <string name="no">No</string>
+    <string name="check_task_day_evaluation">Give yourself an evaluation today</string>
+    <string name="task_evaluation_good">Satisfied</string>
+    <string name="task_evaluation_mid">So so</string>
+    <string name="task_evaluation_bad">Unsatisfied</string>
+    <string name="check_task_message">\? tasks remaining</string>
+    <string name="task_remind_notification_ticker">It\'s time.</string>
+    <string name="task_remind_title">Have you done it ?</string>
+    <string name="not_leave_without_finish_remain">Please check first.</string>
+    <string name="remain_activity_label">Task Reminding</string>
+    <string name="setting">Setting</string>
+    <string name="morning_remain">Morning reminding</string>
+    <string name="evening_check">Evening checking</string>
+    <string name="set_remain_time">set reminding time</string>
+    <string name="morning_remain_notification_title">Morning plan</string>
+    <string name="evening_check_notification_title">Evening checking</string>
+    <string name="morning_remain_notification_text">remember to plan your day.</string>
+    <string name="evening_check_notification_text">remember to check your day.</string>
+    <string name="set_time_before_now_toast">Do you want to cross time ?</string>
+    <string name="arrange_tomorrow_title">Plan tomorrow ?</string>
+    <string name="new_day_slide_layer_text">Enter a new day</string>
+    <string name="setting_lock">Set password protection</string>
+    <string name="reset_lock">reset password</string>
+    <string name="input_code">Please input your password</string>
+    <string name="input_code_again">Please input it again</string>
+    <string name="input_code_wrong">Password wrong !</string>
+    <string name="input_old_password">Please input your old password</string>
+    <string name="input_new_password">Please input your new password</string>
+    <string name="password_less_than_two">At least two numbers</string>
+    <string name="back_press_again_exit">Press back again to exit</string>
+    <string name="about_threeday">about ThreeDay</string>
+    <string name="delete_task">delete task</string>
+    <string name="set_remain">set reminding</string>
+    <string name="cancel_remain">cancel reminding</string>
+    <string name="reset_remain_time">change reminding time</string>
+    <string name="done_task">done this task</string>
+    <string name="undone_task">undone this task</string>
+    <string name="task_empty">No tasks.</string>
+    <string name="operation_fail">Fail</string>
+    <string name="version">Version 1.0</string>
+    <string name="welcome_page">To welcome</string>
+    <string name="contact_us">contact us</string>
+    <string name="contact_message">developer：wind</string>
+    <string name="contact_email">email: </string>
+    <string name="contact_email_address">1096471134@qq.com</string>
+
+    <string-array name="first_using_task_information">
+        <item>Plan your day.</item>
+    </string-array>
+    <string-array name="add_label_default_items">
+        <item>take exercise</item>
+        <item>get up</item>
+        <item>go to work</item>
+        <item>go to class</item>
+    </string-array>
+
+    <string name="introduction_yesterday">Do you remember what you have done yesterday ?</string>
+    <string name="introduction_today">Do you think today is the last day or your life ?</string>
+    <string name="introduction_tomorrow">Do you think of your tomorrow ?</string>
+    <string name="introduction_final">No matter what you have chosen, the world is still like that</string>
+    <string name="introduction_final_2">Maybe you can do more !</string>
+    <string name="introduction_yesterday_yes">Remember</string>
+    <string name="introduction_yesterday_no">Forget</string>
+    <string name="introduction_today_yes">Yes</string>
+    <string name="introduction_today_no">No</string>
+    <string name="introduction_tomorrow_yes">Yes</string>
+    <string name="introduction_tomorrow_no">No</string>
+    <string name="introduction_enter">Enter ThreeDay</string>
+
+</resources>

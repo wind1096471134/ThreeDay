@@ -11,19 +11,23 @@
         android:layout_gravity="center_horizontal"
         android:padding="10dp">
 
-        <TextView
+        <com.android.threeday.view.RunningTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/task_evaluation_dialog_title"
             android:id="@+id/textView"
+            android:singleLine="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:layout_gravity="center_horizontal"
-            android:textSize="30sp"
+            android:textSize="25sp"
+            android:textColor="@android:color/white"
             android:gravity="center" />
     </FrameLayout>
 
     <include
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        layout="@layout/task_evaluation_main"
+        layout="@layout/task_evaluation_main_white"
         android:layout_gravity="center" />
 </LinearLayout>

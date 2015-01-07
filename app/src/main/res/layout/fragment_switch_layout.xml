@@ -32,11 +32,17 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/page_switch_controller_height"
-            android:layout_gravity="center_horizontal"
-            android:id="@+id/switchController"
-            android:background="@drawable/switch_controller_background">
+            android:layout_height="@dimen/page_switch_controller_width">
 
+            <FrameLayout
+                android:layout_width="@dimen/page_switch_controller_width"
+                android:layout_height="@dimen/page_switch_controller_height"
+                android:layout_gravity="center"
+                android:id="@+id/switchController"
+                android:background="@drawable/switch_controller">
+
+            </FrameLayout>
         </FrameLayout>
+
     </LinearLayout>
 </FrameLayout>

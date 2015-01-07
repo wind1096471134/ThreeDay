@@ -2,40 +2,33 @@ package com.android.threeday.activity.mainActivity;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.os.Handler;
 import android.text.format.Time;
-import android.widget.Toast;
 
-import com.android.threeday.R;
 import com.android.threeday.util.Util;
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.List;
 
 /**
  * Created by user on 2014/12/26.
  */
 public class WeatherManager {
-    private final long LOCATION_UPDATE_TIME = 12 * 60 * 60 * 1000;
     private final long WEATHER_UPDATE_TIME = 6 * 60 * 60 * 1000;
     private final long WEATHER_PAST_TIME = 24 * 60 * 60 * 1000;
     private Context mContext;
@@ -44,8 +37,8 @@ public class WeatherManager {
     private Weather mTomorrowWeather;
     private WeatherLoadListener mWeatherLoadListener;
     private Handler mHandler = new Handler();
-    private LocationManager mLocationManager;
-    private Location mLocation;
+    private LocationClient mLocationClient;
+    private String mCityName;
 
     private boolean mIsWeatherAvailable;
 
@@ -54,6 +47,26 @@ public class WeatherManager {
         this.mSharedPreferences = this.mContext.getSharedPreferences(Util.PREFERENCE_NAME, Context.MODE_PRIVATE);
         this.mTodayWeather = new Weather();
         this.mTomorrowWeather = new Weather();
+
+        LocationClientOption locationClientOption = new LocationClientOption();
+        locationClientOption.setLocationMode(LocationClientOption.LocationMode.Battery_Saving);
+        locationClientOption.setIsNeedAddress(true);
+        locationClientOption.setCoorType("bd09ll");
+        locationClientOption.setTimeOut(10000);
+        locationClientOption.setProdName(Util.APP_NAME);
+        this.mLocationClient = new LocationClient(context, locationClientOption);
+        this.mLocationClient.registerLocationListener(new BDLocationListener() {
+            @Override
+            public void onReceiveLocation(final BDLocation bdLocation) {
+                if(bdLocation != null && bdLocation.hasAddr()){
+                    mCityName = bdLocation.getCity();
+                    requestWeather();
+                }else{
+                    checkPastWeather();
+                }
+                mLocationClient.stop();
+            }
+        });
     }
 
     public void checkWeather( ){
@@ -175,59 +188,13 @@ public class WeatherManager {
     }
 
     private void checkLocation( ){
-        mLocationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
-        this.mLocation = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        Time time = new Time();
-        time.setToNow();
-        if(this.mLocation != null){
-            if(time.toMillis(false) - this.mLocation.getTime() < LOCATION_UPDATE_TIME){
-                requestWeather();
-                return;
+        if(this.mLocationClient != null){
+            if(!this.mLocationClient.isStarted()){
+                this.mLocationClient.start();
             }
+            this.mLocationClient.requestLocation();
         }
-        this.mLocation = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        if(this.mLocation != null){
-            if(time.toMillis(false) - this.mLocation.getTime() > LOCATION_UPDATE_TIME){
-                updateLocation( );
-            }else{
-                requestWeather();
-            }
-        }else{
-            updateLocation();
-        }
-    }
 
-    private void updateLocation( ){
-        if(this.mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
-            this.mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, new LocationListener() {
-                @Override
-                public void onLocationChanged(Location location) {
-                    mLocation = location;
-                    mLocationManager.removeUpdates(this);
-                    requestWeather();
-                }
-
-                @Override
-                public void onStatusChanged(String provider, int status, Bundle extras) {
-
-                }
-
-                @Override
-                public void onProviderEnabled(String provider) {
-
-                }
-
-                @Override
-                public void onProviderDisabled(String provider) {
-
-                }
-            });
-        }else{
-            checkPastWeather();
-            if(!this.mIsWeatherAvailable){
-                Toast.makeText(this.mContext, R.string.location_disable, Toast.LENGTH_SHORT).show();
-            }
-        }
     }
 
     private class WeatherAsyncTask extends AsyncTask{
@@ -264,13 +231,11 @@ public class WeatherManager {
         }
 
         private void checkWeather( ){
-            if(mLocation != null){
+            if(mCityName != null){
                 boolean isGetSuccess = false;
                 InputStream inputStream = null;
                 try {
-                    Geocoder geocoder = new Geocoder(mContext);
-                    List<Address> list = geocoder.getFromLocation(mLocation.getLatitude(), mLocation.getLongitude(), 1);
-                    String location = URLEncoder.encode(list.get(0).getLocality(), "utf-8");
+                    String location = URLEncoder.encode(mCityName, "utf-8");
                     String urlString = this.mWeatherUrl1 + location + this.mWeatherUrl2;
                     URL url = new URL(urlString);
                     HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
