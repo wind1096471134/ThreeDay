@@ -13,6 +13,7 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
+import com.umeng.analytics.MobclickAgent;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -276,7 +277,7 @@ public class WeatherManager {
                     }
 
                 } catch (Exception e) {
-
+                    MobclickAgent.reportError(mContext, e.toString());
                 }finally {
                     if(!isGetSuccess){
                         checkPastWeather();
@@ -284,7 +285,7 @@ public class WeatherManager {
                     try {
                         inputStream.close();
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        MobclickAgent.reportError(mContext, e.toString());
                     }
                 }
 

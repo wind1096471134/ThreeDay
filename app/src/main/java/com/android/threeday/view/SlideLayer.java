@@ -2,9 +2,11 @@ package com.android.threeday.view;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Handler;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -60,6 +62,12 @@ public class SlideLayer extends ViewPager{
             }
         }
     };
+    private boolean mCanScroll = true;
+    private int mAutoSlideScrollYOffset;
+    private float mAutoSlideAlphaOffset;
+    private final int AUTO_SLIDE_DURATION = 50;
+    private final int AUTO_SLIDE_FRAME_NUM = 25;
+    private final int AUTO_SLIDE_DURATION_PER_FRAME = AUTO_SLIDE_DURATION / AUTO_SLIDE_FRAME_NUM;
 
     public SlideLayer(Context context) {
         super(context);
@@ -79,6 +87,46 @@ public class SlideLayer extends ViewPager{
         setAdapter(this.mPagerAdapter);
         setOnPageChangeListener(this.mOnPageChangeListener);
         setCurrentItem(1, false);
+    }
+
+    private Handler mHandler;
+    private Runnable mSlideRunnable = new Runnable() {
+        @Override
+        public void run() {
+            float alpha = mFirstView.getAlpha() - mAutoSlideAlphaOffset;
+            alpha = alpha < 0 ? 0 : alpha;
+            mFirstView.setAlpha(alpha);
+            if(alpha == 0){
+                setVisibility(GONE);
+                mCanScroll = true;
+                if(mOnLayerSlideListener != null){
+                    mOnLayerSlideListener.onLayerSlide();
+                }
+            }else{
+                scrollBy(mAutoSlideScrollYOffset, 0);
+                mHandler.postDelayed(mSlideRunnable, AUTO_SLIDE_DURATION_PER_FRAME);
+            }
+        }
+    };
+
+    public void slideLayer(int width){
+        if(this.mHandler == null){
+            this.mHandler = new Handler();
+        }
+        this.mCanScroll = false;
+        this.mAutoSlideScrollYOffset = -width / AUTO_SLIDE_FRAME_NUM;
+        this.mAutoSlideAlphaOffset = 1f / AUTO_SLIDE_FRAME_NUM;
+        this.mHandler.postDelayed(this.mSlideRunnable, AUTO_SLIDE_DURATION_PER_FRAME);
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        return this.mCanScroll ? super.onInterceptTouchEvent(ev) : false;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        return this.mCanScroll ? super.onTouchEvent(ev) : false;
     }
 
     public void setOnLayerSlideListener(OnLayerSlideListener onLayerSlideListener){

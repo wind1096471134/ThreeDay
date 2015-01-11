@@ -13,6 +13,7 @@ import com.android.threeday.model.threeDay.TaskItem;
 import com.android.threeday.model.threeDay.TodayModel;
 import com.android.threeday.util.Util;
 import com.android.threeday.view.PageSwitchLayout;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 
@@ -33,6 +34,18 @@ public class RemindTaskActivity extends Activity {
         initData( );
         initView( );
         fetchViewAndData();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 
     @Override

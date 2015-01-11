@@ -21,6 +21,7 @@ import com.android.threeday.model.threeDay.TaskItem;
 import com.android.threeday.model.threeDay.TodayModel;
 import com.android.threeday.util.Util;
 import com.android.threeday.view.PageSwitchLayout;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * Created by user on 2014/12/2.
@@ -156,6 +157,18 @@ public class CheckTaskActivity extends FragmentActivity {
             }
         });
         arrangeTomorrowFragment.show(getSupportFragmentManager(), "ArrangeTomorrow");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 
     private void exit( ){

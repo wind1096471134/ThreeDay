@@ -37,6 +37,12 @@
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="N7FGEP5dDYxXoo12TGKhTl5e" />
+        <meta-data
+            android:value="54ad3b8bfd98c51ee500099a"
+            android:name="UMENG_APPKEY"/>
+        <meta-data
+            android:value="qq"
+            android:name="UMENG_CHANNEL"/>
 
         <activity
             android:name=".activity.mainActivity.FirstActivity"
@@ -89,9 +95,18 @@
             android:name=".activity.mainActivity.IntroductionActivity"
             android:screenOrientation="portrait" >
         </activity>
+        <!--友盟更新组件-->
+        <activity
+            android:name="com.umeng.update.UpdateDialogActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+        </activity>
+        <service
+            android:name="com.umeng.update.net.DownloadingService"
+            android:process=":DownloadingService" >
+        </service>
 
         <service
-            android:name=".service.RemainTaskService"
+            android:name=".service.RemindTaskService"
             android:enabled="true"
             android:exported="true" >
         </service>

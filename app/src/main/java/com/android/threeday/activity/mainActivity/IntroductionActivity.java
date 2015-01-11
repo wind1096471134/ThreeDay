@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.android.threeday.R;
+import com.umeng.analytics.MobclickAgent;
 
 public class IntroductionActivity extends Activity {
     private TextView mInformationTextView;
@@ -37,6 +38,18 @@ public class IntroductionActivity extends Activity {
         initView( );
         initData( );
         setData();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 
     private void setData( ){

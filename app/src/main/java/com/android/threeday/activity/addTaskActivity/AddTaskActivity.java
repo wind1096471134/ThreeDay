@@ -20,6 +20,7 @@ import com.android.threeday.fragment.dialogFragment.TaskRemainFragment;
 import com.android.threeday.fragment.dialogFragment.TimePickerFragment;
 import com.android.threeday.model.addTask.AddTaskLabelModel;
 import com.android.threeday.util.Util;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * Created by user on 2014/11/11.
@@ -66,6 +67,18 @@ public class AddTaskActivity extends FragmentActivity {
         setContentView(R.layout.add_task_main);
         initData( );
         initView( );
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 
     private void addLabel( ){

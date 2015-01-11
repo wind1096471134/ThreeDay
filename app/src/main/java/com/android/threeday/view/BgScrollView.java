@@ -55,7 +55,9 @@ public class BgScrollView extends HorizontalScrollView{
         this.mPageNum = pageNum;
         this.mWidth = viewWidth;
         this.mBgWidth = backgroundWidth;
-        FrameLayout frameLayout = new FrameLayout(getContext());
+        if(this.mBgImageView.getParent() != null){
+            ((ViewGroup)this.mBgImageView.getParent()).removeView(this.mBgImageView);
+        }        FrameLayout frameLayout = new FrameLayout(getContext());
         frameLayout.addView(this.mBgImageView, new LayoutParams(backgroundWidth, ViewGroup.LayoutParams.MATCH_PARENT));
         addView(frameLayout, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
         countPageScrollDis( );

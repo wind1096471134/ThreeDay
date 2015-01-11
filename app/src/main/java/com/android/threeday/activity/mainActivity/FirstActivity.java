@@ -13,6 +13,7 @@ import com.android.threeday.model.setting.LockModel;
 import com.android.threeday.model.threeDay.TaskItem;
 import com.android.threeday.model.threeDay.TodayModel;
 import com.android.threeday.util.Util;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * Created by user on 2014/12/18.
@@ -44,11 +45,29 @@ public class FirstActivity extends Activity {
         finish();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
+    }
+
     private void setFirstUsingData(){
         Time time = new Time();
         time.setToNow();
         long timeMills = time.toMillis(false);
-        this.mSharedPreferences.edit().putBoolean(Util.PREFERENCE_KEY_FIRST_USING, false)
+        this.mSharedPreferences.edit().putBoolean(Util.PREFERENCE_KEY_MORNING_REMAIN, Util.DEFAULT_MORNING_REMAIN)
+                .putInt(Util.PREFERENCE_KEY_MORNING_REMAIN_TIME_HOUR, Util.MORNING_REMAIN_TIME_DEFAULT_HOUR)
+                .putInt(Util.PREFERENCE_KEY_MORNING_REMAIN_TIME_MINUTE, Util.MORNING_REMAIN_TIME_DEFAULT_MINUTE)
+                .putBoolean(Util.PREFERENCE_KEY_EVENING_CHECK, Util.DEFAULT_EVENING_CHECK)
+                .putInt(Util.PREFERENCE_KEY_EVENING_CHECK_TIME_HOUR, Util.EVENING_CHECK_TIME_DEFAULT_HOUR)
+                .putInt(Util.PREFERENCE_KEY_EVENING_CHECK_TIME_MINUTE, Util.EVENING_CHECK_TIME_DEFAULT_MINUTE)
+                .putBoolean(Util.PREFERENCE_KEY_FIRST_USING, false)
                 .putLong(Util.PREFERENCE_KEY_REAL_DAY_TIME_1, timeMills)
                 .putLong(Util.PREFERENCE_KEY_REAL_DAY_TIME_2, timeMills)
                 .putLong(Util.PREFERENCE_KEY_LAST_IN_DAY_TIME, timeMills).commit();

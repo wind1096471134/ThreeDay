@@ -19,6 +19,7 @@ import com.android.threeday.activity.mainActivity.MainActivity;
 import com.android.threeday.model.setting.LockModel;
 import com.android.threeday.util.Util;
 import com.android.threeday.view.LockView;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 
@@ -51,6 +52,18 @@ public class LockActivity extends Activity{
         initView( );
         initData( );
         setLockState(getIntent().getIntExtra(Util.EXTRA_KEY_LOCK_ACTIVITY_STATE, STATE_LOCK_IN));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 
     private void initData( ){

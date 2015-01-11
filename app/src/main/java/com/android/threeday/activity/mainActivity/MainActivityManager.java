@@ -15,9 +15,7 @@ import android.text.format.Time;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
-import android.view.animation.AnticipateOvershootInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
@@ -27,9 +25,6 @@ import com.android.threeday.R;
 import com.android.threeday.broadcastReceiver.ResendAlarmManager;
 import com.android.threeday.fragment.dialogFragment.TaskDoneMenuFragment;
 import com.android.threeday.fragment.dialogFragment.TaskUndoneMenuFragment;
-import com.android.threeday.model.addTask.AddTaskLabelModel;
-import com.android.threeday.model.threeDay.TaskItem;
-import com.android.threeday.model.threeDay.TodayModel;
 import com.android.threeday.model.updateData.UpdateDataModel;
 import com.android.threeday.util.Util;
 import com.android.threeday.view.BgScrollView;
@@ -48,7 +43,7 @@ public class MainActivityManager {
     private final String WEATHER_THUNDER = "雷";
     private final String WEATHER_SAND = "沙";
     private final long mAnimationDuration = 500;
-    private final long mBgViewDuration = 1000;
+    private final long mBgViewDuration = 500;
     static final int DAY_NUM = 3;
     static final int YESTERDAY_INDEX = 0;
     static final int TODAY_INDEX = 1;
@@ -437,11 +432,14 @@ public class MainActivityManager {
 
     void changeBackground(int position){
         if(this.mWeatherManager.isWeatherAvailable()){
+            int resId = this.mBgResId;
             setWeatherBackgroundResId(position);
-            if(this.mBgView1Animator.isRunning() || this.mBgView2Animator.isRunning()){
-                this.mBgAnimatorCancel = true;
-            }else{
-                startBgAnimator();
+            if(resId != this.mBgResId){
+                if(this.mBgView1Animator.isRunning() || this.mBgView2Animator.isRunning()){
+                    this.mBgAnimatorCancel = true;
+                }else{
+                    startBgAnimator();
+                }
             }
         }else{
             this.mBgScrollView.smoothScrollToPage(position);

@@ -14,7 +14,7 @@ import com.android.threeday.model.threeDay.TomorrowModel;
 import com.android.threeday.service.EveningCheckService;
 import com.android.threeday.service.MorningRemainService;
 import com.android.threeday.service.NewDaySettingService;
-import com.android.threeday.service.RemainTaskService;
+import com.android.threeday.service.RemindTaskService;
 import com.android.threeday.util.Util;
 
 import java.util.ArrayList;
@@ -165,7 +165,7 @@ public class ResendAlarmManager {
     }
 
     private PendingIntent getRemainAlarmPendingIntent(TaskItem taskItem){
-        Intent intent = new Intent(this.mContext, RemainTaskService.class);
+        Intent intent = new Intent(this.mContext, RemindTaskService.class);
         Bundle bundle = new Bundle(1);
         bundle.putSerializable(Util.REMAIN_TASKITEM_KEY, taskItem);
         intent.putExtra(Util.REMAIN_BUNDLE_KEY, bundle);

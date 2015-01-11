@@ -11,7 +11,7 @@ import com.android.threeday.util.Util;
  * Created by user on 2014/12/21.
  */
 public class TimeModel implements BaseModel {
-    private static final int SAME_MINUTE_EDGE = 1;
+    private static final long SAME_TIME_EDGE = 30 * 60 * 1000;
     private SharedPreferences mSharedPreferences;
 
     private int mMorningRemainTimeMinute;
@@ -146,15 +146,11 @@ public class TimeModel implements BaseModel {
     private boolean isTimeLater(int hour, int minute){
         Time now = new Time();
         now.setToNow();
-        if(now.hour == hour){
-            /*because alarm may reach later than exact time, so we think within this edge is the same time*/
-            if(now.minute - SAME_MINUTE_EDGE > minute){
-                return true;
-            }
-        }else if(now.hour > hour){
-            return true;
-        }
-        return false;
+        Time time = new Time();
+        time.setToNow();
+        time.hour = hour;
+        time.minute = minute;
+        return now.toMillis(false) - time.toMillis(false) > SAME_TIME_EDGE;
     }
 
     public boolean isTimeChangeLater(Time time){

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.format.Time;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -19,6 +20,7 @@ import com.android.threeday.service.EveningCheckService;
 import com.android.threeday.service.MorningRemainService;
 import com.android.threeday.util.Util;
 import com.android.threeday.view.CustomSwitch;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * Created by user on 2014/12/9.
@@ -67,6 +69,18 @@ public class SettingActivity extends FragmentActivity {
         initView( );
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
+    }
+
     private void initData( ){
         this.mSettingModel = new SettingModel(this);
         this.mSwitchThumbWidth = getResources().getDimensionPixelSize(R.dimen.setting_switch_thumb_width);
@@ -77,13 +91,13 @@ public class SettingActivity extends FragmentActivity {
         setCustomSwitch(this.mMorningSwitch);
         this.mMorningRemainView = findViewById(R.id.morningRemainView);
         this.mMorningTimeTextView = (TextView) findViewById(R.id.morningTimeTextView);
-        this.mMorningTimeTextView.setText(this.mSettingModel.getMorningRemainTimeText());
+        this.mMorningTimeTextView.setText(formatTextViewStringWithTime(this.mMorningTimeTextView.getText().toString(), this.mSettingModel.getMorningRemainTimeText()));
 
         this.mEveningSwitch = (CustomSwitch) findViewById(R.id.eveningSwitch);
         setCustomSwitch(this.mEveningSwitch);
         this.mEveningCheckView = findViewById(R.id.eveningCheckView);
         this.mEveningCheckTextView = (TextView) findViewById(R.id.eveningTimeTextView);
-        this.mEveningCheckTextView.setText(this.mSettingModel.getEveningCheckTimeText());
+        this.mEveningCheckTextView.setText(formatTextViewStringWithTime(this.mEveningCheckTextView.getText().toString(), this.mSettingModel.getEveningCheckTimeText()));
 
         boolean check = this.mSettingModel.isMorningRemain();
         this.mMorningSwitch.setSwitchCheck(check);
@@ -136,6 +150,7 @@ public class SettingActivity extends FragmentActivity {
         setMorningRemainView(remain);
         this.mSettingModel.setMorningRemain(remain);
         if(remain){
+            Log.e("wind", "morning remain");
             setAlarm(getMorningPendingIntent(), this.mSettingModel.getMorningRemainTimeHour(), this.mSettingModel.getMorningRemainTimeMinute());
         }else{
             cancelAlarm(getMorningPendingIntent());
@@ -201,7 +216,7 @@ public class SettingActivity extends FragmentActivity {
 
     private void onMorningTimeSet(int hour, int minute){
         this.mSettingModel.setMorningRemainTime(hour, minute);
-        this.mMorningTimeTextView.setText(this.mSettingModel.getMorningRemainTimeText());
+        this.mMorningTimeTextView.setText(formatTextViewStringWithTime(this.mMorningTimeTextView.getText().toString(), this.mSettingModel.getMorningRemainTimeText()));
         setAlarm(getMorningPendingIntent(), hour, minute);
     }
 
@@ -235,8 +250,12 @@ public class SettingActivity extends FragmentActivity {
 
     private void onEveningTimeSet(int hour, int minute){
         this.mSettingModel.setEveningCheckTime(hour, minute);
-        this.mEveningCheckTextView.setText(this.mSettingModel.getEveningCheckTimeText());
+        this.mEveningCheckTextView.setText(formatTextViewStringWithTime(this.mEveningCheckTextView.getText().toString(), this.mSettingModel.getEveningCheckTimeText()));
         setAlarm(getEveningPendingIntent(), hour, minute);
+    }
+
+    private String formatTextViewStringWithTime(String textString, String timeString){
+        return textString.replaceAll("\\(.*\\)", "(" + timeString + ")");
     }
 
     public void back(View view){

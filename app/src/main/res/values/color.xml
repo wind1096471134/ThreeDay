@@ -16,10 +16,10 @@
     <color name="setting_switch_thumb_color">#aaa</color>
     <color name="setting_switch_check_background_color">#FF7FA6E0</color>
     <color name="main_activity_font_color">#FFF</color>
-    <color name="page_color_d">#ACCC</color>
+    <color name="page_color_d">#BCCC</color>
     <color name="page_state_font_color">#FFFF</color>
     <color name="setting_item_press">#AA7FA6E0</color>
-    <color name="page_color_l">#AEEE</color>
+    <color name="page_color_l">#BEEE</color>
     <color name="lock_line_color">#FF7FA6E0</color>
     <color name="introduction_button_normal">#9CCC</color>
     <color name="introduction_button_press">#5CCC</color>

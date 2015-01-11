@@ -21,13 +21,14 @@ import com.android.threeday.activity.addTaskActivity.AddTaskActivity;
 import com.android.threeday.activity.mainActivity.FragmentStateListener;
 import com.android.threeday.activity.mainActivity.FragmentTaskLongClickListener;
 import com.android.threeday.activity.mainActivity.TaskOperateListener;
-import com.android.threeday.service.RemainTaskService;
+import com.android.threeday.service.RemindTaskService;
 import com.android.threeday.fragment.GridAdapter.BaseTaskGridAdapter;
 import com.android.threeday.fragment.dialogFragment.TaskEvaluationFragment;
 import com.android.threeday.fragment.dialogFragment.TimePickerFragment;
 import com.android.threeday.model.threeDay.BaseDayModel;
 import com.android.threeday.model.threeDay.TaskItem;
 import com.android.threeday.util.Util;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * Created by user on 2014/10/29.
@@ -91,11 +92,13 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
     @Override
     public void onResume() {
         super.onResume();
+        MobclickAgent.onPageStart("Day: " + getDayType());
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        MobclickAgent.onPageEnd("Day: " + getDayType());
     }
 
     private void initData(Context context){
@@ -156,6 +159,7 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
             }
         } catch (CloneNotSupportedException e) {
             Toast.makeText(getActivity(),R.string.operation_fail, Toast.LENGTH_SHORT).show();
+            MobclickAgent.reportError(getActivity(), e.toString());
         }
     }
 
@@ -257,8 +261,8 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
                 }
             }
         } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
             Toast.makeText(getActivity(),R.string.operation_fail, Toast.LENGTH_SHORT).show();
+            MobclickAgent.reportError(getActivity(), e.toString());
         }
     }
 
@@ -315,7 +319,7 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
     }
 
     private PendingIntent getAlarmPendingIntent(TaskItem taskItem){
-        Intent intent = new Intent(getActivity(), RemainTaskService.class);
+        Intent intent = new Intent(getActivity(), RemindTaskService.class);
         Bundle bundle = new Bundle(1);
         bundle.putSerializable(Util.REMAIN_TASKITEM_KEY, taskItem);
         intent.putExtra(Util.REMAIN_BUNDLE_KEY, bundle);
@@ -395,5 +399,6 @@ public abstract class BaseDayFragment extends Fragment implements TaskOperateLis
             }
         }
     }
+
 
 }

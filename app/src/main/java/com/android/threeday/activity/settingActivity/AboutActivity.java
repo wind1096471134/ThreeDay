@@ -7,6 +7,8 @@ import android.view.View;
 
 import com.android.threeday.R;
 import com.android.threeday.activity.mainActivity.IntroductionActivity;
+import com.umeng.analytics.MobclickAgent;
+import com.umeng.update.UmengUpdateAgent;
 
 public class AboutActivity extends Activity {
     View mContactMessageView;
@@ -16,6 +18,18 @@ public class AboutActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
         this.mContactMessageView = findViewById(R.id.contactMessageView);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 
     public void showWelcomePage(View view){
@@ -31,6 +45,10 @@ public class AboutActivity extends Activity {
 
     public void back(View view){
         exit();
+    }
+
+    public void checkUpdate(View view){
+        UmengUpdateAgent.forceUpdate(this);
     }
 
     @Override

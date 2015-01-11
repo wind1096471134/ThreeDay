@@ -11,6 +11,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Toast;
@@ -23,6 +25,8 @@ import com.android.threeday.fragment.TomorrowFragment;
 import com.android.threeday.fragment.YesterdayFragment;
 import com.android.threeday.util.Util;
 import com.android.threeday.view.SlideLayer;
+import com.umeng.analytics.MobclickAgent;
+import com.umeng.update.UmengUpdateAgent;
 
 /**
  * Created by user on 2014/10/29.
@@ -72,7 +76,6 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
                 }
                 if(mInitBackground){
                     mInitBackground = false;
-
                     mMainActivityManager.onPageSelected(position);
                     mMainActivityManager.setDayEvaluation(getCurrentPageDayEvaluation(position));
                     onFragmentSelected(position);
@@ -197,6 +200,8 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
             checkWeatherDelay();
         }
 
+        UmengUpdateAgent.update(this);
+        MobclickAgent.updateOnlineConfig(this);
     }
 
     private void checkWeatherDelay( ){
@@ -222,6 +227,9 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        if(this.mMainActivityManager == null){
+            this.mMainActivityManager = new MainActivityManager(this);
+        }
         boolean arrangeTomorrow = intent.getBooleanExtra(Util.ARRANGE_TOMORROW_KEY, false);
         if(arrangeTomorrow){
             arrangeTomorrow();
@@ -256,6 +264,13 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
     @Override
     protected void onResume() {
         super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 
     @Override
@@ -405,6 +420,12 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
         startSettingActivity();
     }
 
+    public void slideLayer(View view){
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        this.mMainActivityManager.getSlideLayer().slideLayer(displayMetrics.widthPixels);
+    }
+
     private void startSettingActivity( ){
         Intent intent = new Intent(this, SettingActivity.class);
         startActivity(intent);
@@ -465,6 +486,7 @@ public class MainActivity extends FragmentActivity implements FragmentTaskLongCl
         if(this.mMainActivityManager != null){
             this.mMainActivityManager.onDestroy();
         }
+        MobclickAgent.onKillProcess(this);
         System.exit(0);
     }
 

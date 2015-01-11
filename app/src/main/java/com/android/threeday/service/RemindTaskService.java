@@ -19,9 +19,9 @@ import com.android.threeday.util.Util;
 /**
  * Created by user on 2014/12/8.
  */
-public class RemainTaskService extends Service {
+public class RemindTaskService extends Service {
 
-    public RemainTaskService( ) {
+    public RemindTaskService() {
         super( );
     }
 
